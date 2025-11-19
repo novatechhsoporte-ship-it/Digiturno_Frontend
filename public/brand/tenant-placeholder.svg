@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="40" viewBox="0 0 160 40" role="img" aria-label="Tenant logo placeholder">
+  <rect width="100%" height="100%" rx="6" fill="#e2e8f0"/>
+  <g font-family="Inter, Arial, sans-serif" font-size="12" fill="#475569">
+    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle">Tenant</text>
+  </g>
+</svg>
