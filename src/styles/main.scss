@@ -1,0 +1,136 @@
+@use "./index" as *;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: $font-family-primary;
+  font-size: $font-size-base;
+  line-height: $line-height-normal;
+  color: $color-gray-900;
+  background-color: $color-gray-50;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+// ============================================
+// TIPOGRAFÍA BASE
+// ============================================
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-tight;
+  color: $color-gray-900;
+  margin-bottom: $spacing-md;
+}
+
+h1 {
+  font-size: $font-size-3xl;
+
+  @include respond-to(md) {
+    font-size: $font-size-4xl;
+  }
+}
+
+h2 {
+  font-size: $font-size-2xl;
+
+  @include respond-to(md) {
+    font-size: $font-size-3xl;
+  }
+}
+
+h3 {
+  font-size: $font-size-xl;
+
+  @include respond-to(md) {
+    font-size: $font-size-2xl;
+  }
+}
+
+h4 {
+  font-size: $font-size-lg;
+
+  @include respond-to(md) {
+    font-size: $font-size-xl;
+  }
+}
+
+h5 {
+  font-size: $font-size-base;
+
+  @include respond-to(md) {
+    font-size: $font-size-lg;
+  }
+}
+
+h6 {
+  font-size: $font-size-sm;
+
+  @include respond-to(md) {
+    font-size: $font-size-base;
+  }
+}
+
+p {
+  color: $color-gray-700;
+}
+
+a {
+  color: $color-primary;
+  text-decoration: none;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: $color-primary-hover;
+  }
+}
+
+// ============================================
+// UTILIDADES
+// ============================================
+.container {
+  width: 100%;
+  max-width: $container-max-width;
+  margin: 0 auto;
+  padding: 0 $container-padding-mobile;
+
+  @include respond-to(md) {
+    padding: 0 $container-padding-desktop;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+// ============================================
+// SCROLLBAR GLOBAL
+// ============================================
+body {
+  @include custom-scrollbar;
+}
