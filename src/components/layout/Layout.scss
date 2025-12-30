@@ -1,0 +1,36 @@
+@use "@/styles/index" as *;
+
+.layout {
+  @include flex-start;
+  min-height: 100vh;
+  background-color: $color-gray-50;
+  position: relative;
+}
+
+.layout__main {
+  @include flex-column;
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  margin-left: 0;
+  transition: margin-left $transition-base;
+
+  @include respond-to(md) {
+    margin-left: $sidebar-width;
+  }
+
+  &--sidebar-collapsed {
+    @include respond-to(md) {
+      margin-left: 80px;
+    }
+  }
+}
+
+.layout__content {
+  flex: 1;
+  padding: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  min-height: calc(100vh - #{$header-height});
+}

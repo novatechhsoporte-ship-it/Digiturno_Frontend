@@ -1,0 +1,183 @@
+@use "@/styles/index" as *;
+
+/* =========================
+   NAVBAR
+========================= */
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: $z-index-sticky;
+  height: $header-height;
+  background: linear-gradient(135deg, $color-primary-light 0%, $color-primary 100%);
+  box-shadow: $shadow-md;
+  transition: all $transition-base;
+  border-radius: 0;
+
+  @include respond-to(md) {
+    border-bottom-left-radius: $border-radius-xl;
+    border-bottom-right-radius: $border-radius-xl;
+  }
+
+  /* =========================
+     CONTENT
+  ========================= */
+
+  &__content {
+    @include flex-between;
+    height: 100%;
+    padding: 0 $spacing-md;
+
+    @include respond-to(md) {
+      padding: 0 $spacing-lg;
+    }
+  }
+
+  &__left {
+    @include flex-start;
+    gap: $spacing-md;
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__right {
+    @include flex-center;
+    gap: $spacing-md;
+    flex-shrink: 0;
+  }
+
+  /* =========================
+     MENU BUTTON
+  ========================= */
+
+  &__menu-btn {
+    @include button-reset;
+    @include flex-center;
+    padding: $spacing-sm;
+    background-color: rgba($color-white, 0.15);
+    color: $color-white;
+    border-radius: $border-radius-md;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: rgba($color-white, 0.25);
+      transform: scale(1.05);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    @include respond-to(md) {
+      display: none;
+    }
+  }
+
+  /* =========================
+     TITLE
+  ========================= */
+
+  &__title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    color: $color-white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 2px 4px rgba($color-black, 0.1);
+  }
+
+  /* =========================
+     USER
+  ========================= */
+
+  &__user-info {
+    @include flex-start;
+    gap: $spacing-sm;
+    padding: $spacing-xs $spacing-sm;
+    background-color: rgba($color-white, 0.15);
+    border-radius: $border-radius-lg;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: rgba($color-white, 0.25);
+      transform: translateY(-1px);
+    }
+  }
+
+  &__user-avatar {
+    @include flex-center;
+    width: 36px;
+    height: 36px;
+    border-radius: $border-radius-full;
+    background-color: rgba($color-white, 0.2);
+    color: $color-white;
+    border: 2px solid rgba($color-white, 0.3);
+    flex-shrink: 0;
+  }
+
+  &__user-details {
+    display: none;
+
+    @include respond-to(md) {
+      @include flex-column;
+      gap: 2px;
+    }
+  }
+
+  &__user-name {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $color-white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__user-role {
+    font-size: $font-size-xs;
+    color: rgba($color-white, 0.9);
+    text-transform: capitalize;
+  }
+
+  /* =========================
+     LOGOUT
+  ========================= */
+
+  &__logout-btn {
+    @include flex-center;
+    gap: $spacing-xs;
+    padding: $spacing-sm;
+    background-color: rgba($color-white, 0.15);
+    border: 2px solid rgba($color-white, 0.3);
+    color: $color-white;
+    border-radius: $border-radius-md;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: rgba($color-white, 0.25);
+      border-color: rgba($color-white, 0.5);
+      box-shadow: 0 4px 8px rgba($color-black, 0.15);
+    }
+
+    @include respond-to(md) {
+      padding: $spacing-sm $spacing-md;
+    }
+  }
+
+  &__logout-text {
+    display: none;
+
+    @include respond-to(md) {
+      display: inline;
+    }
+  }
+}

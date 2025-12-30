@@ -1,0 +1,318 @@
+@use "@/styles/index" as *;
+
+/* =========================
+   Placeholders reutilizables
+========================= */
+%sidebar-btn {
+  @include button-reset;
+  @include flex-center;
+
+  padding: $spacing-xs;
+  cursor: pointer;
+  border-radius: $border-radius-sm;
+  color: $color-gray-300;
+
+  transition: background-color $transition-fast, color $transition-fast;
+
+  &:hover {
+    background-color: rgba($color-white, 0.1);
+    color: $color-white;
+  }
+}
+
+%sidebar-logo {
+  width: auto;
+  object-fit: contain;
+}
+
+/* =========================
+   Sidebar
+========================= */
+.sidebar {
+  @include flex-column;
+  @include custom-scrollbar;
+
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: $z-index-fixed;
+
+  width: $sidebar-width;
+  height: 100vh;
+  background-color: $color-gray-800;
+  box-shadow: $shadow-xl;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  transform: translateX(-100%);
+  transition: transform $transition-base, width $transition-base;
+
+  @include respond-to(md) {
+    transform: translateX(0);
+  }
+
+  /* ===== Modifiers ===== */
+  &--open {
+    transform: translateX(0);
+  }
+
+  &--collapsed {
+    width: 80px;
+
+    & .sidebar__header {
+      padding: $spacing-md;
+      justify-content: center;
+    }
+
+    & .sidebar__logo-container,
+    & .sidebar__user-details,
+    & .sidebar__text {
+      display: none;
+    }
+
+    & .sidebar__link {
+      justify-content: center;
+      padding: $spacing-md;
+    }
+
+    & .sidebar__collapse-btn {
+      margin: 0 auto;
+    }
+  }
+
+  /* ===== Scrollbar ===== */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $color-gray-900;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $color-gray-600;
+    border-radius: $border-radius-full;
+
+    &:hover {
+      background: $color-gray-500;
+    }
+  }
+
+  /* =========================
+     Header
+  ========================= */
+  &__header {
+    @include flex-between;
+
+    position: sticky;
+    top: 0;
+    z-index: 10;
+
+    min-height: 80px;
+    padding: $spacing-lg;
+    gap: $spacing-md;
+
+    background-color: $color-gray-900;
+    border-bottom: $border-width-thin solid rgba($color-white, 0.1);
+
+    transition: padding $transition-base;
+  }
+
+  &__logo-container {
+    @include flex-start;
+    gap: $spacing-md;
+    flex: 1;
+  }
+
+  &__logo-main {
+    @extend %sidebar-logo;
+    height: 50px;
+    filter: brightness(0) invert(1);
+  }
+
+  &__logo-icon {
+    @extend %sidebar-logo;
+    height: 40px;
+    filter: brightness(0) invert(1);
+  }
+
+  &__logo-tenant {
+    @extend %sidebar-logo;
+    height: 32px;
+  }
+
+  &__logo-collapsed {
+    @include flex-center;
+    width: 100%;
+  }
+
+  &__logo-divider {
+    width: 1px;
+    height: 24px;
+    background-color: rgba($color-white, 0.2);
+  }
+
+  /* =========================
+     Header actions
+  ========================= */
+  &__header-actions {
+    @include flex-center;
+    gap: $spacing-xs;
+  }
+
+  &__collapse-btn {
+    @extend %sidebar-btn;
+
+    @media (max-width: 767px) {
+      display: none;
+    }
+  }
+
+  &__close-btn {
+    @extend %sidebar-btn;
+
+    @include respond-to(md) {
+      display: none;
+    }
+  }
+
+  /* =========================
+     Navigation
+  ========================= */
+  &__nav {
+    flex: 1;
+    padding: $spacing-md;
+    overflow-y: auto;
+  }
+
+  &__menu {
+    @include flex-column;
+    gap: $spacing-xs;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__item {
+    width: 100%;
+  }
+
+  &__link {
+    @include flex-start;
+
+    width: 100%;
+    gap: $spacing-md;
+    padding: $spacing-md $spacing-lg;
+
+    border-radius: $border-radius-md;
+    text-decoration: none;
+    white-space: nowrap;
+
+    font-size: $font-size-base;
+    font-weight: $font-weight-medium;
+    color: $color-gray-300;
+
+    transition: background-color $transition-fast, color $transition-fast, transform $transition-fast;
+
+    &:hover {
+      background-color: rgba($color-white, 0.05);
+      color: $color-white;
+      transform: translateX(4px);
+    }
+
+    &--active {
+      background-color: $color-primary;
+      color: $color-white;
+      font-weight: $font-weight-semibold;
+      box-shadow: 0 4px 12px rgba($color-primary, 0.3);
+
+      &:hover {
+        background-color: $color-primary-light;
+        transform: none;
+      }
+
+      .sidebar__icon {
+        color: $color-white;
+      }
+    }
+  }
+
+  &__icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  /* =========================
+     Footer / User
+  ========================= */
+  &__footer {
+    margin-top: auto;
+    padding: $spacing-lg;
+    background-color: $color-gray-900;
+    border-top: $border-width-thin solid rgba($color-white, 0.1);
+  }
+
+  &__user-info {
+    @include flex-start;
+    gap: $spacing-md;
+  }
+
+  &__user-avatar {
+    @include flex-center;
+    width: 40px;
+    height: 40px;
+    border-radius: $border-radius-full;
+    background-color: $color-primary;
+    color: $color-white;
+  }
+
+  &__user-details {
+    @include flex-column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  &__user-name {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $color-white;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &__user-role {
+    font-size: $font-size-xs;
+    color: $color-gray-400;
+    text-transform: capitalize;
+  }
+}
+
+/* =========================
+   Overlay
+========================= */
+.sidebar__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: $z-index-sticky;
+  background-color: rgba($color-black, 0.5);
+  animation: fadeIn $transition-base;
+
+  @include respond-to(md) {
+    display: none;
+  }
+}
+
+/* =========================
+   Animations
+========================= */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
