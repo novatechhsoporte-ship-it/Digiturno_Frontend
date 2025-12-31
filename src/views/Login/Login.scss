@@ -1,0 +1,141 @@
+@use "@/styles/index" as *;
+
+.login {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  font-family: $font-family-primary, system-ui, sans-serif;
+
+  &__brand,
+  &__form-wrapper {
+    position: relative;
+    overflow: hidden;
+    @include flex-center;
+  }
+
+  &__brand {
+    background-color: $color-white;
+    padding: $spacing-xl;
+
+    img {
+      max-width: 800px;
+      width: 100%;
+      height: auto;
+      z-index: $z-index-base + 1;
+    }
+  }
+
+  &__form-wrapper {
+    padding: $spacing-xl;
+  }
+}
+
+/* =========================
+     Blobs
+  ========================= */
+
+.login__blobs {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: $z-index-base;
+}
+
+.blob {
+  position: absolute;
+  border-radius: $border-radius-full;
+  filter: blur(16px);
+
+  &--blue-lg {
+    top: 18%;
+    left: 12%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(closest-side, rgba($color-primary-dark, 0.32), transparent);
+    animation: loginFloat1 16s ease-in-out infinite;
+  }
+
+  &--red-lg {
+    bottom: 14%;
+    right: 14%;
+    width: 340px;
+    height: 340px;
+    background: radial-gradient(closest-side, rgba($color-accent, 0.28), transparent);
+    animation: loginFloat2 20s ease-in-out infinite;
+  }
+
+  &--blue-sm {
+    top: 10%;
+    right: 25%;
+    width: 180px;
+    height: 180px;
+    background: radial-gradient(closest-side, rgba($color-primary, 0.22), transparent);
+    animation: loginFloat3 18s ease-in-out infinite;
+  }
+}
+
+/* =========================
+     Form
+  ========================= */
+
+.login__form {
+  width: 100%;
+  max-width: 380px;
+  display: grid;
+  gap: $spacing-sm;
+  z-index: $z-index-base + 1;
+
+  &__field {
+    @include flex-column;
+  }
+}
+
+.login__field {
+  @include flex-column;
+  label {
+    font-size: $font-size-sm;
+    margin-bottom: $spacing-xs;
+    color: $color-gray-700;
+  }
+
+  input {
+    padding: $spacing-sm $spacing-md;
+    font-size: $font-size-sm;
+    border-radius: $border-radius-lg;
+    border: $border-width-thin solid $border-color-default;
+    outline: none;
+
+    &:focus {
+      border-color: $border-color-focus;
+    }
+  }
+
+  span {
+    margin-top: $spacing-xs;
+    font-size: $font-size-xs;
+    color: $color-error-dark;
+  }
+}
+
+button {
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $border-radius-full;
+  background: $color-primary;
+  color: $color-white;
+  font-size: $font-size-base;
+  font-weight: $font-weight-bold;
+  border: $border-width-thin solid $color-primary-dark;
+  cursor: pointer;
+  box-shadow: $shadow-lg;
+  transition: $transition-base;
+
+  &:hover {
+    background: $color-primary-hover;
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}

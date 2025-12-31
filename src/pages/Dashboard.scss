@@ -1,0 +1,485 @@
+@use "@/styles/index" as *;
+
+.dashboard {
+  padding: $spacing-lg;
+  min-height: 100vh;
+  background: linear-gradient(135deg, rgba($color-primary, 0.05) 0%, rgba($color-accent, 0.05) 100%);
+
+  @include respond-to(md) {
+    padding: $spacing-xl;
+  }
+}
+
+// Header
+.dashboard__header {
+  @include flex-between;
+  margin-bottom: $spacing-xl;
+  flex-wrap: wrap;
+  gap: $spacing-md;
+
+  @include respond-to(md) {
+    flex-wrap: nowrap;
+  }
+}
+
+.dashboard__header-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.dashboard__greeting {
+  font-size: $font-size-base;
+  font-weight: $font-weight-normal;
+  color: $color-gray-600;
+  margin: 0 0 $spacing-xs 0;
+}
+
+.dashboard__title {
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  color: $color-gray-900;
+  margin: 0;
+}
+
+.dashboard__header-right {
+  @include flex-center;
+  gap: $spacing-md;
+  flex-shrink: 0;
+}
+
+.dashboard__search {
+  @include flex-center;
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-md;
+  background-color: $color-white;
+  border: $border-width-thin solid $color-gray-200;
+  border-radius: $border-radius-lg;
+  min-width: 200px;
+
+  @media (max-width: 640px) {
+    display: none;
+  }
+}
+
+.dashboard__search-input {
+  @include input-reset;
+  flex: 1;
+  font-size: $font-size-sm;
+  color: $color-gray-700;
+
+  &::placeholder {
+    color: $color-gray-400;
+  }
+}
+
+.dashboard__notification-btn {
+  @include button-reset;
+  @include flex-center;
+  position: relative;
+  padding: $spacing-sm;
+  background-color: $color-white;
+  border: $border-width-thin solid $color-gray-200;
+  border-radius: $border-radius-md;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover {
+    background-color: $color-gray-50;
+    border-color: $color-primary;
+  }
+}
+
+.dashboard__notification-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background-color: $color-accent;
+  color: $color-white;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-bold;
+  padding: 2px 6px;
+  border-radius: $border-radius-full;
+  min-width: 18px;
+  text-align: center;
+}
+
+.dashboard__user-profile {
+  @include flex-start;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-xs $spacing-sm;
+  background-color: $color-white;
+  border: $border-width-thin solid $color-gray-200;
+  border-radius: $border-radius-lg;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover {
+    border-color: $color-primary;
+  }
+
+  @media (max-width: 640px) {
+    .dashboard__user-info {
+      display: none;
+    }
+  }
+}
+
+.dashboard__user-avatar {
+  @include flex-center;
+  width: 40px;
+  height: 40px;
+  border-radius: $border-radius-full;
+  background-color: $color-primary;
+  color: $color-white;
+  flex-shrink: 0;
+}
+
+.dashboard__user-info {
+  @include flex-column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.dashboard__user-name {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-gray-900;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dashboard__user-role {
+  font-size: $font-size-xs;
+  color: $color-gray-500;
+  text-transform: capitalize;
+}
+
+// Stats Cards
+.dashboard__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: $spacing-lg;
+  margin-bottom: $spacing-xl;
+}
+
+.dashboard__stat-card {
+  @include card;
+  @include flex-start;
+  gap: $spacing-md;
+  padding: $spacing-lg;
+  transition: all $transition-base;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-lg;
+  }
+
+  &--primary {
+    .dashboard__stat-icon {
+      background-color: rgba($color-primary, 0.1);
+      color: $color-primary;
+    }
+  }
+
+  &--info {
+    .dashboard__stat-icon {
+      background-color: rgba($color-info, 0.1);
+      color: $color-info;
+    }
+  }
+
+  &--warning {
+    .dashboard__stat-icon {
+      background-color: rgba($color-warning, 0.1);
+      color: $color-warning;
+    }
+  }
+
+  &--success {
+    .dashboard__stat-icon {
+      background-color: rgba($color-success, 0.1);
+      color: $color-success;
+    }
+  }
+}
+
+.dashboard__stat-icon {
+  @include flex-center;
+  width: 56px;
+  height: 56px;
+  border-radius: $border-radius-lg;
+  flex-shrink: 0;
+}
+
+.dashboard__stat-content {
+  @include flex-column;
+  gap: $spacing-xs;
+  flex: 1;
+  min-width: 0;
+}
+
+.dashboard__stat-value {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  color: $color-gray-900;
+  line-height: $line-height-tight;
+}
+
+.dashboard__stat-label {
+  font-size: $font-size-sm;
+  color: $color-gray-600;
+}
+
+.dashboard__stat-change {
+  font-size: $font-size-xs;
+  color: $color-success;
+  font-weight: $font-weight-medium;
+}
+
+// Main Grid
+.dashboard__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-lg;
+
+  @include respond-to(lg) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.dashboard__card {
+  @include card;
+  padding: $spacing-xl;
+  transition: all $transition-base;
+
+  &:hover {
+    box-shadow: $shadow-md;
+  }
+}
+
+.dashboard__card-header {
+  @include flex-between;
+  align-items: center;
+  margin-bottom: $spacing-lg;
+}
+
+.dashboard__card-title {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-gray-900;
+  margin: 0;
+}
+
+// Next Turn Card
+.dashboard__card--next-turn {
+  @include respond-to(lg) {
+    grid-column: 1;
+  }
+}
+
+.dashboard__next-turn-content {
+  @include flex-column;
+  gap: $spacing-lg;
+}
+
+.dashboard__turn-info {
+  @include flex-between;
+  align-items: center;
+}
+
+.dashboard__turn-module {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-gray-600;
+  padding: $spacing-xs $spacing-sm;
+  background-color: $color-gray-100;
+  border-radius: $border-radius-md;
+}
+
+.dashboard__turn-time {
+  font-size: $font-size-sm;
+  color: $color-gray-600;
+}
+
+.dashboard__turn-visual {
+  @include flex-between;
+  align-items: center;
+  padding: $spacing-lg;
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  border-radius: $border-radius-lg;
+  color: $color-white;
+}
+
+.dashboard__turn-number {
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+}
+
+.dashboard__turn-separator {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-medium;
+  opacity: 0.8;
+}
+
+.dashboard__turn-client {
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+}
+
+// Statistics Card
+.dashboard__card--statistics {
+  @include respond-to(lg) {
+    grid-column: 2;
+  }
+}
+
+.dashboard__statistics-content {
+  @include flex-column;
+  gap: $spacing-md;
+}
+
+.dashboard__stat-row {
+  @include flex-between;
+  align-items: center;
+}
+
+.dashboard__stat-label-small {
+  font-size: $font-size-sm;
+  color: $color-gray-600;
+}
+
+.dashboard__stat-value-small {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-gray-900;
+}
+
+.dashboard__progress-bar {
+  @include flex-start;
+  height: 8px;
+  background-color: $color-gray-200;
+  border-radius: $border-radius-full;
+  overflow: hidden;
+  margin-top: $spacing-sm;
+}
+
+.dashboard__progress-segment {
+  height: 100%;
+
+  &--success {
+    background-color: $color-success;
+  }
+
+  &--warning {
+    background-color: $color-warning;
+  }
+
+  &--error {
+    background-color: $color-error;
+  }
+}
+
+// Table Card
+.dashboard__card--table {
+  @include respond-to(lg) {
+    grid-column: 1 / -1;
+  }
+}
+
+.dashboard__table {
+  overflow-x: auto;
+  @include custom-scrollbar;
+}
+
+.dashboard__table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dashboard__table thead {
+  background-color: $color-gray-50;
+}
+
+.dashboard__table th {
+  padding: $spacing-md;
+  text-align: left;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  color: $color-gray-600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: $border-width-thin solid $color-gray-200;
+}
+
+.dashboard__table td {
+  padding: $spacing-md;
+  font-size: $font-size-sm;
+  color: $color-gray-700;
+  border-bottom: $border-width-thin solid $color-gray-100;
+}
+
+.dashboard__table tbody tr {
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background-color: $color-gray-50;
+  }
+}
+
+.dashboard__turn-badge {
+  display: inline-block;
+  padding: $spacing-xs $spacing-sm;
+  background-color: rgba($color-primary, 0.1);
+  color: $color-primary;
+  border-radius: $border-radius-md;
+  font-weight: $font-weight-semibold;
+  font-size: $font-size-xs;
+}
+
+.dashboard__status-badge {
+  display: inline-block;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $border-radius-md;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+
+  &--en-atención {
+    background-color: rgba($color-info, 0.1);
+    color: $color-info;
+  }
+
+  &--pendiente {
+    background-color: rgba($color-warning, 0.1);
+    color: $color-warning;
+  }
+
+  &--completado {
+    background-color: rgba($color-success, 0.1);
+    color: $color-success;
+  }
+}
+
+// Reminder Card
+.dashboard__card--reminder {
+  @include respond-to(lg) {
+    grid-column: 2;
+  }
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  color: $color-white;
+}
+
+.dashboard__reminder-content {
+  @include flex-column;
+  gap: $spacing-lg;
+}
+
+.dashboard__reminder-text {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $color-white;
+  margin: 0;
+  line-height: $line-height-relaxed;
+}

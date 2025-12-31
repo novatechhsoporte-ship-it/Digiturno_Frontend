@@ -34,7 +34,7 @@ export const Navbar = ({ onMenuClick }) => {
                   <Icon name='mdi:account-circle' size='lg' />
                 </div>
                 <div className='navbar__user-details'>
-                  <span className='navbar__user-name'>{user.name || user.email}</span>
+                  <span className='navbar__user-name'>{user.fullName || user.email}</span>
                   <span className='navbar__user-role'>{user.roles && user.roles.length > 0 ? user.roles[0] : "Usuario"}</span>
                 </div>
               </div>

@@ -2,7 +2,7 @@ import React from "react";
 import { createBrowserRouter, RouterProvider, Outlet, Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/store/authStore";
 import { Layout } from "@/components/layout/layout";
-import LoginPage from "@/pages/login/Login";
+import { Login } from "@/views/Login/Login";
 import DashboardPage from "@/pages/Dashboard";
 
 function AppLayout() {
@@ -14,23 +14,16 @@ function AppLayout() {
   if (isLogin) {
     return (
       <div style={{ minHeight: "100vh", backgroundColor: "#ffffff" }}>
-        <header style={{ width: "100%", borderBottom: "1px solid #e5e7eb", backgroundColor: "#ffffff" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "16px" }}>
-            <img src='/brand/novatechh.svg' alt='Novatechh' style={{ height: 100, width: "auto" }} />
-          </div>
-        </header>
-        <main style={{ padding: "24px" }}>
-          <Outlet />
-        </main>
+        <Outlet />
       </div>
     );
   }
 
   // Para rutas protegidas, mostrar el layout completo con sidebar y navbar
   // Validación de token comentada temporalmente
-  // if (!auth.token || !auth.user) {
-  //   return <Navigate to="/login" replace />;
-  // }
+  if (!auth.token || !auth.user) {
+    return <Navigate to='/login' replace />;
+  }
 
   return (
     <Layout>
@@ -44,7 +37,7 @@ const router = createBrowserRouter([
     element: <AppLayout />,
     children: [
       { index: true, element: <Navigate to='/dashboard' replace /> },
-      { path: "login", element: <LoginPage /> },
+      { path: "login", element: <Login /> },
       { path: "dashboard", element: <DashboardPage /> },
       { path: "*", element: <Navigate to='/dashboard' replace /> },
     ],
