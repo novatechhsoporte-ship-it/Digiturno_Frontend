@@ -10,12 +10,18 @@ import "./Icon.scss";
  * @param {string} props.color - Color del icono (usa variables SASS)
  * @param {Function} props.onClick - Handler de click (opcional)
  */
-export const Icon = ({ name, size = "md", color = "currentColor", className = "", onClick, ...props }) => {
+export const Icon = ({ name, size = "md", color = "currentColor", className = "", onClick, tooltip, ...props }) => {
   const classes = ["icon", `icon--${size}`, onClick && "icon--clickable", className].filter(Boolean).join(" ");
 
   const style = {
     color: color !== "currentColor" ? color : undefined,
   };
 
-  return <IconifyIcon icon={name} className={classes} style={style} onClick={onClick} {...props} />;
+  return (
+    <span className='icon-wrapper'>
+      <IconifyIcon icon={name} className={classes} style={style} onClick={onClick} {...props} />
+
+      {tooltip && <span className='icon-tooltip'>{tooltip}</span>}
+    </span>
+  );
 };

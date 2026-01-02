@@ -5,7 +5,7 @@ import "./Layout.scss";
 
 export const Layout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
 
   // Cerrar sidebar al hacer clic fuera en móvil
   useEffect(() => {

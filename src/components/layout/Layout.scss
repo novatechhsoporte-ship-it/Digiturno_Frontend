@@ -14,6 +14,7 @@
   min-width: 0;
   margin-left: 0;
   transition: margin-left $transition-base;
+  padding-left: 0.3rem;
 
   @include respond-to(md) {
     margin-left: $sidebar-width;
@@ -33,4 +34,5 @@
   max-width: 100%;
   overflow-x: auto;
   min-height: calc(100vh - #{$header-height});
+  padding: 1rem;
 }

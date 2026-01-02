@@ -1,5 +1,5 @@
 // Exportar todos los componentes comunes
-export { Button } from "./Button";
+export { CustomButton } from "./CustomButton/CustomButton";
 // export { Input } from "./Input";
 // export { Text } from "./Text";
 export { Icon } from "./Icon/Icon";

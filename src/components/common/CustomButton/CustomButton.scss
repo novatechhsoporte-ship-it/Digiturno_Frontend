@@ -10,6 +10,7 @@
   cursor: pointer;
   gap: $spacing-sm;
   white-space: nowrap;
+  max-width: 10rem;
 
   &:focus-visible {
     @include focus-visible;
@@ -89,7 +90,7 @@
   }
 
   &--md {
-    padding: $spacing-md $spacing-lg;
+    padding: $spacing-sm $spacing-lg;
     font-size: $font-size-base;
     min-height: 40px;
   }
