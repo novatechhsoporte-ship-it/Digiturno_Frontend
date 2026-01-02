@@ -1,9 +1,9 @@
 import React from "react";
 import { useAuth } from "@/store/authStore";
-import { Button, Icon } from "../components/common";
+import { Button, Icon } from "@/components/common";
 import "./Dashboard.scss";
 
-export default function DashboardPage() {
+export const Dashboard = () => {
   const { user } = useAuth();
   const userName = user?.nombre || user?.email || "Usuario";
   const userRole = user?.roles?.[0] || "Usuario";
@@ -53,7 +53,7 @@ export default function DashboardPage() {
       {/* Header */}
       <div className='dashboard__header'>
         <div className='dashboard__header-left'>
-          <h1 className='dashboard__greeting'>Bienvenido de vuelta, {userName} 👋</h1>
+          <h1 className='dashboard__greeting'>Bienvenido de vuelta so , {userName} 👋</h1>
           <h2 className='dashboard__title'>Dashboard</h2>
         </div>
         <div className='dashboard__header-right'>
@@ -204,4 +204,4 @@ export default function DashboardPage() {
       </div>
     </div>
   );
-}
+};

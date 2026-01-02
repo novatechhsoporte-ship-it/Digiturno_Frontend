@@ -3,7 +3,7 @@ import { createBrowserRouter, RouterProvider, Outlet, Navigate, useLocation } fr
 import { useAuth } from "@/store/authStore";
 import { Layout } from "@/components/layout/layout";
 import { Login } from "@/views/Login/Login";
-import DashboardPage from "@/pages/Dashboard";
+import { Dashboard } from "@/views/Dashboard/Dashboard";
 
 function AppLayout() {
   const location = useLocation();
@@ -38,7 +38,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to='/dashboard' replace /> },
       { path: "login", element: <Login /> },
-      { path: "dashboard", element: <DashboardPage /> },
+      { path: "dashboard", element: <Dashboard /> },
       { path: "*", element: <Navigate to='/dashboard' replace /> },
     ],
   },
