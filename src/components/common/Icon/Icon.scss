@@ -1,0 +1,47 @@
+@use "@/styles/index" as *;
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  // Tamaños
+  &--sm {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+  }
+
+  &--md {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+  }
+
+  &--lg {
+    width: 24px;
+    height: 24px;
+    font-size: 24px;
+  }
+
+  &--xl {
+    width: 32px;
+    height: 32px;
+    font-size: 32px;
+  }
+
+  // Clickable
+  &--clickable {
+    cursor: pointer;
+    transition: opacity $transition-fast;
+
+    &:hover {
+      opacity: 0.8;
+    }
+
+    &:active {
+      opacity: 0.6;
+    }
+  }
+}
