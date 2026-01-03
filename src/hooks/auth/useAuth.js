@@ -4,7 +4,7 @@ import { toast } from "sonner";
 
 import { useAuth as useAuthStore } from "@/store/authStore";
 import { useCustomForm } from "@/utils/useCustomForm";
-import { axiosClient } from "@/services/api/axiosClient";
+import { axiosClient } from "@config/adapters/axiosClient";
 
 const schema = z.object({
   email: z.string().email("Correo inválido"),
