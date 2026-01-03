@@ -12,7 +12,6 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }) => {
 
   // Filtrar menú según roles del usuario
   const getMenuItems = () => {
-    console.log("user :>> ", user);
     if (!user || !user.roles) {
       // Si no hay usuario, mostrar Dashboard para todos
       return SIDEBAR_MENU.filter((item) => !item.roles || item.roles.length === 0);

@@ -1,28 +1,31 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider, Outlet, Navigate, useLocation } from "react-router-dom";
+
+import { ProtectedRoute } from "./ProtectedRoute";
 import { useAuth } from "@/store/authStore";
 import { Layout } from "@/components/layout/layout";
 import { Login } from "@/views/Login/Login";
 import { Dashboard } from "@/views/Dashboard/Dashboard";
+import { Tenants } from "@/views/Tenant/Tenants";
+import { Forbidden } from "@/views/Forbidden/Forbidden";
+
+// import AdminDashboardPage from "../pages/admin/Dashboard";
+// import { Modulos } from "../views/Modulos/Modulos";
+// import { Usuarios } from "../views/Usuarios/Usuarios";
+// import { Notarias } from "../views/Notarias/Notarias";
+// import { TurnosPublicos } from "../views/TurnosPublicos/TurnosPublicos";
+// import { Operador } from "../views/Operador/Operador";
 
 function AppLayout() {
   const location = useLocation();
-  const auth = useAuth();
-  const isLogin = location.pathname === "/login";
+  const { token, user } = useAuth();
 
-  // Para login, no mostrar el layout completo
-  if (isLogin) {
-    return (
-      <div style={{ minHeight: "100vh", backgroundColor: "#ffffff" }}>
-        <Outlet />
-      </div>
-    );
+  if (location.pathname === "/login") {
+    return <Outlet />;
   }
 
-  // Para rutas protegidas, mostrar el layout completo con sidebar y navbar
-  // Validación de token comentada temporalmente
-  if (!auth.token || !auth.user) {
-    return <Navigate to='/login' replace />;
+  if (!token || !user) {
+    return <Navigate to="/login" replace />;
   }
 
   return (
@@ -36,10 +39,41 @@ const router = createBrowserRouter([
   {
     element: <AppLayout />,
     children: [
-      { index: true, element: <Navigate to='/dashboard' replace /> },
+      { index: true, element: <Navigate to="/dashboard" replace /> },
       { path: "login", element: <Login /> },
-      { path: "dashboard", element: <Dashboard /> },
-      { path: "*", element: <Navigate to='/dashboard' replace /> },
+      {
+        path: "dashboard",
+        element: (
+          <ProtectedRoute any={["dashboard.view", "dashboard.manage"]}>
+            <Dashboard />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "tenants",
+        element: (
+          <ProtectedRoute any={["tenant.view", "tenant.manage"]}>
+            <Tenants />
+          </ProtectedRoute>
+        ),
+      },
+
+      // {
+      //   path: "dashboard2",
+      //   element: (
+      //     <ProtectedRoute any={["dashboard.manage"]}>
+      //       <AdminDashboardPage />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // { path: "modulos", element: <Modulos /> },
+      // { path: "users", element: <Usuarios /> },
+      // { path: "Notarias", element: <Notarias /> },
+      // { path: "TurnosPublicos", element: <TurnosPublicos /> },
+      // { path: "Operador", element: <Operador /> },
+
+      { path: "*", element: <Navigate to="/dashboard" replace /> },
+      { path: "403", element: <Forbidden /> },
     ],
   },
 ]);

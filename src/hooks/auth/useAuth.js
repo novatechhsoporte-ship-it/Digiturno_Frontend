@@ -37,12 +37,12 @@ export const useAuth = () => {
         throw new Error(data?.message || "Error al iniciar sesión");
       }
 
-      const { token, user, expiresIn } = data;
+      const { token, user, permissions, expiresIn } = data;
       const ttlMinutes = expiresIn ? parseInt(expiresIn) / 60 : 15;
 
       toast.success(`Bienvenido ${user.fullName}`);
 
-      login(token, user, ttlMinutes);
+      login(token, user, permissions, ttlMinutes);
 
       navigate("/dashboard");
     } catch (error) {
