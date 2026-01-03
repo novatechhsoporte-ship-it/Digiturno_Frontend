@@ -1,0 +1,85 @@
+@use "@/styles" as *;
+
+.tenant-card {
+  @include card;
+  @include flex-column;
+  gap: $spacing-md;
+  transition: all $transition-base;
+
+  &:hover {
+    box-shadow: $shadow-md;
+    transform: translateY(-2px);
+  }
+}
+
+/* HEADER */
+.tenant-card__header {
+  @include flex-between;
+  align-items: flex-start;
+  gap: $spacing-md;
+}
+
+.tenant-card__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.tenant-card__name {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  margin-bottom: $spacing-xs;
+  color: $color-gray-900;
+  word-break: break-word;
+}
+
+.tenant-card__tax-id {
+  font-size: $font-size-sm;
+  color: $color-gray-600;
+  margin: 0;
+}
+
+/* STATUS */
+.tenant-card__status {
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $border-radius-full;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  white-space: nowrap;
+
+  &--active {
+    background-color: rgba($color-success, 0.12);
+    color: $color-success;
+  }
+
+  &--inactive {
+    background-color: rgba($color-gray-400, 0.15);
+    color: $color-gray-600;
+  }
+}
+
+/* BODY */
+.tenant-card__body {
+  @include flex-column;
+  gap: $spacing-sm;
+}
+
+.tenant-card__detail {
+  @include flex-start;
+  align-items: center;
+  gap: $spacing-sm;
+  font-size: $font-size-sm;
+  color: $color-gray-700;
+
+  .icon {
+    flex-shrink: 0;
+    color: $color-gray-500;
+  }
+}
+
+/* ACTIONS */
+.tenant-card__actions {
+  @include flex-start;
+  gap: $spacing-sm;
+  padding-top: $spacing-md;
+  border-top: $border-width-thin solid $color-gray-200;
+}
