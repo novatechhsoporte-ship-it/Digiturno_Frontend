@@ -1,0 +1,189 @@
+@use "@/styles" as *;
+
+.custom-table {
+  width: 100%;
+}
+
+/* =========== HEADER ============ */
+.custom-table__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-md;
+}
+
+.custom-table__title {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-gray-900;
+}
+
+/* ============ TABLE WRAPPER (SHADOW + RADIUS) ============ */
+.custom-table__wrapper {
+  background: $color-white;
+  border-radius: $border-radius-lg;
+  box-shadow: $shadow-sm;
+  overflow: hidden;
+}
+
+/* ============ TABLE BASE============ */
+.custom-table__wrapper table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px; /* separación entre filas */
+}
+
+.custom-table__wrapper thead {
+  background: $color-gray-50;
+}
+
+.custom-table__wrapper th {
+  padding: $spacing-md;
+  text-align: left;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  color: $color-gray-600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: $border-width-thin solid $color-gray-200;
+}
+
+/* ============ ROWS (ZEBRA + SHADOW) ============ */
+.custom-table__wrapper tbody tr {
+  background: $color-white;
+  border-radius: $border-radius-md;
+  box-shadow: $shadow-xs;
+  transition: all $transition-fast;
+}
+
+.custom-table__wrapper tbody tr:nth-child(even) {
+  background: $color-gray-50;
+}
+
+.custom-table__wrapper tbody tr:hover {
+  box-shadow: $shadow-md;
+  transform: translateY(-1px);
+}
+
+/* ============ CELLS ============ */
+.custom-table__wrapper td {
+  padding: $spacing-sm $spacing-md;
+  font-size: $font-size-sm;
+  color: $color-gray-700;
+  background: inherit;
+  border: none;
+}
+
+.custom-table__wrapper td:first-child {
+  border-top-left-radius: $border-radius-md;
+  border-bottom-left-radius: $border-radius-md;
+}
+
+.custom-table__wrapper td:last-child {
+  border-top-right-radius: $border-radius-md;
+  border-bottom-right-radius: $border-radius-md;
+}
+
+/* ============ ACTIONS ============ */
+.custom-table__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: $spacing-sm;
+}
+
+.custom-table__icon {
+  cursor: pointer;
+  color: $color-gray-500;
+  display: inline-flex;
+  align-items: center;
+  transition: color $transition-fast, transform $transition-fast;
+
+  &:hover {
+    color: $color-primary;
+    transform: scale(1.1);
+  }
+
+  &.is-danger:hover {
+    color: $color-error;
+  }
+
+  &.is-success:hover {
+    color: $color-success;
+  }
+}
+
+/* ============ RESPONSIVE (MOBILE CARDS) ============ */
+.custom-table__wrapper.is-responsive {
+  @media (max-width: 768px) {
+    thead {
+      display: none;
+    }
+
+    table {
+      border-spacing: 0;
+    }
+
+    tbody tr {
+      display: block;
+      margin-bottom: $spacing-md;
+      background: $color-white;
+      border-radius: $border-radius-lg;
+      box-shadow: $shadow-sm;
+      padding: $spacing-sm;
+    }
+
+    tbody tr:nth-child(even) {
+      background: $color-white;
+    }
+
+    td {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: $spacing-xs 0;
+
+      &::before {
+        content: attr(data-label);
+        font-size: $font-size-xs;
+        color: $color-gray-500;
+        text-transform: uppercase;
+        font-weight: $font-weight-medium;
+      }
+    }
+  }
+}
+
+/* ============ PAGINATION ============ */
+.custom-table__pagination {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: $spacing-md;
+  margin-top: $spacing-md;
+
+  button {
+    padding: $spacing-xs $spacing-sm;
+    border: $border-width-thin solid $color-gray-300;
+    background: $color-white;
+    border-radius: $border-radius-sm;
+    cursor: pointer;
+    transition: background $transition-fast;
+
+    &:hover:not(:disabled) {
+      background: $color-gray-50;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+}
+
+/* ============ INFINITE LOADER ============ */
+.custom-table__loader {
+  text-align: center;
+  padding: $spacing-md;
+  font-size: $font-size-sm;
+  color: $color-gray-500;
+}

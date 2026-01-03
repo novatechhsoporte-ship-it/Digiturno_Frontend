@@ -1,0 +1,77 @@
+@use "@/styles/index" as *;
+
+.input-wrapper {
+  @include flex-column;
+  gap: $spacing-xs;
+  width: 100%;
+}
+
+.input-label {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-gray-700;
+}
+
+.input-required {
+  color: $color-error;
+  margin-left: $spacing-xs;
+}
+
+.input {
+  @include input-reset;
+
+  width: 100%;
+  padding: $spacing-sm;
+  font-size: $font-size-base;
+  color: $color-gray-900;
+  background-color: $color-white;
+  border: $border-width-thin solid $border-color-default;
+  border-radius: $border-radius-md;
+  transition: all $transition-base;
+
+  &::placeholder {
+    color: $color-gray-400;
+  }
+
+  &:hover:not(:disabled) {
+    border-color: $border-color-hover;
+  }
+
+  &:focus {
+    border-color: $border-color-focus;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
+  }
+
+  &:disabled {
+    background-color: $color-gray-100;
+    color: $color-gray-500;
+    cursor: not-allowed;
+  }
+
+  &--error {
+    border-color: $color-error;
+
+    &:focus {
+      border-color: $color-error;
+      box-shadow: 0 0 0 3px rgba($color-error, 0.1);
+    }
+  }
+}
+
+.input-error {
+  font-size: $font-size-xs;
+  color: $color-error;
+  margin-top: -$spacing-xs;
+}
+
+/* Quitar flechas en input type="number" */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}

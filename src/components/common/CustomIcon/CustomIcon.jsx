@@ -1,5 +1,5 @@
 import { Icon as IconifyIcon } from "@iconify/react";
-import "./Icon.scss";
+import "./CustomIcon.scss";
 
 /**
  * Componente Icon - Administrador de iconos usando @iconify/react
@@ -10,7 +10,7 @@ import "./Icon.scss";
  * @param {string} props.color - Color del icono (usa variables SASS)
  * @param {Function} props.onClick - Handler de click (opcional)
  */
-export const Icon = ({ name, size = "md", color = "currentColor", className = "", onClick, tooltip, ...props }) => {
+export const CustomIcon = ({ name, size = "md", color = "currentColor", className = "", onClick, tooltip, ...props }) => {
   const classes = ["icon", `icon--${size}`, onClick && "icon--clickable", className].filter(Boolean).join(" ");
 
   const style = {
@@ -18,10 +18,10 @@ export const Icon = ({ name, size = "md", color = "currentColor", className = ""
   };
 
   return (
-    <span className='icon-wrapper'>
+    <span className="icon-wrapper">
       <IconifyIcon icon={name} className={classes} style={style} onClick={onClick} {...props} />
 
-      {tooltip && <span className='icon-tooltip'>{tooltip}</span>}
+      {tooltip && <span className="icon-tooltip">{tooltip}</span>}
     </span>
   );
 };
