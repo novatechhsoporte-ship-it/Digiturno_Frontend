@@ -8,10 +8,10 @@ import { Login } from "@/views/Login/Login";
 import { Dashboard } from "@/views/Dashboard/Dashboard";
 import { Tenants } from "@/views/Tenant/Tenants";
 import { Modules } from "@/views/Modules/Modules";
+import { Users } from "@/views/Users/Users";
 import { Forbidden } from "@/views/Forbidden/Forbidden";
 
 // import AdminDashboardPage from "../pages/admin/Dashboard";
-// import { Usuarios } from "../views/Usuarios/Usuarios";
 // import { Notarias } from "../views/Notarias/Notarias";
 // import { TurnosPublicos } from "../views/TurnosPublicos/TurnosPublicos";
 // import { Operador } from "../views/Operador/Operador";
@@ -65,6 +65,14 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+      {
+        path: "users",
+        element: (
+          <ProtectedRoute any={["user.view", "user.manage"]}>
+            <Users />
+          </ProtectedRoute>
+        ),
+      },
 
       // {
       //   path: "dashboard2",
@@ -74,7 +82,6 @@ const router = createBrowserRouter([
       //     </ProtectedRoute>
       //   ),
       // },
-      // { path: "users", element: <Usuarios /> },
       // { path: "Notarias", element: <Notarias /> },
       // { path: "TurnosPublicos", element: <TurnosPublicos /> },
       // { path: "Operador", element: <Operador /> },

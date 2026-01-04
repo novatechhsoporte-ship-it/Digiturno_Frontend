@@ -1,73 +1,119 @@
-@use "@/styles/index" as *;
+@use "@/styles" as *;
 
-.input-wrapper {
+.custom-input {
   @include flex-column;
   gap: $spacing-xs;
   width: 100%;
-}
 
-.input-label {
-  font-size: $font-size-sm;
-  font-weight: $font-weight-medium;
-  color: $color-gray-700;
-}
-
-.input-required {
-  color: $color-error;
-  margin-left: $spacing-xs;
-}
-
-.input {
-  @include input-reset;
-
-  width: 100%;
-  padding: $spacing-sm;
-  font-size: $font-size-base;
-  color: $color-gray-900;
-  background-color: $color-white;
-  border: $border-width-thin solid $border-color-default;
-  border-radius: $border-radius-md;
-  transition: all $transition-base;
-
-  &::placeholder {
-    color: $color-gray-400;
+  // Layout de Grid para formularios
+  &--full {
+    grid-column: 1 / -1;
   }
 
-  &:hover:not(:disabled) {
-    border-color: $border-color-hover;
+  // Label original
+  .custom-input__label,
+  .custom-input__checkbox-text {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $color-gray-700;
   }
 
-  &:focus {
-    border-color: $border-color-focus;
-    outline: none;
-    box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
+  .custom-input__required {
+    color: $color-error;
+    margin-left: $spacing-xs;
   }
 
-  &:disabled {
-    background-color: $color-gray-100;
-    color: $color-gray-500;
-    cursor: not-allowed;
+  // Contenedor para manejar el icono
+  .custom-input__field-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
   }
 
-  &--error {
-    border-color: $color-error;
+  .custom-input__field {
+    @include input-reset;
+    width: 100%;
+    padding: $spacing-sm;
+    font-size: $font-size-base;
+    color: $color-gray-900;
+    background-color: $color-white;
+    border: $border-width-thin solid $border-color-default;
+    border-radius: $border-radius-md;
+    transition: all $transition-base;
+
+    &::placeholder {
+      color: $color-gray-400;
+    }
+
+    &:hover:not(:disabled) {
+      border-color: $border-color-hover;
+    }
 
     &:focus {
-      border-color: $color-error;
-      box-shadow: 0 0 0 3px rgba($color-error, 0.1);
+      border-color: $border-color-focus;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
+    }
+
+    &:disabled {
+      background-color: $color-gray-100;
+      color: $color-gray-500;
+      cursor: not-allowed;
+    }
+
+    // Si tiene icono, damos espacio a la izquierda
+    &--with-icon {
+      padding-left: 2rem;
     }
   }
-}
 
-.input-error {
-  font-size: $font-size-xs;
-  color: $color-error;
-  margin-top: -$spacing-xs;
-}
+  // Estilo del icono
+  .custom-input__icon {
+    position: absolute;
+    left: $spacing-sm;
+    color: $color-gray-400;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+    z-index: 1;
+  }
 
-/* Quitar flechas en input type="number" */
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+  // Manejo de Error
+  &--has-error {
+    .custom-input__field {
+      border-color: $color-error;
+      &:focus {
+        box-shadow: 0 0 0 3px rgba($color-error, 0.1);
+      }
+    }
+  }
+
+  .custom-input__error-msg {
+    font-size: $font-size-xs;
+    color: $color-error;
+    margin-top: 2px;
+  }
+
+  // SECCIÓN CHECKBOX
+  &--checkbox {
+    flex-direction: row;
+    align-items: center;
+    gap: $spacing-sm;
+    padding: $spacing-xs 0;
+
+    .custom-input__checkbox-label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      gap: $spacing-sm;
+    }
+
+    .custom-input__checkbox {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: $color-primary;
+    }
+  }
 }

@@ -22,4 +22,10 @@ export const SIDEBAR_MENU = [
     icon: "mdi:view-module-outline",
     roles: ["SUPERADMIN", "ADMIN", "ATTENDANT"],
   },
+  {
+    path: "/users",
+    label: "Usuarios",
+    icon: "mdi:users-group",
+    roles: ["SUPERADMIN", "ADMIN", "ATTENDANT"],
+  },
 ];

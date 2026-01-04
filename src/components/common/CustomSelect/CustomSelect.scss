@@ -3,6 +3,11 @@
 .select-wrapper {
   @include flex-column;
   gap: $spacing-xs;
+  width: 100%;
+
+  &--full {
+    grid-column: 1 / -1;
+  }
 }
 
 .select-label {
@@ -25,6 +30,7 @@
   color: $color-gray-900;
   background-color: $color-white;
   transition: border-color $transition-fast, box-shadow $transition-fast;
+  cursor: pointer;
 
   &:focus {
     outline: none;
@@ -40,6 +46,10 @@
 
   &--error {
     border-color: $color-error;
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba($color-error, 0.1);
+    }
   }
 }
 
