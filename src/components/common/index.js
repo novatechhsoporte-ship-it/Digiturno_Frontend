@@ -3,3 +3,4 @@ export { CustomButton } from "./CustomButton/CustomButton";
 export { CustomInput } from "./CustomInput/CustomInput";
 export { CustomIcon } from "./CustomIcon/CustomIcon";
 export { CustomModal } from "./CustomModal/CustomModal";
+export { CustomSelect } from "./CustomSelect/CustomSelect";

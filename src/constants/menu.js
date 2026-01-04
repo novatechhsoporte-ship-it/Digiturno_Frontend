@@ -16,4 +16,10 @@ export const SIDEBAR_MENU = [
     icon: "mdi:home-analytics",
     roles: ["SUPERADMIN", "ADMIN", "ATTENDANT"],
   },
+  {
+    path: "/modules",
+    label: "Modulos",
+    icon: "mdi:view-module-outline",
+    roles: ["SUPERADMIN", "ADMIN", "ATTENDANT"],
+  },
 ];

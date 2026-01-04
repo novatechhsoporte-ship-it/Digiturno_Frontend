@@ -1,0 +1,131 @@
+@use "@/styles" as *;
+
+.modules {
+  @include flex-column;
+  gap: $spacing-xl;
+
+  /* Header */
+  &__header {
+    @include flex-between;
+    gap: $spacing-md;
+    flex-wrap: wrap;
+  }
+
+  &__title {
+    font-size: $font-size-3xl;
+    margin-bottom: $spacing-xs;
+  }
+
+  &__subtitle {
+    margin: 0;
+    color: $color-gray-600;
+  }
+
+  /* Filters */
+  &__filters {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-md;
+    padding: $spacing-lg;
+    background-color: $color-gray-50;
+    border-radius: $border-radius-md;
+
+    @include respond-to(md) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  &__filter-group {
+    @include flex-column;
+    gap: $spacing-xs;
+
+    &--search {
+      @include respond-to(md) {
+        grid-column: 1 / -1;
+      }
+    }
+  }
+
+  /* Form */
+  &__form {
+    @include flex-column;
+    gap: $spacing-lg;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-lg;
+
+    @include respond-to(md) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  &__field {
+    @include flex-column;
+    gap: $spacing-xs;
+
+    &--full {
+      @include respond-to(md) {
+        grid-column: 1 / -1;
+      }
+    }
+  }
+
+  &__checkbox {
+    @include flex-start;
+    gap: $spacing-sm;
+    padding: $spacing-md;
+    background-color: $color-gray-50;
+    border-radius: $border-radius-md;
+    cursor: pointer;
+    transition: background-color $transition-fast;
+
+    input {
+      cursor: pointer;
+    }
+
+    &:hover {
+      background-color: $color-gray-100;
+    }
+  }
+
+  /* Actions */
+  &__actions {
+    @include flex-between;
+    gap: $spacing-md;
+    padding-top: $spacing-lg;
+    border-top: $border-width-thin solid $color-gray-200;
+
+    @include respond-to(md) {
+      justify-content: flex-end;
+    }
+  }
+
+  /* List */
+  &__list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-lg;
+
+    @include respond-to(md) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include respond-to(lg) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  /* States */
+  &--state {
+    @include flex-column;
+    align-items: center;
+    justify-content: center;
+    padding: $spacing-4xl $spacing-xl;
+    text-align: center;
+    color: $color-gray-600;
+    font-size: $font-size-lg;
+  }
+}

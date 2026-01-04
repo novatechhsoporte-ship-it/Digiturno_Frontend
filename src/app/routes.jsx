@@ -7,10 +7,10 @@ import { Layout } from "@/components/layout/layout";
 import { Login } from "@/views/Login/Login";
 import { Dashboard } from "@/views/Dashboard/Dashboard";
 import { Tenants } from "@/views/Tenant/Tenants";
+import { Modules } from "@/views/Modules/Modules";
 import { Forbidden } from "@/views/Forbidden/Forbidden";
 
 // import AdminDashboardPage from "../pages/admin/Dashboard";
-// import { Modulos } from "../views/Modulos/Modulos";
 // import { Usuarios } from "../views/Usuarios/Usuarios";
 // import { Notarias } from "../views/Notarias/Notarias";
 // import { TurnosPublicos } from "../views/TurnosPublicos/TurnosPublicos";
@@ -57,6 +57,14 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+      {
+        path: "modules",
+        element: (
+          <ProtectedRoute any={["module.view", "module.manage"]}>
+            <Modules />
+          </ProtectedRoute>
+        ),
+      },
 
       // {
       //   path: "dashboard2",
@@ -66,13 +74,12 @@ const router = createBrowserRouter([
       //     </ProtectedRoute>
       //   ),
       // },
-      // { path: "modulos", element: <Modulos /> },
       // { path: "users", element: <Usuarios /> },
       // { path: "Notarias", element: <Notarias /> },
       // { path: "TurnosPublicos", element: <TurnosPublicos /> },
       // { path: "Operador", element: <Operador /> },
 
-      { path: "*", element: <Navigate to="/dashboard" replace /> },
+      // { path: "*", element: <Navigate to="/dashboard" replace /> },
       { path: "403", element: <Forbidden /> },
     ],
   },
