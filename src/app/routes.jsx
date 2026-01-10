@@ -9,6 +9,8 @@ import { Dashboard } from "@/views/Dashboard/Dashboard";
 import { Tenants } from "@/views/Tenant/Tenants";
 import { Modules } from "@/views/Modules/Modules";
 import { Users } from "@/views/Users/Users";
+import { Tickets } from "@/views/Tickets/Tickets";
+// import { PublicTickets } from "@/views/Tickets/PublicTickets";
 import { Forbidden } from "@/views/Forbidden/Forbidden";
 
 // import AdminDashboardPage from "../pages/admin/Dashboard";
@@ -73,6 +75,28 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+      {
+        path: "tickets",
+        element: (
+          <ProtectedRoute
+            any={["tickets.view_tenant", "tickets.manage", "tickets.update_status", "tickets.create", "tickets.edit"]}
+          >
+            <Tickets />
+          </ProtectedRoute>
+        ),
+      },
+      // {
+      //   path: "tickets/public/:tenantId",
+      //   element: <PublicTickets />,
+      // },
+      // {
+      //   path: "reception",
+      //   element: (
+      //     <ProtectedRoute any={["tickets.view_tenant", "tickets.create", "tickets.edit"]}>
+      //       <Tickets />
+      //     </ProtectedRoute>
+      //   ),
+      // },
 
       // {
       //   path: "dashboard2",
