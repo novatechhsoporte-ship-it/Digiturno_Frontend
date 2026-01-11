@@ -1,0 +1,94 @@
+import { useState, useCallback, useMemo } from "react";
+import { toast } from "sonner";
+import { TicketsApi } from "@core/api/tickets";
+import { useAuth } from "@/store/authStore";
+import { useAbility } from "@hooks/";
+import { useCustomForm } from "@utils/useCustomForm";
+import { ticketSchema, DEFAULT_FORM_VALUES } from "@schemas/Tickets";
+import { createQueryKeyFactory, useMutationAdapter } from "@config/adapters/queryAdapter";
+
+const ticketKeys = createQueryKeyFactory("tickets");
+
+/** Hook for creating tickets **/
+export const useCreateTicket = (selectedTenant, canCreate) => {
+  const { user: authUser } = useAuth();
+  const { isSuperAdmin } = useAbility();
+  const [showCreateModal, setShowCreateModal] = useState(false);
+
+  // Form for creating tickets
+  const { register, handleSubmit, errors, isSubmitting, isDisabled, reset } = useCustomForm({
+    schema: ticketSchema,
+    formOptions: {
+      defaultValues: DEFAULT_FORM_VALUES,
+    },
+  });
+
+  const { mutateAsync: createTicket, isLoading: loading } = useMutationAdapter(
+    async (values) => {
+      const finalTenantId = isSuperAdmin ? selectedTenant : authUser?.tenantId;
+
+      if (!finalTenantId) {
+        throw new Error("Debe seleccionar una notaría");
+      }
+
+      const payload = {
+        documentNumber: values.documentNumber.trim(),
+        fullName: values.fullName.trim(),
+        tenantId: finalTenantId,
+        origin: "RECEPTION",
+        ...(values.email?.trim() && { email: values.email.trim() }),
+        ...(values.phone?.trim() && { phone: values.phone.trim() }),
+        ...(values.moduleId && { moduleId: values.moduleId }),
+      };
+
+      return TicketsApi.createTicket(payload);
+    },
+    {
+      successMessage: "Turno creado exitosamente",
+      invalidateQueries: [ticketKeys.lists()],
+      onSuccess: () => {
+        reset();
+        setShowCreateModal(false);
+      },
+    }
+  );
+
+  // Create ticket from customer data
+  const onCreateTicket = useCallback(
+    async (values) => {
+      await createTicket(values);
+    },
+    [createTicket]
+  );
+
+  // Handle show create modal
+  const handleShowCreateModal = useCallback(() => {
+    reset();
+    setShowCreateModal(true);
+  }, [reset]);
+
+  // Handle close create modal
+  const handleCloseCreateModal = useCallback(() => {
+    setShowCreateModal(false);
+    reset();
+  }, [reset]);
+
+  // Check if button should be shown
+  const showCreateButton = useMemo(() => {
+    return canCreate && (isSuperAdmin ? selectedTenant : authUser?.tenantId);
+  }, [canCreate, isSuperAdmin, selectedTenant, authUser?.tenantId]);
+
+  return {
+    showCreateModal,
+    loading: loading || isSubmitting,
+    isSubmitting,
+    isDisabled,
+    register,
+    handleSubmit,
+    errors,
+    onCreateTicket,
+    handleShowCreateModal,
+    handleCloseCreateModal,
+    showCreateButton,
+  };
+};

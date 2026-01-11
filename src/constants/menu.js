@@ -28,4 +28,10 @@ export const SIDEBAR_MENU = [
     icon: "mdi:users-group",
     roles: ["SUPERADMIN", "ADMIN", "ATTENDANT"],
   },
+  {
+    path: "/tickets",
+    label: "Turnos",
+    icon: "mdi:ticket-account",
+    roles: ["SUPERADMIN", "ADMIN", "ATTENDANT", "RECEPTION"],
+  },
 ];

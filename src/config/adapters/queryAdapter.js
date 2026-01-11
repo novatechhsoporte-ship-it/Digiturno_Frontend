@@ -35,8 +35,7 @@ export const useQueryAdapter = (queryKey, queryFn, options = {}) => {
         return response?.data !== undefined ? response.data : response;
       } catch (error) {
         if (showErrorToast) {
-          const errorMessage =
-            error?.response?.data?.error || error?.message || "Error al cargar los datos";
+          const errorMessage = error?.response?.data?.error || error?.message || "Error al cargar los datos";
           toast.error(errorMessage);
         }
         if (onError) {
@@ -78,12 +77,24 @@ export const useMutationAdapter = (mutationFn, options = {}) => {
     mutationFn: async (variables) => {
       try {
         const response = await mutationFn(variables);
+
+        if (response?.success === false) {
+          throw {
+            response: {
+              data: response,
+            },
+          };
+        }
         // axiosClient already returns response.data from interceptor
         return response?.data !== undefined ? response.data : response;
       } catch (error) {
         if (showErrorToast) {
           const errorMsg =
-            error?.response?.data?.error || error?.message || errorMessage || "Error en la operación";
+            error?.response?.data?.message ||
+            error?.response?.data?.error ||
+            error?.message ||
+            errorMessage ||
+            "Error en la operación";
           toast.error(errorMsg);
         }
         throw error;
@@ -128,4 +139,3 @@ export const createQueryKeyFactory = (baseKey) => ({
   details: () => [...createQueryKeyFactory(baseKey).all, "detail"],
   detail: (id) => [...createQueryKeyFactory(baseKey).details(), id],
 });
-

@@ -1,0 +1,13 @@
+.tickets-filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  align-items: flex-end;
+
+  &__group {
+    flex: 1;
+    min-width: 200px;
+  }
+}
+
