@@ -1,15 +1,20 @@
-import React from 'react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { Toaster } from 'sonner'
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "sonner";
 
-const queryClient = new QueryClient()
+import { useAuth } from "@/store/authStore";
+import SocketProvider from "./SocketProvider";
+
+const queryClient = new QueryClient();
 
 export default function AppProviders({ children }) {
+  // const token = localStorage.getItem("token");
+
+  const { token } = useAuth();
+  console.log("token  here:>> ", token);
   return (
     <QueryClientProvider client={queryClient}>
-      {children}
+      <SocketProvider token={token}>{children}</SocketProvider>
       <Toaster richColors position="top-right" />
     </QueryClientProvider>
-  )
+  );
 }
-
