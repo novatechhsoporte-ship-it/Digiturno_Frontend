@@ -28,4 +28,10 @@ export const SIDEBAR_MENU = [
     icon: "mdi:users-group",
     roles: ["SUPERADMIN", "ADMIN", "ATTENDANT"],
   },
+  {
+    path: "/TurnosPublicos",
+    label: "Turnos",
+    icon: "mdi:apple-keyboard-shift",
+    roles: ["SUPERADMIN", "ADMIN", "ATTENDANT"],
+  },
 ];

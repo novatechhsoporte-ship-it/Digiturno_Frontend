@@ -10,10 +10,12 @@ import { Tenants } from "@/views/Tenant/Tenants";
 import { Modules } from "@/views/Modules/Modules";
 import { Users } from "@/views/Users/Users";
 import { Forbidden } from "@/views/Forbidden/Forbidden";
-
+import { ViewsTurn } from "@/views/ViewsTurn/ViewsTurn";//depend
+import { TurnosPublicos } from "@/views/TurnosPublicos/TurnosPublicos";
+import { TURNOSPUBLICOS_PERMISSIONS } from "@/core/permissions";
 // import AdminDashboardPage from "../pages/admin/Dashboard";
 // import { Notarias } from "../views/Notarias/Notarias";
-// import { TurnosPublicos } from "../views/TurnosPublicos/TurnosPublicos";
+
 // import { Operador } from "../views/Operador/Operador";
 
 function AppLayout() {
@@ -37,10 +39,22 @@ function AppLayout() {
 
 const router = createBrowserRouter([
   {
+    path: "/tv",
+    element: <ViewsTurn />,
+  },
+  {
     element: <AppLayout />,
     children: [
       { index: true, element: <Navigate to="/dashboard" replace /> },
       { path: "login", element: <Login /> },
+      {
+        path: "TurnosPublicos",
+        element: (
+          <ProtectedRoute any={[TURNOSPUBLICOS_PERMISSIONS.VIEW, TURNOSPUBLICOS_PERMISSIONS.MANAGE]}>
+            <TurnosPublicos />
+          </ProtectedRoute>
+        ),
+      },
       {
         path: "dashboard",
         element: (

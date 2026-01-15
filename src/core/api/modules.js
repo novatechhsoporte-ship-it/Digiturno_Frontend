@@ -15,4 +15,3 @@ export const ModulesApi = {
   deleteModule: (moduleId) => axiosClient.delete(`/modules/${moduleId}`),
   getModuleById: (moduleId) => axiosClient.get(`/modules/${moduleId}`),
 };
-
