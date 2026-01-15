@@ -12,13 +12,14 @@ export const createSocketConnection = (token) => {
     auth: { token },
   });
 
+  // logs for debugs
   // socket.on("disconnect", (reason) => {
   //   console.log("Socket desconectado:", reason);
   // });
 
   // socket.on("connect_error", (error) => {
   //   console.log("error :>> ", error);
-  //   console.error("❌ Socket error:", error.message);
+  //   console.error("Socket error:", error.message);
   // });
 
   return socket;
