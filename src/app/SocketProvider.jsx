@@ -1,22 +1,20 @@
 import { useEffect } from "react";
-import createSocketConnection, { disconnectSocket } from "@config/socket";
+import { createSocketConnection, disconnectSocket } from "@config/socket";
+// import { createSocketConnection } from "../config/socket";
 
 /**
  * SocketProvider
  * - Conecta el socket cuando hay token
  * - Desconecta al desmontar
  */
-export default function SocketProvider({ token, children }) {
+export const SocketProvider = ({ token, children }) => {
   useEffect(() => {
-    if (!token) return;
-
-    const socket = createSocketConnection(token);
-    console.log("socket provider:>> ", socket);
-
-    return () => {
+    if (token) {
+      createSocketConnection(token);
+    } else {
       disconnectSocket();
-    };
+    }
   }, [token]);
 
   return children;
-}
+};

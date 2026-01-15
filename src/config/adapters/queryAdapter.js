@@ -46,7 +46,7 @@ export const useQueryAdapter = (queryKey, queryFn, options = {}) => {
     },
     enabled,
     staleTime,
-    gcTime: cacheTime, // TanStack Query v5 uses gcTime instead of cacheTime
+    gcTime: cacheTime,
     refetchOnWindowFocus,
     refetchOnMount,
     ...restOptions,
