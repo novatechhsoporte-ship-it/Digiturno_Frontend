@@ -65,4 +65,3 @@ export const ModuleCard = ({ module, onEdit, onDelete }) => {
     </div>
   );
 };
-

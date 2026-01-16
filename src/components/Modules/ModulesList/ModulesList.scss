@@ -1,0 +1,25 @@
+@use "@/styles" as *;
+
+.modules-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-lg;
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include respond-to(lg) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  &--state {
+    @include flex-center;
+    padding: $spacing-4xl $spacing-xl;
+    text-align: center;
+    color: $color-gray-600;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-medium;
+  }
+}
+
