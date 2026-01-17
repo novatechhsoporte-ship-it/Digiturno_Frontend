@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useMemo } from "react";
+import { useEffect, useCallback, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -12,6 +12,9 @@ const ticketKeys = createQueryKeyFactory("tickets");
 export const useAttendantTickets = () => {
   const { user: authUser, token } = useAuth();
   const queryClient = useQueryClient();
+  const [showCompleteConfirm, setShowCompleteConfirm] = useState(false);
+  const [showAbandonConfirm, setShowAbandonConfirm] = useState(false);
+  const [pendingTicketId, setPendingTicketId] = useState(null);
 
   const tenantId = authUser?.tenantId;
   const attendantId = authUser?._id;
@@ -46,11 +49,10 @@ export const useAttendantTickets = () => {
   );
 
   const currentTicket = useMemo(() => {
-    const data = currentTicketResponse?.data;
+    if (!currentTicketResponse) return null;
 
-    if (!data) return null;
-
-    if (typeof data === "object" && !Array.isArray(data) && Object.keys(data).length === 0) {
+    const data = currentTicketResponse?.data?.data || currentTicketResponse?.data;
+    if (!data || (typeof data === "object" && !Array.isArray(data) && Object.keys(data).length === 0)) {
       return null;
     }
 
@@ -72,15 +74,54 @@ export const useAttendantTickets = () => {
 
   const callNextTicketMutation = useMutationAdapter((payload) => TicketsApi.callNextTicket(tenantId, payload), {
     successMessage: "Turno llamado exitosamente",
-    invalidateQueries: [ticketKeys.list({ tenantId, status: "pending", limit: 20 })],
+    invalidateQueries: [
+      ticketKeys.list({ tenantId, status: "pending", limit: 20 }),
+      ["tickets", "current", attendantId, tenantId],
+    ],
+    onSuccess: (data) => {
+      // Update current ticket in cache immediately
+      const ticketData = data?.data || data;
+      if (ticketData) {
+        queryClient.setQueryData(["tickets", "current", attendantId, tenantId], { data: ticketData });
+      }
+      refetchPendingTickets();
+    },
   });
 
   const abandonTicketMutation = useMutationAdapter((ticketId) => TicketsApi.abandonTicket(ticketId), {
     successMessage: "Turno abandonado exitosamente",
+    invalidateQueries: [
+      ticketKeys.list({ tenantId, status: "pending", limit: 20 }),
+      ["tickets", "current", attendantId, tenantId],
+    ],
+    onSuccess: () => {
+      queryClient.setQueryData(["tickets", "current", attendantId, tenantId], null);
+      refetchPendingTickets();
+    },
   });
 
   const completeTicketMutation = useMutationAdapter(({ ticketId, notes }) => TicketsApi.completeTicket(ticketId, { notes }), {
     successMessage: "Turno completado exitosamente",
+    invalidateQueries: [
+      ticketKeys.list({ tenantId, status: "pending", limit: 20 }),
+      ["tickets", "current", attendantId, tenantId],
+    ],
+    onSuccess: () => {
+      queryClient.setQueryData(["tickets", "current", attendantId, tenantId], null);
+      refetchPendingTickets();
+    },
+  });
+
+  const recallTicketMutation = useMutationAdapter((ticketId) => TicketsApi.recallTicket(ticketId), {
+    successMessage: "Turno vuelto a llamar exitosamente",
+    invalidateQueries: [["tickets", "current", attendantId, tenantId]],
+    onSuccess: (data) => {
+      // Update current ticket in cache with updated callCount
+      const ticketData = data?.data || data;
+      if (ticketData) {
+        queryClient.setQueryData(["tickets", "current", attendantId, tenantId], { data: ticketData });
+      }
+    },
   });
 
   const handleCallNextTicket = useCallback(() => {
@@ -97,20 +138,43 @@ export const useAttendantTickets = () => {
     });
   }, [attendantId, callNextTicketMutation]);
 
-  const handleAbandonTicket = useCallback(
-    (ticketId) => {
-      if (!ticketId) return;
-      abandonTicketMutation.mutate(ticketId);
+  const handleAbandonTicket = useCallback((ticketId) => {
+    if (!ticketId) return;
+    setPendingTicketId(ticketId);
+    setShowAbandonConfirm(true);
+  }, []);
+
+  const confirmAbandonTicket = useCallback(() => {
+    if (pendingTicketId) {
+      abandonTicketMutation.mutate(pendingTicketId);
+      setShowAbandonConfirm(false);
+      setPendingTicketId(null);
+    }
+  }, [pendingTicketId, abandonTicketMutation]);
+
+  const handleCompleteTicket = useCallback((ticketId, notes = "") => {
+    if (!ticketId) return;
+    setPendingTicketId(ticketId);
+    setShowCompleteConfirm(true);
+  }, []);
+
+  const confirmCompleteTicket = useCallback(
+    (notes = "") => {
+      if (pendingTicketId) {
+        completeTicketMutation.mutate({ ticketId: pendingTicketId, notes });
+        setShowCompleteConfirm(false);
+        setPendingTicketId(null);
+      }
     },
-    [abandonTicketMutation]
+    [pendingTicketId, completeTicketMutation]
   );
 
-  const handleCompleteTicket = useCallback(
-    (ticketId, notes = "") => {
+  const handleRecallTicket = useCallback(
+    (ticketId) => {
       if (!ticketId) return;
-      completeTicketMutation.mutate({ ticketId, notes });
+      recallTicketMutation.mutate(ticketId);
     },
-    [completeTicketMutation]
+    [recallTicketMutation]
   );
 
   const canCallNext = !currentTicket?._id && !loadingCurrent;
@@ -126,8 +190,15 @@ export const useAttendantTickets = () => {
     socket.on("ticket:called", refetchPendingTickets);
 
     socket.on("ticket:started", (ticket) => {
-      queryClient.setQueryData(["tickets", "current", attendantId, tenantId], ticket);
+      const ticketData = ticket?.data || ticket;
+      queryClient.setQueryData(["tickets", "current", attendantId, tenantId], { data: ticketData });
       refetchPendingTickets();
+    });
+
+    socket.on("ticket:recalled", (ticket) => {
+      // Update current ticket with new callCount
+      const ticketData = ticket?.data || ticket;
+      queryClient.setQueryData(["tickets", "current", attendantId, tenantId], { data: ticketData });
     });
 
     socket.on("ticket:completed", () => {
@@ -146,6 +217,7 @@ export const useAttendantTickets = () => {
       socket.off("ticket:started");
       socket.off("ticket:completed");
       socket.off("ticket:abandoned");
+      socket.off("ticket:recalled");
     };
   }, [token, tenantId, attendantId]);
 
@@ -160,15 +232,25 @@ export const useAttendantTickets = () => {
     handleCallNextTicket,
     handleAbandonTicket,
     handleCompleteTicket,
+    handleRecallTicket,
 
     // State
     canCallNext,
     isCallingNext: callNextTicketMutation.isPending,
     isAbandoning: abandonTicketMutation.isPending,
     isCompleting: completeTicketMutation.isPending,
+    isRecalling: recallTicketMutation.isPending,
 
     // Refetch
     refetchPendingTickets,
     refetchCurrentTicket,
+
+    // Modals
+    showCompleteConfirm,
+    showAbandonConfirm,
+    setShowCompleteConfirm,
+    setShowAbandonConfirm,
+    confirmCompleteTicket,
+    confirmAbandonTicket,
   };
 };

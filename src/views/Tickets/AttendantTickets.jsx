@@ -16,16 +16,22 @@ export const AttendantTickets = () => {
     handleCallNextTicket,
     handleAbandonTicket,
     handleCompleteTicket,
+    handleRecallTicket,
 
     // State
     canCallNext,
     isCallingNext,
     isAbandoning,
     isCompleting,
+    isRecalling,
 
-    // Refetch
-    refetchPendingTickets,
-    refetchCurrentTicket,
+    // Modals
+    showCompleteConfirm,
+    showAbandonConfirm,
+    setShowCompleteConfirm,
+    setShowAbandonConfirm,
+    confirmCompleteTicket,
+    confirmAbandonTicket,
   } = useAttendantTickets();
   useTicketSocket();
 
@@ -44,8 +50,16 @@ export const AttendantTickets = () => {
           serviceTimer={serviceTimer}
           onCompleteTicket={handleCompleteTicket}
           onAbandonTicket={handleAbandonTicket}
+          onRecallTicket={handleRecallTicket}
           isCompleting={isCompleting}
           isAbandoning={isAbandoning}
+          isRecalling={isRecalling}
+          showCompleteConfirm={showCompleteConfirm}
+          showAbandonConfirm={showAbandonConfirm}
+          setShowCompleteConfirm={setShowCompleteConfirm}
+          setShowAbandonConfirm={setShowAbandonConfirm}
+          confirmCompleteTicket={confirmCompleteTicket}
+          confirmAbandonTicket={confirmAbandonTicket}
         />
       </div>
 
@@ -53,4 +67,3 @@ export const AttendantTickets = () => {
     </section>
   );
 };
-

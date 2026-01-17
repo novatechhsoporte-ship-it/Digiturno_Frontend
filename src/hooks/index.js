@@ -4,3 +4,4 @@ export { useTenant } from "./Tenant/useTenant";
 export { useModule } from "./Module/useModule";
 export { useUsers } from "./Users/useUsers";
 export { useTickets } from "./Tickets/useTickets";
+export { useAttendantTickets } from "./Tickets/useAttendantTickets";

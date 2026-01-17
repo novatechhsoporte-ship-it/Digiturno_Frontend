@@ -154,4 +154,45 @@
       flex-direction: row;
     }
   }
+
+  &__call-count {
+    @include flex-between;
+    padding: $spacing-sm $spacing-md;
+    background: $color-gray-50;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-base;
+
+    &-label {
+      font-weight: $font-weight-medium;
+      color: $color-gray-600;
+      min-width: 80px;
+    }
+
+    &-value {
+      color: $color-gray-900;
+      font-weight: $font-weight-semibold;
+    }
+  }
+
+  &__modal {
+    @include flex-column;
+    gap: $spacing-lg;
+
+    &-message {
+      color: $color-gray-700;
+      line-height: $line-height-relaxed;
+      margin: 0;
+    }
+
+    &-actions {
+      @include flex-between;
+      gap: $spacing-md;
+      padding-top: $spacing-lg;
+      border-top: $border-width-thin solid $color-gray-200;
+
+      @include respond-to(md) {
+        justify-content: flex-end;
+      }
+    }
+  }
 }

@@ -84,4 +84,10 @@ export const TicketsApi = {
    * @param {object} payload - { attendantId, moduleId? }
    */
   callNextTicket: (tenantId, payload) => axiosClient.post(`/tickets/call-next/${tenantId}`, payload),
+
+  /**
+   * Recall a ticket that is already in progress (increment call count)
+   * @param {string} ticketId
+   */
+  recallTicket: (ticketId) => axiosClient.post(`/tickets/${ticketId}/recall`),
 };

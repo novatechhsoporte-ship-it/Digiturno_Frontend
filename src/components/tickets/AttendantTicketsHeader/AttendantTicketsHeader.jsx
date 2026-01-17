@@ -2,12 +2,13 @@ import { CustomButton, CustomIcon } from "@components/common";
 import "./AttendantTicketsHeader.scss";
 
 export const AttendantTicketsHeader = ({ canCallNext, handleCallNextTicket, isCallingNext, totalPending }) => {
+  console.log("totalPending :>> ", totalPending);
   return (
     <header className="attendant-tickets-header">
       <div>
         <h1 className="attendant-tickets-header__title">Gestión de Turnos</h1>
         <p className="attendant-tickets-header__subtitle">
-          {totalPending > 0 ? `${totalPending} turnos pendientes` : "No hay turnos pendientes"}
+          {totalPending.length > 0 ? `${totalPending.length} turnos pendientes` : "No hay turnos pendientes"}
         </p>
       </div>
 
@@ -32,4 +33,3 @@ export const AttendantTicketsHeader = ({ canCallNext, handleCallNextTicket, isCa
     </header>
   );
 };
-
