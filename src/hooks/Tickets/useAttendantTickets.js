@@ -80,8 +80,9 @@ export const useAttendantTickets = () => {
     ],
     onSuccess: (data) => {
       // Update current ticket in cache immediately
+      // Only if the ticket belongs to the current attendant (should always be true, but verify for safety)
       const ticketData = data?.data || data;
-      if (ticketData) {
+      if (ticketData && ticketData.attendantId?.toString() === attendantId.toString()) {
         queryClient.setQueryData(["tickets", "current", attendantId, tenantId], { data: ticketData });
       }
       refetchPendingTickets();
@@ -191,23 +192,39 @@ export const useAttendantTickets = () => {
 
     socket.on("ticket:started", (ticket) => {
       const ticketData = ticket?.data || ticket;
-      queryClient.setQueryData(["tickets", "current", attendantId, tenantId], { data: ticketData });
+      // Only update currentTicket if this ticket belongs to the current attendant
+      if (ticketData?.attendantId && ticketData.attendantId.toString() === attendantId.toString()) {
+        queryClient.setQueryData(["tickets", "current", attendantId, tenantId], { data: ticketData });
+      }
+      // Always update the pending tickets list for all attendants
       refetchPendingTickets();
     });
 
     socket.on("ticket:recalled", (ticket) => {
-      // Update current ticket with new callCount
+      // Only update current ticket if it belongs to the current attendant
       const ticketData = ticket?.data || ticket;
-      queryClient.setQueryData(["tickets", "current", attendantId, tenantId], { data: ticketData });
+      if (ticketData?.attendantId && ticketData.attendantId.toString() === attendantId.toString()) {
+        queryClient.setQueryData(["tickets", "current", attendantId, tenantId], { data: ticketData });
+      }
     });
 
-    socket.on("ticket:completed", () => {
-      queryClient.setQueryData(["tickets", "current", attendantId, tenantId], null);
+    socket.on("ticket:completed", (ticket) => {
+      const ticketData = ticket?.data || ticket;
+      // Only clear currentTicket if the completed ticket belongs to the current attendant
+      if (ticketData?.attendantId && ticketData.attendantId.toString() === attendantId.toString()) {
+        queryClient.setQueryData(["tickets", "current", attendantId, tenantId], null);
+      }
+      // Always update the pending tickets list for all attendants
       refetchPendingTickets();
     });
 
-    socket.on("ticket:abandoned", () => {
-      queryClient.setQueryData(["tickets", "current", attendantId, tenantId], null);
+    socket.on("ticket:abandoned", (ticket) => {
+      const ticketData = ticket?.data || ticket;
+      // Only clear currentTicket if the abandoned ticket belongs to the current attendant
+      if (ticketData?.attendantId && ticketData.attendantId.toString() === attendantId.toString()) {
+        queryClient.setQueryData(["tickets", "current", attendantId, tenantId], null);
+      }
+      // Always update the pending tickets list for all attendants
       refetchPendingTickets();
     });
 
