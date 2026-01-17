@@ -40,4 +40,3 @@ export const ModulesFilters = ({ filters, tenants, onFilterChange }) => {
     </div>
   );
 };
-

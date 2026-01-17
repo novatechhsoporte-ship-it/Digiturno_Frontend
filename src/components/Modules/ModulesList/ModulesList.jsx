@@ -18,4 +18,3 @@ export const ModulesList = ({ modules, loading, onEdit, onDelete }) => {
     </div>
   );
 };
-

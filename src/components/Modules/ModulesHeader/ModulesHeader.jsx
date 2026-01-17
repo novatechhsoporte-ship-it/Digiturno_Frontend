@@ -20,4 +20,3 @@ export const ModulesHeader = ({ onNewModule }) => {
     </header>
   );
 };
-

@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { ModulesApi } from "@core/api/modules";
 import { TenantsApi } from "@core/api/tenants";
 import { useCustomForm } from "@utils/useCustomForm.jsx";
@@ -18,7 +18,7 @@ export const useModule = () => {
     search: "",
   });
 
-  const { register, handleSubmit, errors, isSubmitting, isDisabled, reset, watch } = useCustomForm({
+  const { register, handleSubmit, errors, isSubmitting, isDisabled, reset, watch, setValue } = useCustomForm({
     schema: moduleSchema,
     formOptions: {
       defaultValues: {
@@ -37,14 +37,20 @@ export const useModule = () => {
   const currentModuleId = mode === "edit" && selectedModule?._id ? selectedModule._id : null;
 
   // Query for tenants
-  const { data: tenants = [], isLoading: loadingTenants } = useQueryAdapter(["tenants", "list"], () => TenantsApi.listTenants(), {
-    enabled: true,
-    showErrorToast: true,
-  });
+  const { data: tenantsResponse = [], isLoading: loadingTenants } = useQueryAdapter(
+    ["tenants", "list"],
+    () => TenantsApi.listTenants(),
+    {
+      enabled: true,
+      showErrorToast: true,
+    }
+  );
+
+  const tenants = tenantsResponse?.data ?? [];
 
   // Query for modules
   const {
-    data: modules = [],
+    data: modulesResponse = [],
     isLoading: loadingModules,
     refetch: refetchModules,
   } = useQueryAdapter(
@@ -63,9 +69,11 @@ export const useModule = () => {
     }
   );
 
+  const modules = modulesResponse?.data ?? [];
+
   // Query for available attendants (only when tenant is selected)
   // Include moduleId when editing to show current attendant
-  const { data: availableAttendants = [], isLoading: loadingAttendants } = useQueryAdapter(
+  const { data: responseAttendants = [], isLoading: loadingAttendants } = useQueryAdapter(
     ["modules", "available-attendants", selectedTenantId, currentModuleId],
     () => ModulesApi.getAvailableAttendants(selectedTenantId, currentModuleId),
     {
@@ -73,6 +81,8 @@ export const useModule = () => {
       showErrorToast: false,
     }
   );
+
+  const availableAttendants = responseAttendants?.data ?? [];
 
   // Mutation for create/update
   const createModuleMutation = useMutationAdapter(({ tenantId, payload }) => ModulesApi.createModule(tenantId, payload), {
@@ -134,6 +144,8 @@ export const useModule = () => {
   /* ================= EDIT ================= */
   const handleEditModule = useCallback(
     (module) => {
+      reset();
+
       setMode("edit");
       setSelectedModule(module);
 
@@ -176,13 +188,48 @@ export const useModule = () => {
     }));
   }, []);
 
-  // Prepare attendant options for the select field
+  const currentAttendant = selectedModule?.attendantId
+    ? {
+        _id: selectedModule.attendantId._id || selectedModule.attendantId,
+        fullName: selectedModule.attendantId.fullName,
+        email: selectedModule.attendantId.email,
+      }
+    : null;
+
   const attendantOptions = useMemo(() => {
-    return availableAttendants.map((attendant) => ({
+    const baseOptions = availableAttendants.map((attendant) => ({
       value: attendant._id,
       label: attendant.fullName || attendant.email || "Sin nombre",
     }));
-  }, [availableAttendants]);
+
+    if (mode === "edit" && currentAttendant) {
+      const exists = baseOptions.some((opt) => opt.value === currentAttendant._id);
+
+      if (!exists) {
+        return [
+          {
+            value: currentAttendant._id,
+            label: currentAttendant.fullName || currentAttendant.email || "Sin nombre",
+          },
+          ...baseOptions,
+        ];
+      }
+    }
+
+    return baseOptions;
+  }, [availableAttendants, currentAttendant, mode]);
+
+  useEffect(() => {
+    if (mode !== "edit" || !selectedModule?.attendantId) return;
+
+    setValue("attendantId", selectedModule.attendantId._id || selectedModule.attendantId, { shouldDirty: false });
+  }, [selectedModule?._id, mode, setValue]);
+
+  useEffect(() => {
+    if (mode === "edit" && selectedModule?.attendantId && availableAttendants.length >= 0) {
+      setValue("attendantId", selectedModule.attendantId._id || selectedModule.attendantId);
+    }
+  }, [mode, selectedModule, availableAttendants, setValue]);
 
   const loading = loadingModules || loadingTenants;
 
