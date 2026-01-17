@@ -24,8 +24,8 @@ export const useTickets = () => {
   const { handleEditCustomer } = editCustomer;
 
   // Ticket table hook
-  const ticketTable = useTicketTable(selectedModule, loadPendingTickets, handleEditCustomer);
-  const { ticketColumns, ticketActions, callTicket, startTicket, completeTicket } = ticketTable;
+  const ticketTable = useTicketTable(handleEditCustomer);
+  const { ticketColumns, ticketActions } = ticketTable;
 
   // Permissions
   const canCreate = canAny(["tickets.manage", "tickets.create"]);
@@ -62,10 +62,6 @@ export const useTickets = () => {
     handleShowCreateModal: createTicket.handleShowCreateModal,
     handleCloseCreateModal: createTicket.handleCloseCreateModal,
     handleCloseEditModal: editCustomer.handleCloseEditModal,
-    // Table actions (from useTicketTable)
-    callTicket,
-    startTicket,
-    completeTicket,
     // Table
     ticketColumns,
     ticketActions,

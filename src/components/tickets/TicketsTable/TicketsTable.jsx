@@ -10,8 +10,7 @@ export const TicketsTable = ({ pendingTickets, loading, selectedTenant, isSuperA
           const value = col.accessor(ticket);
           return (
             <div className="customer-info">
-              <span className="customer-info__name">{value.fullName}</span>
-              <span className="customer-info__document">{value.documentNumber}</span>
+              <span className="customer-info__name">{value}</span>
             </div>
           );
         },

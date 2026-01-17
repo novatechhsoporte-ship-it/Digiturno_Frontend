@@ -27,4 +27,3 @@ export const DEFAULT_CUSTOMER_UPDATE_VALUES = {
   email: "",
   phone: "",
 };
-

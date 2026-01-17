@@ -1,0 +1,40 @@
+@use "@/styles" as *;
+
+.attendant-tickets {
+  @include flex-column;
+  gap: $spacing-xl;
+  padding: $spacing-lg;
+  max-width: $container-max-width;
+  margin: 0 auto;
+
+  @include respond-to(md) {
+    padding: $spacing-xl;
+  }
+
+  &__content {
+    display: grid;
+    // grid-template-columns: 1fr;
+    gap: $spacing-xl;
+
+    // @include respond-to(lg) {
+    //   grid-template-columns: 2fr 1fr;
+    // }
+  }
+
+  &__left {
+    min-width: 0;
+  }
+
+  &__right {
+    width: 100%;
+    min-width: 0;
+    position: sticky;
+    top: $spacing-xl;
+    align-self: start;
+    max-height: calc(100vh - #{$spacing-xl * 2});
+
+    @include respond-to(lg) {
+      position: sticky;
+    }
+  }
+}

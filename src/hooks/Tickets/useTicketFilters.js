@@ -107,4 +107,3 @@ export const useTicketFilters = () => {
     isSuperAdmin,
   };
 };
-

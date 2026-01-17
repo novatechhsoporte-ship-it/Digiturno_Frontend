@@ -1,6 +1,6 @@
-import React from "react";
 import { useTickets } from "@hooks/";
 import { TicketsHeader, TicketsFilters, TicketsTable, CreateTicketModal, EditCustomerModal } from "@components/tickets";
+import { useTicketSocket } from "@hooks/Tickets/useTicketSocket";
 
 import "./Tickets.scss";
 
@@ -47,6 +47,8 @@ export const Tickets = () => {
     moduleOptions,
     moduleFilterOptions,
   } = useTickets();
+
+  useTicketSocket();
 
   return (
     <section className="tickets">

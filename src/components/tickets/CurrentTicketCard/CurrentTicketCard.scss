@@ -1,0 +1,157 @@
+@use "@/styles" as *;
+
+.current-ticket-card {
+  @include card;
+  @include flex-column;
+  gap: $spacing-lg;
+  border: $border-width-medium solid $color-primary;
+  box-shadow: $shadow-lg;
+  transition: box-shadow $transition-base, transform $transition-base;
+
+  &:hover {
+    box-shadow: $shadow-xl;
+    transform: translateY(-2px);
+  }
+
+  &--empty {
+    @include flex-column;
+    @include flex-center;
+    border: $border-width-medium dashed $color-gray-300;
+    background: $color-gray-50;
+    text-align: center;
+    padding: $spacing-3xl $spacing-xl;
+    min-height: 300px;
+  }
+
+  &__icon {
+    font-size: $font-size-5xl;
+    margin-bottom: $spacing-md;
+    opacity: 0.5;
+  }
+
+  &__title {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-semibold;
+    margin: 0 0 $spacing-sm;
+    color: $color-gray-700;
+  }
+
+  &__subtitle {
+    font-size: $font-size-base;
+    color: $color-gray-600;
+    margin: 0;
+    line-height: $line-height-relaxed;
+  }
+
+  &__header {
+    @include flex-between;
+    align-items: flex-start;
+    gap: $spacing-md;
+    padding-bottom: $spacing-lg;
+    border-bottom: $border-width-medium solid $color-gray-200;
+
+    @include respond-to(sm) {
+      align-items: center;
+    }
+  }
+
+  &__ticket-number {
+    font-size: $font-size-4xl;
+    font-weight: $font-weight-bold;
+    color: $color-primary;
+    line-height: $line-height-tight;
+
+    @include respond-to(sm) {
+      font-size: $font-size-5xl;
+    }
+  }
+
+  &__timer {
+    @include flex-column;
+    align-items: flex-end;
+    gap: $spacing-xs;
+    text-align: right;
+  }
+
+  &__timer-label {
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $color-gray-600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  &__timer-value {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: $color-primary;
+    font-family: $font-family-mono;
+    line-height: $line-height-tight;
+
+    @include respond-to(sm) {
+      font-size: $font-size-3xl;
+    }
+  }
+
+  &__body {
+    @include flex-column;
+    gap: $spacing-lg;
+    flex: 1;
+  }
+
+  &__customer {
+    @include flex-column;
+    gap: $spacing-xs;
+    padding: $spacing-md;
+    background: $color-gray-50;
+    border-radius: $border-radius-md;
+  }
+
+  &__customer-name {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-semibold;
+    color: $color-gray-900;
+    line-height: $line-height-snug;
+  }
+
+  &__customer-document {
+    font-size: $font-size-sm;
+    color: $color-gray-600;
+    font-weight: $font-weight-medium;
+  }
+
+  &__module,
+  &__time {
+    @include flex-start;
+    gap: $spacing-sm;
+    padding: $spacing-sm $spacing-md;
+    background: $color-gray-50;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-base;
+  }
+
+  &__module-label,
+  &__time-label {
+    font-weight: $font-weight-medium;
+    color: $color-gray-600;
+    min-width: 80px;
+  }
+
+  &__module-name,
+  &__time-value {
+    color: $color-gray-900;
+    font-weight: $font-weight-semibold;
+  }
+
+  &__actions {
+    @include flex-column;
+    gap: $spacing-md;
+    padding-top: $spacing-lg;
+    border-top: $border-width-thin solid $color-gray-200;
+
+    @include respond-to(sm) {
+      @include flex-between;
+      flex-direction: row;
+    }
+  }
+}

@@ -7,7 +7,7 @@ export const UsersApi = {
     if (params.roleName) queryParams.append("roleName", params.roleName);
     if (params.status !== undefined) queryParams.append("status", params.status);
     if (params.search) queryParams.append("search", params.search);
-    
+
     const queryString = queryParams.toString();
     return axiosClient.get(`/admin/users${queryString ? `?${queryString}` : ""}`);
   },
@@ -16,4 +16,3 @@ export const UsersApi = {
   deleteUser: (userId) => axiosClient.delete(`/admin/users/${userId}`),
   getUserById: (userId) => axiosClient.get(`/admin/users/${userId}`),
 };
-

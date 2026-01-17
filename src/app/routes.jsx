@@ -1,4 +1,3 @@
-import React from "react";
 import { createBrowserRouter, RouterProvider, Outlet, Navigate, useLocation } from "react-router-dom";
 
 import { ProtectedRoute } from "./ProtectedRoute";
@@ -10,13 +9,8 @@ import { Tenants } from "@/views/Tenant/Tenants";
 import { Modules } from "@/views/Modules/Modules";
 import { Users } from "@/views/Users/Users";
 import { Tickets } from "@/views/Tickets/Tickets";
-// import { PublicTickets } from "@/views/Tickets/PublicTickets";
+import { AttendantTickets } from "@/views/Tickets/AttendantTickets";
 import { Forbidden } from "@/views/Forbidden/Forbidden";
-
-// import AdminDashboardPage from "../pages/admin/Dashboard";
-// import { Notarias } from "../views/Notarias/Notarias";
-// import { TurnosPublicos } from "../views/TurnosPublicos/TurnosPublicos";
-// import { Operador } from "../views/Operador/Operador";
 
 function AppLayout() {
   const location = useLocation();
@@ -85,32 +79,16 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
-      // {
-      //   path: "tickets/public/:tenantId",
-      //   element: <PublicTickets />,
-      // },
-      // {
-      //   path: "reception",
-      //   element: (
-      //     <ProtectedRoute any={["tickets.view_tenant", "tickets.create", "tickets.edit"]}>
-      //       <Tickets />
-      //     </ProtectedRoute>
-      //   ),
-      // },
+      {
+        path: "attendant-tickets",
+        element: (
+          <ProtectedRoute any={["tickets.update_status", "tickets.view_tenant"]}>
+            <AttendantTickets />
+          </ProtectedRoute>
+        ),
+      },
 
-      // {
-      //   path: "dashboard2",
-      //   element: (
-      //     <ProtectedRoute any={["dashboard.manage"]}>
-      //       <AdminDashboardPage />
-      //     </ProtectedRoute>
-      //   ),
-      // },
-      // { path: "Notarias", element: <Notarias /> },
-      // { path: "TurnosPublicos", element: <TurnosPublicos /> },
-      // { path: "Operador", element: <Operador /> },
-
-      // { path: "*", element: <Navigate to="/dashboard" replace /> },
+      { path: "*", element: <Navigate to="/tickets" replace /> },
       { path: "403", element: <Forbidden /> },
     ],
   },

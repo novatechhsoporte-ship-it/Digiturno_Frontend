@@ -22,17 +22,6 @@ export const TicketsFilters = ({
           />
         </div>
       )}
-
-      {selectedTenant && (
-        <div className="tickets-filters__group">
-          <CustomSelect
-            label="Módulo (Filtro)"
-            value={selectedModule}
-            onChange={(e) => setSelectedModule(e.target.value)}
-            options={moduleFilterOptions}
-          />
-        </div>
-      )}
     </div>
   );
 };

@@ -1,5 +1,3 @@
-import React from "react";
-
 import { CustomButton, CustomInput, CustomSelect, CustomModal } from "@components/common";
 import "./CreateTicketModal.scss";
 

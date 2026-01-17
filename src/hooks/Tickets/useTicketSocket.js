@@ -13,9 +13,7 @@ export const useTicketSocket = () => {
     const socket = getSocket();
     if (!socket) return;
 
-    const onTicketCreated = (ticket) => {
-      console.log("🎫 Ticket creado:", ticket);
-
+    const onTicketCreated = () => {
       // Refresca cualquier lista de tickets
       queryClient.invalidateQueries({
         queryKey: ticketKeys.lists(),

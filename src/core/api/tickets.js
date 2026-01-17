@@ -61,4 +61,27 @@ export const TicketsApi = {
    * @param {string} ticketId
    */
   abandonTicket: (ticketId) => axiosClient.post(`/tickets/${ticketId}/abandon`),
+
+  /**
+   * Get last 20 pending tickets (for attendant view)
+   * @param {string} tenantId
+   */
+  getLastPendingTickets: (tenantId) => axiosClient.get(`/tickets/last-pending/${tenantId}`),
+
+  /**
+   * Get current ticket in progress for an attendant
+   * @param {string} attendantId
+   * @param {string} tenantId
+   */
+  getCurrentAttendantTicket: async (attendantId, tenantId) => {
+    const response = await axiosClient.get(`/tickets/current/${attendantId}/${tenantId}`);
+    return response;
+  },
+
+  /**
+   * Call next ticket and automatically start it
+   * @param {string} tenantId
+   * @param {object} payload - { attendantId, moduleId? }
+   */
+  callNextTicket: (tenantId, payload) => axiosClient.post(`/tickets/call-next/${tenantId}`, payload),
 };
