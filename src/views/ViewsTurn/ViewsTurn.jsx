@@ -8,19 +8,17 @@ export const ViewsTurn = () => {
   const activeShifts = nextShifts.slice(0, 3);
   const recentCalledShifts = calledShifts.slice(0, 3);
 
-  const logoSrc = `${import.meta.env.BASE_URL}brand/novatechh.svg`;
+  const leftLogoSrc = `${import.meta.env.BASE_URL}brand/N14.svg`;
+  const rightLogoSrc = `${import.meta.env.BASE_URL}brand/novatechh.svg`;
 
   return (
     <section className="views-turn">
-      <header className="views-turn__mobile-header">
-        <img className="views-turn__mobile-logo" src={logoSrc} alt="Novatech" />
+      <header className="views-turn__header">
+        <img className="views-turn__header-logo views-turn__header-logo--left" src={leftLogoSrc} alt="N14" />
+        <img className="views-turn__header-logo views-turn__header-logo--right" src={rightLogoSrc} alt="Novatech" />
       </header>
       <div className="views-turn__grid">
         <section className="views-turn__left">
-          <div className="views-turn__left-header">
-            <img className="views-turn__logo" src={logoSrc} alt="Novatech" />
-          </div>
-
           <div className="views-turn__left-body">
             <div className="views-turn__panel">
               <div className="views-turn__panel-title">Turnos en curso</div>

@@ -12,29 +12,41 @@
   grid-template-rows: auto 1fr;
   gap: $spacing-lg;
 
-  &__mobile-header {
-    display: none;
+  &__header {
     width: 100%;
-    border-radius: 16px; 
-    background: #ffffff;
-    border: $border-width-thin solid $color-gray-200;
-    padding: $spacing-sm $spacing-md;
+    border-radius: 0;
+    background: transparent;
+    border: 0;
+    padding: 0 $spacing-lg;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     align-items: center;
-    justify-content: center;
+
+    @include respond-to(lg) {
+      grid-template-columns: 0.8fr 1.2fr;
+    }
   }
 
-  &__mobile-logo {
-    height: 56px;
-    width: 100%;
-    max-width: 520px;
-    object-fit: contain;
+  &__header-spacer {
+    display: none;
   }
 
-  &__logo {
-    height: clamp(60px, 8vh, 120px);
+  &__header-logo {
+    height: clamp(44px, 6vh, 96px);
     width: auto;
     object-fit: contain;
-    max-width: min(90vw, 760px);
+    max-width: 70%;
+  }
+
+  &__header-logo--left {
+    grid-column: 1;
+    justify-self: start;
+  }
+
+  &__header-logo--right {
+    grid-column: 2;
+    justify-self: end;
+    height: clamp(64px, 8.5vh, 140px);
   }
 
   &__grid {
@@ -62,16 +74,9 @@
     border: $border-width-thin solid $color-gray-200;
     padding: $spacing-lg;
     display: grid;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: 1fr;
     gap: $spacing-md;
     min-height: 0;
-  }
-
-  &__left-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: $spacing-xs 0;
   }
 
   &__left-body {
@@ -262,16 +267,19 @@
     min-height: 100vh;
     overflow: auto;
 
-    &__mobile-header {
-      display: flex;
+    &__header {
+      border-radius: 12px;
+      padding: $spacing-sm;
+      gap: $spacing-sm;
+    }
+
+    &__header-logo {
+      height: 44px;
+      max-width: 48%;
     }
 
     &__grid {
       height: auto;
-    }
-
-    &__left-header {
-      display: none;
     }
 
     &__left {
