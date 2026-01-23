@@ -1,0 +1,63 @@
+@use "@/styles" as *;
+
+.attendant-tickets-header {
+  @include flex-column;
+  gap: $spacing-md;
+
+  @include respond-to(md) {
+    @include flex-between;
+    flex-direction: row;
+    align-items: flex-end;
+  }
+
+  & > div {
+    @include flex-column;
+    gap: $spacing-xs;
+  }
+
+  &__title {
+    font-size: $font-size-3xl;
+    font-weight: $font-weight-semibold;
+    margin: 0;
+    color: $color-gray-900;
+    line-height: $line-height-tight;
+
+    @include respond-to(sm) {
+      font-size: $font-size-4xl;
+    }
+  }
+
+  &__subtitle {
+    font-size: $font-size-base;
+    color: $color-gray-600;
+    margin: 0;
+    font-weight: $font-weight-medium;
+    line-height: $line-height-normal;
+  }
+
+  &__blocked {
+    @include flex-center;
+    gap: $spacing-sm;
+    padding: $spacing-md $spacing-lg;
+    background: rgba($color-warning, 0.1);
+    color: $color-warning-dark;
+    border-radius: $border-radius-md;
+    font-weight: $font-weight-semibold;
+    font-size: $font-size-sm;
+    border: $border-width-thin solid rgba($color-warning, 0.2);
+    transition: all $transition-fast;
+
+    &:hover {
+      background: rgba($color-warning, 0.15);
+      border-color: rgba($color-warning, 0.3);
+    }
+
+    @include respond-to(sm) {
+      font-size: $font-size-base;
+      padding: $spacing-md $spacing-xl;
+    }
+  }
+  &__btn {
+    max-width: 14rem;
+  }
+}

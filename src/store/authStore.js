@@ -8,6 +8,7 @@ export const useAuth = create((set, get) => ({
     fullName: "",
     email: "",
     roles: [""],
+    module: "",
   },
   permissions: [],
   expiresAt: null,
@@ -57,9 +58,9 @@ if (raw) {
 }
 
 // Auto-logout on expiry
-setInterval(() => {
-  const { expiresAt } = useAuth.getState();
-  if (expiresAt && Date.now() >= expiresAt) {
-    useAuth.getState().logout();
-  }
-}, 1000 * 30);
+// setInterval(() => {
+//   const { expiresAt } = useAuth.getState();
+//   if (expiresAt && Date.now() >= expiresAt) {
+//     useAuth.getState().logout();
+//   }
+// }, 1000 * 30);

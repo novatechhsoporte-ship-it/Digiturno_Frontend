@@ -1,0 +1,58 @@
+@use "@/styles" as *;
+
+.module-form-modal {
+  &__form {
+    @include flex-column;
+    gap: $spacing-lg;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-lg;
+
+    @include respond-to(md) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  &__field {
+    @include flex-column;
+    gap: $spacing-xs;
+
+    &--full {
+      @include respond-to(md) {
+        grid-column: 1 / -1;
+      }
+    }
+  }
+
+  &__checkbox {
+    @include flex-start;
+    gap: $spacing-sm;
+    padding: $spacing-md;
+    background-color: $color-gray-50;
+    border-radius: $border-radius-md;
+    cursor: pointer;
+    transition: background-color $transition-fast;
+
+    input {
+      cursor: pointer;
+    }
+
+    &:hover {
+      background-color: $color-gray-100;
+    }
+  }
+
+  &__actions {
+    @include flex-between;
+    gap: $spacing-md;
+    padding-top: $spacing-lg;
+    border-top: $border-width-thin solid $color-gray-200;
+
+    @include respond-to(md) {
+      justify-content: flex-end;
+    }
+  }
+}

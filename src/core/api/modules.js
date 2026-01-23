@@ -6,7 +6,7 @@ export const ModulesApi = {
     if (params.tenantId) queryParams.append("tenantId", params.tenantId);
     if (params.active !== undefined) queryParams.append("active", params.active);
     if (params.search) queryParams.append("search", params.search);
-    
+
     const queryString = queryParams.toString();
     return axiosClient.get(`/modules${queryString ? `?${queryString}` : ""}`);
   },
@@ -14,4 +14,8 @@ export const ModulesApi = {
   updateModule: (moduleId, payload) => axiosClient.put(`/modules/${moduleId}`, payload),
   deleteModule: (moduleId) => axiosClient.delete(`/modules/${moduleId}`),
   getModuleById: (moduleId) => axiosClient.get(`/modules/${moduleId}`),
+  getAvailableAttendants: (tenantId, moduleId = null) => {
+    const url = `/modules/available-attendants/${tenantId}${moduleId ? `?moduleId=${moduleId}` : ""}`;
+    return axiosClient.get(url);
+  },
 };

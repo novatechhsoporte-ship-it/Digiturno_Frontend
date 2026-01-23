@@ -1,0 +1,55 @@
+@use "@/styles" as *;
+
+.attendant-tickets-list {
+  @include flex-column;
+  margin: 0;
+
+  &__title {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-semibold;
+    margin: 0;
+    color: $color-gray-900;
+    padding-bottom: $spacing-md;
+    border-bottom: $border-width-thin solid $color-gray-200;
+  }
+
+  &__loading,
+  &__empty {
+    @include flex-center;
+    padding: $spacing-4xl $spacing-xl;
+    text-align: center;
+    color: $color-gray-600;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-medium;
+    min-height: 200px;
+  }
+
+  &__ticket-number {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: $color-primary;
+    line-height: $line-height-tight;
+
+    @include respond-to(sm) {
+      font-size: $font-size-2xl;
+    }
+  }
+
+  &__customer {
+    @include flex-column;
+    gap: $spacing-xs;
+  }
+
+  &__customer-name {
+    font-weight: $font-weight-semibold;
+    color: $color-gray-900;
+    font-size: $font-size-base;
+    line-height: $line-height-snug;
+  }
+
+  &__customer-document {
+    font-size: $font-size-sm;
+    color: $color-gray-600;
+    font-weight: $font-weight-medium;
+  }
+}

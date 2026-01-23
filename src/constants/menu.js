@@ -4,11 +4,23 @@
  * Vacío significa que todos los usuarios pueden verlo
  */
 export const SIDEBAR_MENU = [
+  // {
+  //   path: "/dashboard",
+  //   label: "Dashboard",
+  //   icon: "mdi:view-dashboard",
+  //   roles: [],
+  // },
   {
-    path: "/dashboard",
-    label: "Dashboard",
-    icon: "mdi:view-dashboard",
-    roles: [],
+    path: "/tickets",
+    label: "Turnos",
+    icon: "mdi:ticket-account",
+    roles: ["SUPERADMIN", "ADMIN", "RECEPTION"],
+  },
+  {
+    path: "/attendant-tickets",
+    label: "Mis Turnos",
+    icon: "mdi:ticket-account",
+    roles: ["ATTENDANT"],
   },
   {
     path: "/tenants",

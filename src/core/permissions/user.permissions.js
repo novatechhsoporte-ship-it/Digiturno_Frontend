@@ -5,4 +5,3 @@ export const USER_PERMISSIONS = {
   DELETE: "user.delete",
   MANAGE: "user.manage",
 };
-

@@ -4,3 +4,5 @@ export { useTenant } from "./Tenant/useTenant";
 export { useModule } from "./Module/useModule";
 export { useUsers } from "./Users/useUsers";
 export { useTurnosPublicos } from "./TurnosPublicos/useTurnosPublicos";
+export { useTickets } from "./Tickets/useTickets";
+export { useAttendantTickets } from "./Tickets/useAttendantTickets";

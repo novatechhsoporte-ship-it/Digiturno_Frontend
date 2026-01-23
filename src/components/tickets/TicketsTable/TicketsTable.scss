@@ -1,0 +1,68 @@
+.tickets-table {
+  background: var(--color-background-secondary);
+  border-radius: 8px;
+
+  &__title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 1rem;
+    color: var(--color-text-primary);
+  }
+
+  &__loading,
+  &__empty {
+    text-align: center;
+    padding: 3rem;
+    color: var(--color-text-secondary);
+  }
+}
+
+.ticket-number {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.customer-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  &__name {
+    font-weight: 500;
+    color: var(--color-text-primary);
+  }
+
+  &__document {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+  }
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+
+  &--pending {
+    background: var(--color-warning-light);
+    color: var(--color-warning);
+  }
+
+  &--in_progress {
+    background: var(--color-info-light);
+    color: var(--color-info);
+  }
+
+  &--completed {
+    background: var(--color-success-light);
+    color: var(--color-success);
+  }
+
+  &--abandoned {
+    background: var(--color-error-light);
+    color: var(--color-error);
+  }
+}

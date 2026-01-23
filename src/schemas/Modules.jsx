@@ -15,4 +15,3 @@ export const FORM_FIELDS = [
   { name: "attendantId", label: "Asesor Asignado", type: "select" },
   { name: "active", label: "Módulo activo", type: "checkbox", full: true },
 ];
-
