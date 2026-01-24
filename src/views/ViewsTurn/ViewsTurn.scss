@@ -255,30 +255,26 @@
     color: #0f172a;
   }
 
-  /* Small screens: stack cleanly */
-  @include respond-to(sm) {
-    padding: $spacing-sm;
-    gap: $spacing-sm;
+  @media (max-width: 1023px) {
+    height: auto;
+    min-height: 100vh;
+    overflow: auto;
 
     &__grid {
-      gap: $spacing-sm;
-    }
-
-    &__left,
-    &__right {
-      padding: $spacing-md;
-    }
-
-    &__current {
-      padding: $spacing-lg;
+      height: auto;
     }
 
     &__left-body {
-      gap: $spacing-md;
+      grid-template-rows: auto auto;
     }
 
     &__panel {
-      padding: $spacing-sm;
+      grid-template-rows: auto auto;
+    }
+
+    &__list,
+    &__called {
+      grid-template-rows: auto;
     }
   }
 
