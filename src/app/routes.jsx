@@ -11,8 +11,7 @@ import { Users } from "@/views/Users/Users";
 import { Tickets } from "@/views/Tickets/Tickets";
 import { AttendantTickets } from "@/views/Tickets/AttendantTickets";
 import { Forbidden } from "@/views/Forbidden/Forbidden";
-
-import { ViewsTurn } from "@/views/ViewsTurn/ViewsTurn";
+import { ViewsTurn } from "@/views/ViewsTurn/ViewsTurn";//depend of Turnospublicos
 import { TurnosPublicos } from "@/views/TurnosPublicos/TurnosPublicos";
 import { TURNOSPUBLICOS_PERMISSIONS } from "@/core/permissions";
 
