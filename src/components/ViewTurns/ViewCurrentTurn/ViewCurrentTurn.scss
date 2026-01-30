@@ -1,0 +1,49 @@
+@use "@/styles" as *;
+
+.views-turn {
+  &__current--empty {
+    background: $color-gray-50 !important; // Fondo neutro
+    border: $border-width-thin solid $color-gray-200 !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+    // box-shadow: none !important;
+
+    .views-turn__empty-title {
+      font-size: clamp(32px, 4vw, 64px);
+      color: $color-primary; // El color de tu marca
+      margin: $spacing-md 0;
+      font-weight: $font-weight-extrabold;
+    }
+
+    .views-turn__empty-text {
+      font-size: clamp(16px, 1.5vw, 24px);
+      color: $color-gray-500;
+      line-height: 1.4;
+      max-width: 80%;
+      margin: 0 auto;
+    }
+
+    // Animación sutil de "Sistema Vivo"
+    .views-turn__empty-pulse {
+      margin-top: $spacing-xl;
+      width: 12px;
+      height: 12px;
+      background: $color-primary;
+      border-radius: 50%;
+      position: relative;
+
+      &::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: inherit;
+        border-radius: inherit;
+        animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+    }
+  }
+}

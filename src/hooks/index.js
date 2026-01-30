@@ -3,6 +3,7 @@ export { useAuth } from "./auth/useAuth";
 export { useTenant } from "./Tenant/useTenant";
 export { useModule } from "./Module/useModule";
 export { useDisplay } from "./Display/useDisplay";
+export { useDisplayTickets } from "./Display/useDisplayTickets";
 export { useUsers } from "./Users/useUsers";
 export { useTurnosPublicos } from "./TurnosPublicos/useTurnosPublicos";
 export { useTickets } from "./Tickets/useTickets";

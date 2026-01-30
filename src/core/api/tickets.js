@@ -90,4 +90,23 @@ export const TicketsApi = {
    * @param {string} ticketId
    */
   recallTicket: (ticketId) => axiosClient.post(`/tickets/${ticketId}/recall`),
+
+  //News
+  /**
+   * Recall a ticket that is already in progress (increment call count)
+   * @param {string} ticketId
+   */
+  getCurrentDisplayTicket: (ticketId) => axiosClient.get(`/tickets/display/current/${ticketId}`),
+
+  /**
+   * Recall a ticket that is already in progress (increment call count)
+   * @param {string} ticketId
+   */
+  getNextPendingTickets: (ticketId) => axiosClient.get(`/tickets/display/pending/${ticketId}`),
+
+  /**
+   * Recall a ticket that is already in progress (increment call count)
+   * @param {string} ticketId
+   */
+  getLastCalledTickets: (ticketId) => axiosClient.get(`/tickets/display/last-called/${ticketId}`),
 };

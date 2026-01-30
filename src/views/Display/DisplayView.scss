@@ -1,0 +1,103 @@
+@use "@/styles" as *;
+
+.display-view {
+  min-height: 100vh;
+  @include flex-column;
+  @include flex-center;
+  background: linear-gradient(135deg, $color-primary 0%, darken($color-primary, 15%) 100%);
+  padding: $spacing-4xl;
+  color: $color-white;
+
+  &__loading {
+    font-size: $font-size-3xl;
+    font-weight: $font-weight-semibold;
+  }
+
+  &__header {
+    text-align: center;
+    margin-bottom: $spacing-4xl;
+  }
+
+  &__title {
+    font-size: $font-size-6xl;
+    font-weight: $font-weight-bold;
+    margin: 0 0 $spacing-md;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  &__subtitle {
+    font-size: $font-size-2xl;
+    opacity: 0.9;
+    margin: 0;
+  }
+
+  &__ticket {
+    @include flex-column;
+    @include flex-center;
+    gap: $spacing-3xl;
+    background: $color-white;
+    color: $color-gray-900;
+    padding: $spacing-4xl;
+    border-radius: $border-radius-xl;
+    box-shadow: $shadow-2xl;
+    min-width: 800px;
+    max-width: 1000px;
+    text-align: center;
+    animation: slideIn 0.5s ease-out;
+  }
+
+  &__ticket-number {
+    font-size: $font-size-6xl;
+    font-weight: $font-weight-bold;
+    color: $color-primary;
+    line-height: $line-height-tight;
+    letter-spacing: $spacing-sm;
+  }
+
+  &__ticket-customer {
+    font-size: $font-size-4xl;
+    font-weight: $font-weight-semibold;
+    color: $color-gray-900;
+  }
+
+  &__ticket-module {
+    font-size: $font-size-2xl;
+    color: $color-gray-600;
+    font-weight: $font-weight-medium;
+  }
+
+  &__empty {
+    @include flex-column;
+    @include flex-center;
+    gap: $spacing-xl;
+    background: $color-white;
+    color: $color-gray-600;
+    padding: $spacing-4xl;
+    border-radius: $border-radius-xl;
+    box-shadow: $shadow-2xl;
+    min-width: 800px;
+    max-width: 1000px;
+  }
+
+  &__empty-icon {
+    font-size: $font-size-6xl;
+    opacity: 0.5;
+  }
+
+  &__empty-message {
+    font-size: $font-size-3xl;
+    font-weight: $font-weight-medium;
+    margin: 0;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

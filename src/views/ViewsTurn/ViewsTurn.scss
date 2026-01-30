@@ -4,8 +4,8 @@
   height: 100dvh;
   min-height: 100vh;
   padding: $spacing-lg;
-  background: #ffffff;
-  color: #111827;
+  background: $color-white;
+  color: $color-gray-900;
   overflow: hidden;
   box-sizing: border-box;
   display: grid;
@@ -63,8 +63,8 @@
   /* LEFT */
   &__left {
     grid-area: left;
-    border-radius: 16px;
-    background: #ffffff;
+    border-radius: $border-radius-xl;
+    background: $color-white;
     border: $border-width-thin solid $color-gray-200;
     padding: $spacing-lg;
     display: grid;
@@ -81,8 +81,8 @@
   }
 
   &__panel {
-    border-radius: 14px;
-    background: #ffffff;
+    border-radius: $border-radius-lg;
+    background: $color-white;
     border: $border-width-thin solid $color-gray-200;
     padding: $spacing-md;
     display: grid;
@@ -93,11 +93,11 @@
   }
 
   &__panel-title {
-    font-size: 18px;
-    font-weight: 800;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-extrabold;
     letter-spacing: 0.5px;
     text-transform: uppercase;
-    color: #0f172a;
+    color: $color-gray-900;
   }
 
   &__panel-title--spaced {
@@ -115,8 +115,8 @@
 
   &__list-item {
     padding: $spacing-md $spacing-lg;
-    border-radius: 14px;
-    background: #f8fafc;
+    border-radius: $border-radius-lg;
+    background: $color-gray-50;
     border: $border-width-thin solid $color-gray-200;
     display: flex;
     align-items: center;
@@ -125,17 +125,17 @@
   }
 
   &__list-item:nth-child(odd) {
-    background: #f1f5f9;
+    background: $color-gray-100;
   }
 
   &__list-item:nth-child(even) {
-    background: #f8fafc;
+    background: $color-gray-50;
   }
 
   &__list-number {
     font-size: clamp(20px, 2.2vw, 36px);
-    font-weight: 900;
-    line-height: 1.1;
+    font-weight: $font-weight-extrabold;
+    line-height: $line-height-tight;
   }
 
   &__called {
@@ -153,24 +153,24 @@
     justify-content: space-between;
     gap: $spacing-md;
     padding: $spacing-md $spacing-lg;
-    border-radius: 14px;
-    background: #ffffff;
+    border-radius: $border-radius-lg;
+    background: $color-white;
     border: $border-width-thin solid $color-gray-200;
     min-height: 0;
     overflow: hidden;
   }
 
   &__called-item:nth-child(odd) {
-    background: #f1f5f9;
+    background: $color-gray-100;
   }
 
   &__called-item:nth-child(even) {
-    background: #ffffff;
+    background: $color-white;
   }
 
   &__called-number {
     font-size: clamp(18px, 1.9vw, 30px);
-    font-weight: 900;
+    font-weight: $font-weight-extrabold;
   }
 
   &__called-module {
@@ -184,8 +184,8 @@
   /* RIGHT */
   &__right {
     grid-area: right;
-    border-radius: 16px;
-    background: #ffffff;
+    border-radius: $border-radius-xl;
+    background: $color-white;
     border: $border-width-thin solid $color-gray-200;
     padding: $spacing-lg;
     min-height: 0;
@@ -198,7 +198,7 @@
     max-width: 680px;
     display: grid;
     grid-template-rows: auto 1fr;
-    gap: 92px;
+    gap: $spacing-4xl;
     justify-items: center;
   }
 
@@ -207,12 +207,13 @@
     max-width: 680px;
     text-align: center;
     padding: $spacing-xl;
-    border-radius: 24px;
+    border-radius: $border-radius-xl;
     background: #e0f2fe;
     border: $border-width-thin solid #7dd3fc;
+    border: $border-width-thin solid $color-info;
     max-height: 100%;
     box-sizing: border-box;
-    box-shadow: 0 16px 40px rgba(2, 8, 23, 0.14);
+    box-shadow: $shadow-xl;
   }
 
   &__current-logo {
@@ -226,33 +227,33 @@
   }
 
   &__current-label {
-    font-size: 18px;
-    font-weight: 800;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-extrabold;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: #0f172a;
+    color: $color-gray-900;
     margin-bottom: $spacing-md;
   }
 
   &__current-number {
     font-size: clamp(72px, 8.2vw, 160px);
-    font-weight: 900;
-    line-height: 1;
-    color: #0369a1;
+    font-weight: $font-weight-extrabold;
+    line-height: $line-height-tight;
+    color: $color-primary;
   }
 
   &__current-module {
     margin-top: $spacing-md;
     font-size: clamp(22px, 3vw, 48px);
-    font-weight: 900;
-    color: #0f172a;
+    font-weight: $font-weight-extrabold;
+    color: $color-gray-900;
   }
 
   &__current-location {
     margin-top: $spacing-sm;
     font-size: clamp(28px, 3.6vw, 64px);
-    font-weight: 900;
-    color: #0f172a;
+    font-weight: $font-weight-extrabold;
+    color: $color-gray-900;
   }
 
   /* Small screens: stack cleanly */
@@ -288,7 +289,7 @@
     overflow: auto;
 
     &__header {
-      border-radius: 12px;
+      border-radius: $border-radius-lg;
       padding: $spacing-sm;
       gap: $spacing-sm;
     }
@@ -304,11 +305,11 @@
     }
 
     &__current-wrap {
-      gap: 56px;
+      gap: $spacing-3xl;
     }
 
     &__current-location {
-      font-size: 28px;
+      font-size: $font-size-2xl;
     }
 
     &__grid {
@@ -331,5 +332,76 @@
     &__called {
       grid-template-rows: auto;
     }
+  }
+
+  /* Loading State */
+  &__loading {
+    @include flex-column;
+    @include flex-center;
+    height: 100vh;
+    gap: $spacing-xl;
+  }
+
+  &__loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 4px solid $color-gray-200;
+    border-top-color: $color-primary;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  /* Empty State */
+  &__empty {
+    @include flex-column;
+    @include flex-center;
+    height: 100vh;
+    gap: $spacing-xl;
+    text-align: center;
+    padding: $spacing-4xl;
+  }
+
+  &__empty-icon {
+    font-size: $font-size-6xl;
+    opacity: 0.5;
+  }
+
+  &__empty-title {
+    font-size: $font-size-3xl;
+    font-weight: $font-weight-bold;
+    color: $color-gray-900;
+    margin: 0;
+  }
+
+  &__empty-message {
+    font-size: $font-size-lg;
+    color: $color-gray-600;
+    margin: 0;
+  }
+
+  /* List Empty States */
+  &__list-empty,
+  &__called-empty {
+    @include flex-center;
+    padding: $spacing-xl;
+    color: $color-gray-500;
+    font-size: $font-size-base;
+    font-style: italic;
+  }
+
+  /* Current Ticket Empty State */
+  &__current--empty {
+    .views-turn__current-message {
+      font-size: clamp(18px, 2vw, 32px);
+      font-weight: $font-weight-medium;
+      color: $color-gray-500;
+      margin-top: $spacing-md;
+    }
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }

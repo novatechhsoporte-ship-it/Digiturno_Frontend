@@ -33,7 +33,7 @@ axiosClient.interceptors.request.use(
 axiosClient.interceptors.response.use(
   // RESPUESTA EXITOSA (200–299)
   (response) => {
-    console.log("response :>> ", response);
+    // console.log("response :>> ", response);
     return response.data;
   },
 
