@@ -36,7 +36,7 @@ export const useEditCustomer = (loadPendingTickets) => {
       setEditingCustomer(ticket.customerId);
       setValueCustomer("fullName", ticket.customerId.fullName || "");
       setValueCustomer("email", ticket.customerId.email || "");
-      setValueCustomer("phone", ticket.customerId.phone || "");
+      setValueCustomer("phone", ticket.customerId.phone?.toString() || "");
       setShowEditModal(true);
     },
     [setValueCustomer]
@@ -70,7 +70,6 @@ export const useEditCustomer = (loadPendingTickets) => {
     [editingCustomer, resetCustomer, loadPendingTickets]
   );
 
-  // Handle close edit modal
   const handleCloseEditModal = useCallback(() => {
     setShowEditModal(false);
     setEditingCustomer(null);
@@ -91,4 +90,3 @@ export const useEditCustomer = (loadPendingTickets) => {
     handleCloseEditModal,
   };
 };
-

@@ -16,6 +16,7 @@ export const useCustomForm = ({ schema, formOptions } = {}) => {
     watch,
     reset,
     trigger,
+    setValue,
   } = useForm({
     resolver: schema ? zodResolver(schema) : undefined,
     mode: "onChange",
@@ -34,5 +35,6 @@ export const useCustomForm = ({ schema, formOptions } = {}) => {
     watch,
     reset,
     trigger,
+    setValue,
   };
 };

@@ -5,7 +5,7 @@ export const userSchema = z
     fullName: z.string().min(1, "El nombre completo es requerido").max(200),
     email: z.string().email("Correo inválido"),
     password: z.string().optional().or(z.literal("")),
-    roleName: z.enum(["SUPERADMIN", "ADMIN", "ATTENDANT"]).optional(),
+    roleName: z.enum(["SUPERADMIN", "ADMIN", "ATTENDANT", "RECEPTION"]).optional(),
     tenantId: z.string().optional().or(z.literal("")),
     documentType: z.enum(["CC", "CE", "PA", "TI", "NIT", "PASSPORT"]).optional().or(z.literal("")),
     documentNumber: z.string().optional().or(z.literal("")),
@@ -42,6 +42,7 @@ export const ROLE_LABELS = {
   SUPERADMIN: "Super Admin",
   ADMIN: "Admin",
   ATTENDANT: "Asesor",
+  RECEPTION: "Recepción",
 };
 
 export const STATUS_OPTIONS = [
@@ -55,4 +56,5 @@ export const ROL_OPTIONS = [
   { value: "SUPERADMIN", label: "Super Administrador" },
   { value: "ADMIN", label: "Administrador" },
   { value: "ATTENDANT", label: "Asesor" },
+  { value: "RECEPTION", label: "Recepción" },
 ];

@@ -1,0 +1,27 @@
+@use "@/styles" as *;
+
+.displays-filters {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-md;
+  padding: $spacing-lg;
+  background-color: $color-gray-50;
+  border-radius: $border-radius-md;
+  margin-bottom: $spacing-xl;
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  &__group {
+    @include flex-column;
+    gap: $spacing-xs;
+
+    &--search {
+      @include respond-to(md) {
+        grid-column: 1 / -1;
+      }
+    }
+  }
+}
+

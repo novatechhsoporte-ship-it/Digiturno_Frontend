@@ -41,9 +41,9 @@ export const SIDEBAR_MENU = [
     roles: ["SUPERADMIN", "ADMIN", "ATTENDANT"],
   },
   {
-    path: "/TurnosPublicos",
-    label: "Turnos",
-    icon: "mdi:apple-keyboard-shift",
-    roles: ["SUPERADMIN", "ADMIN", "ATTENDANT"],
+    path: "/displays",
+    label: "Pantallas",
+    icon: "mdi:television",
+    roles: ["SUPERADMIN", "ADMIN"],
   },
 ];
