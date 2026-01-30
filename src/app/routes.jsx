@@ -11,15 +11,26 @@ import { Users } from "@/views/Users/Users";
 import { Tickets } from "@/views/Tickets/Tickets";
 import { AttendantTickets } from "@/views/Tickets/AttendantTickets";
 import { Forbidden } from "@/views/Forbidden/Forbidden";
+import { Display } from "@/views/Display/Display";
+import { Displays } from "@/views/Displays/Displays";
+
+import { ViewsTurn } from "@/views/ViewsTurn/ViewsTurn";
 
 function AppLayout() {
   const location = useLocation();
   const { token, user } = useAuth();
 
-  if (location.pathname === "/login") {
+  // Public routes that don't require user authentication
+  const publicRoutes = ["/login", "/display", "/tv"];
+  const isPublicRoute = publicRoutes.some((route) => {
+    return location.pathname === route || location.pathname.startsWith(`${route}/`);
+  });
+
+  if (isPublicRoute) {
     return <Outlet />;
   }
 
+  // Protected routes require user authentication
   if (!token || !user) {
     return <Navigate to="/login" replace />;
   }
@@ -37,6 +48,10 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="/dashboard" replace /> },
       { path: "login", element: <Login /> },
+      { path: "display", element: <Display /> },
+      { path: "display/:tenantId", element: <ViewsTurn /> },
+      { path: "tv", element: <Display /> },
+      { path: "tv/:tenantId", element: <ViewsTurn /> },
       {
         path: "dashboard",
         element: (
@@ -84,6 +99,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute any={["tickets.update_status", "tickets.view_tenant"]}>
             <AttendantTickets />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "displays",
+        element: (
+          <ProtectedRoute any={["display.view", "display.manage"]}>
+            <Displays />
           </ProtectedRoute>
         ),
       },

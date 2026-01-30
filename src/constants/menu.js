@@ -40,4 +40,10 @@ export const SIDEBAR_MENU = [
     icon: "mdi:users-group",
     roles: ["SUPERADMIN", "ADMIN", "ATTENDANT"],
   },
+  {
+    path: "/displays",
+    label: "Pantallas",
+    icon: "mdi:television",
+    roles: ["SUPERADMIN", "ADMIN"],
+  },
 ];

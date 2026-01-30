@@ -30,9 +30,12 @@ export const useQueryAdapter = (queryKey, queryFn, options = {}) => {
     queryFn: async () => {
       try {
         const response = await queryFn();
+        console.log("response en adapatr:>> ", response);
         // axiosClient already returns response.data from interceptor
         // If response has a data property, use it; otherwise use response directly
-        return response?.data !== undefined ? response.data : response;
+        return response;
+        // console.log("response.data :>> ", response.data);
+        // return response?.data !== undefined ? response.data : response;
       } catch (error) {
         if (showErrorToast) {
           const errorMessage = error?.response?.data?.error || error?.message || "Error al cargar los datos";

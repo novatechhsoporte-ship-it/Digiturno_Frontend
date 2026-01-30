@@ -1,0 +1,32 @@
+@use "@/styles" as *;
+
+.pairing-code-modal {
+  &__form {
+    @include flex-column;
+    gap: $spacing-lg;
+  }
+
+  &__field {
+    @include flex-column;
+    gap: $spacing-xs;
+  }
+
+  &__hint {
+    font-size: $font-size-xs;
+    color: $color-gray-500;
+    margin: $spacing-xs 0 0;
+    line-height: $line-height-relaxed;
+  }
+
+  &__actions {
+    @include flex-between;
+    gap: $spacing-md;
+    padding-top: $spacing-lg;
+    border-top: $border-width-thin solid $color-gray-200;
+
+    @include respond-to(md) {
+      justify-content: flex-end;
+    }
+  }
+}
+
