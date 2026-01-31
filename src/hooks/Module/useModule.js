@@ -1,13 +1,19 @@
 import { useState, useCallback, useMemo, useEffect } from "react";
+
+import { useAuth } from "@/store/authStore";
 import { ModulesApi } from "@core/api/modules";
 import { TenantsApi } from "@core/api/tenants";
+import { ServicesApi } from "../../core/api/services";
 import { useCustomForm } from "@utils/useCustomForm.jsx";
 import { moduleSchema, FORM_FIELDS } from "@schemas/Modules";
-import { useQueryAdapter, useMutationAdapter, createQueryKeyFactory } from "@config/adapters/queryAdapter";
+import { useQueryAdapter, useMutationAdapter, createQueryKeyFactory, QUERY_PRESETS } from "@config/adapters/queryAdapter";
 
 const moduleKeys = createQueryKeyFactory("modules");
 
 export const useModule = () => {
+  const { user } = useAuth();
+  const userTenantId = user?.tenantId ?? "";
+
   const [showForm, setShowForm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [selectedModule, setSelectedModule] = useState(null);
@@ -18,7 +24,7 @@ export const useModule = () => {
     search: "",
   });
 
-  const { register, handleSubmit, errors, isSubmitting, isDisabled, reset, watch, setValue } = useCustomForm({
+  const { register, handleSubmit, errors, isSubmitting, isDisabled, reset, setValue } = useCustomForm({
     schema: moduleSchema,
     formOptions: {
       defaultValues: {
@@ -31,29 +37,26 @@ export const useModule = () => {
     },
   });
 
-  // Watch tenantId to load available attendants when it changes
-  const selectedTenantId = watch("tenantId");
-  // Get current module ID when editing
-  const currentModuleId = mode === "edit" && selectedModule?._id ? selectedModule._id : null;
+  const resolvedTenantId = useMemo(() => {
+    return userTenantId || filters.tenantId || null;
+  }, [userTenantId, filters.tenantId]);
 
   // Query for tenants
-  const { data: tenantsResponse = [], isLoading: loadingTenants } = useQueryAdapter(
-    ["tenants", "list"],
-    () => TenantsApi.listTenants(),
-    {
-      enabled: true,
-      showErrorToast: true,
-    }
-  );
+  const { data: tenants = [], isLoading: loadingTenants } = useQueryAdapter(["tenants", "list"], () => TenantsApi.listTenants(), {
+    enabled: true,
+    showErrorToast: true,
+    staleTime: QUERY_PRESETS.SEMI_STATIC,
+  });
 
-  const tenants = tenantsResponse?.data ?? [];
+  // Query for services
+  const { data: services = [] } = useQueryAdapter(["services", "list"], () => ServicesApi.listServices(), {
+    enabled: true,
+    showErrorToast: true,
+    staleTime: QUERY_PRESETS.SEMI_STATIC,
+  });
 
   // Query for modules
-  const {
-    data: modulesResponse = [],
-    isLoading: loadingModules,
-    refetch: refetchModules,
-  } = useQueryAdapter(
+  const { data: modules = [], isLoading: loadingModules } = useQueryAdapter(
     moduleKeys.list(filters),
     () => {
       const params = {};
@@ -69,40 +72,60 @@ export const useModule = () => {
     }
   );
 
-  const modules = modulesResponse?.data ?? [];
-
-  // Query for available attendants (only when tenant is selected)
-  // Include moduleId when editing to show current attendant
-  const { data: responseAttendants = [], isLoading: loadingAttendants } = useQueryAdapter(
-    ["modules", "available-attendants", selectedTenantId, currentModuleId],
-    () => ModulesApi.getAvailableAttendants(selectedTenantId, currentModuleId),
+  // Query attendants
+  const { data: attendants = [], isLoading: loadingAttendants } = useQueryAdapter(
+    ["modules", "available-attendants", resolvedTenantId],
+    () => ModulesApi.getAvailableAttendants(resolvedTenantId),
     {
-      enabled: Boolean(selectedTenantId),
+      enabled: !!resolvedTenantId,
       showErrorToast: false,
     }
   );
 
-  const availableAttendants = responseAttendants?.data ?? [];
+  const optionsMap = useMemo(() => {
+    const baseAttendants = attendants.map((a) => ({ value: a._id, label: a.fullName }));
 
+    if (mode === "edit" && selectedModule?.attendantId) {
+      const currentAttendant = selectedModule.attendantId;
+      const currentId = currentAttendant._id || currentAttendant;
+      const isAlreadyInList = baseAttendants.some((a) => a.value === currentId);
+
+      if (!isAlreadyInList && currentAttendant.fullName) {
+        baseAttendants.push({
+          value: currentId,
+          label: `${currentAttendant.fullName} (Actual)`,
+        });
+      }
+    }
+
+    return {
+      tenantId: tenants.map((t) => ({ value: t._id, label: t.name })),
+      modulesMap: modules.map((t) => ({ value: t._id, label: t.name })),
+      attendantId: [{ value: "", label: "Sin asesor" }, ...baseAttendants],
+      services: services.map((s) => ({ value: s._id, label: s.name })),
+    };
+  }, [tenants, modules, attendants, services, mode, selectedModule]);
+
+  const availableAttendants = attendants ?? [];
+
+  const onFormSuccess = () => {
+    reset();
+    setShowForm(false);
+    setSelectedModule(null);
+  };
+
+  const invalidateQueries = [moduleKeys.list(filters), ["modules", "available-attendants", resolvedTenantId]];
   // Mutation for create/update
   const createModuleMutation = useMutationAdapter(({ tenantId, payload }) => ModulesApi.createModule(tenantId, payload), {
     successMessage: "Módulo creado exitosamente",
-    invalidateQueries: [moduleKeys.list(filters)],
-    onSuccess: () => {
-      reset();
-      setShowForm(false);
-      setSelectedModule(null);
-    },
+    invalidateQueries,
+    onSuccess: onFormSuccess,
   });
 
   const updateModuleMutation = useMutationAdapter(({ moduleId, payload }) => ModulesApi.updateModule(moduleId, payload), {
     successMessage: "Módulo actualizado exitosamente",
-    invalidateQueries: [moduleKeys.list(filters)],
-    onSuccess: () => {
-      reset();
-      setShowForm(false);
-      setSelectedModule(null);
-    },
+    invalidateQueries,
+    onSuccess: onFormSuccess,
   });
 
   // Mutation for delete
@@ -117,16 +140,20 @@ export const useModule = () => {
 
   /* ================= CREATE / UPDATE ================= */
   const onSubmit = async (values) => {
+    const tenantIdToUse = userTenantId || values.tenantId;
+
+    if (!tenantIdToUse) {
+      console.error("Tenant requerido");
+      return;
+    }
+
     const payload = {
       name: values.name.trim(),
-      ...(values.description && { description: values.description.trim() }),
-      ...(values.attendantId && values.attendantId.trim() !== "" && { attendantId: values.attendantId }),
+      description: values?.description?.trim() ?? "",
+      attendantId: values.attendantId === "" ? null : values.attendantId,
       active: values.active,
+      services: Array.isArray(values.services) ? values.services : [values.services],
     };
-
-    if (values.attendantId === "" || !values.attendantId) {
-      delete payload.attendantId;
-    }
 
     if (mode === "edit") {
       updateModuleMutation.mutate({
@@ -135,7 +162,7 @@ export const useModule = () => {
       });
     } else {
       createModuleMutation.mutate({
-        tenantId: values.tenantId,
+        tenantId: tenantIdToUse,
         payload,
       });
     }
@@ -144,10 +171,11 @@ export const useModule = () => {
   /* ================= EDIT ================= */
   const handleEditModule = useCallback(
     (module) => {
-      reset();
-
       setMode("edit");
       setSelectedModule(module);
+      const serviceId = Array.isArray(module.services)
+        ? module.services[0]?._id || module.services[0]
+        : module.services?._id || module.services;
 
       reset({
         name: module.name || "",
@@ -155,6 +183,7 @@ export const useModule = () => {
         tenantId: module.tenantId?._id || module.tenantId || "",
         attendantId: module.attendantId?._id || module.attendantId || "",
         active: module.active ?? true,
+        services: serviceId || "",
       });
 
       setShowForm(true);
@@ -182,42 +211,11 @@ export const useModule = () => {
   }, [reset]);
 
   const handleFilterChange = useCallback((key, value) => {
-    setFilters((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
+    setFilters((prev) => {
+      if (prev[key] === value) return prev;
+      return { ...prev, [key]: value };
+    });
   }, []);
-
-  const currentAttendant = selectedModule?.attendantId
-    ? {
-        _id: selectedModule.attendantId._id || selectedModule.attendantId,
-        fullName: selectedModule.attendantId.fullName,
-        email: selectedModule.attendantId.email,
-      }
-    : null;
-
-  const attendantOptions = useMemo(() => {
-    const baseOptions = availableAttendants.map((attendant) => ({
-      value: attendant._id,
-      label: attendant.fullName || attendant.email || "Sin nombre",
-    }));
-
-    if (mode === "edit" && currentAttendant) {
-      const exists = baseOptions.some((opt) => opt.value === currentAttendant._id);
-
-      if (!exists) {
-        return [
-          {
-            value: currentAttendant._id,
-            label: currentAttendant.fullName || currentAttendant.email || "Sin nombre",
-          },
-          ...baseOptions,
-        ];
-      }
-    }
-
-    return baseOptions;
-  }, [availableAttendants, currentAttendant, mode]);
 
   useEffect(() => {
     if (mode !== "edit" || !selectedModule?.attendantId) return;
@@ -231,6 +229,22 @@ export const useModule = () => {
     }
   }, [mode, selectedModule, availableAttendants, setValue]);
 
+  useEffect(() => {
+    if (!userTenantId) return;
+
+    // Setear tenant en el formulario
+    setValue("tenantId", userTenantId, {
+      shouldDirty: false,
+      shouldValidate: true,
+    });
+
+    // Setear tenant en filtros
+    setFilters((prev) => ({
+      ...prev,
+      tenantId: userTenantId,
+    }));
+  }, [userTenantId, setValue]);
+
   const loading = loadingModules || loadingTenants;
 
   return {
@@ -238,7 +252,6 @@ export const useModule = () => {
     modules,
     tenants,
     availableAttendants,
-    attendantOptions,
     loading,
     loadingAttendants,
 
@@ -266,5 +279,6 @@ export const useModule = () => {
     setShowDeleteConfirm,
     handleFilterChange,
     deleteModuleMutation,
+    optionsMap,
   };
 };

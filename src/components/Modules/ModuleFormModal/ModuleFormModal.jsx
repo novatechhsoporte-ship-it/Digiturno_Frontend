@@ -12,13 +12,15 @@ export const ModuleFormModal = ({
   isDisabled,
   onSubmit,
   FORM_FIELDS,
-  tenants,
-  attendantOptions,
+  optionsMap = {},
 }) => {
   const renderField = (field) => {
+    const fieldClass = ["module-form-modal__field", field.full && "module-form-modal__field--full"].filter(Boolean).join(" ");
+
+    // Checkbox
     if (field.type === "checkbox") {
       return (
-        <div key={field.name} className="module-form-modal__field module-form-modal__field--full">
+        <div key={field.name} className={fieldClass}>
           <label className="module-form-modal__checkbox">
             <input type="checkbox" {...register(field.name)} />
             <span>{field.label}</span>
@@ -27,19 +29,12 @@ export const ModuleFormModal = ({
       );
     }
 
+    // Select
     if (field.type === "select") {
-      let options = [];
-      if (field.name === "tenantId") {
-        options = tenants.map((tenant) => ({
-          value: tenant._id,
-          label: tenant.name,
-        }));
-      } else if (field.name === "attendantId") {
-        options = [...attendantOptions];
-      }
+      const options = optionsMap[field.optionsKey] || [];
 
       return (
-        <div key={field.name} className={`module-form-modal__field ${field.full ? "module-form-modal__field--full" : ""}`}>
+        <div key={field.name} className={fieldClass}>
           <CustomSelect
             label={field.label}
             required={field.required}
@@ -51,8 +46,9 @@ export const ModuleFormModal = ({
       );
     }
 
+    // Input (default)
     return (
-      <div key={field.name} className={`module-form-modal__field ${field.full ? "module-form-modal__field--full" : ""}`}>
+      <div key={field.name} className={fieldClass}>
         <CustomInput
           label={field.label}
           type={field.type || "text"}

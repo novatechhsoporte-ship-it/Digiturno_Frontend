@@ -5,13 +5,40 @@ export const moduleSchema = z.object({
   description: z.string().optional().or(z.literal("")),
   tenantId: z.string().min(1, "La notaría es requerida"),
   attendantId: z.string().optional().or(z.literal("")),
+  services: z.string().optional().or(z.literal("")),
   active: z.boolean().default(true),
 });
 
 export const FORM_FIELDS = [
   { name: "name", label: "Nombre del Módulo", required: true },
   { name: "description", label: "Descripción", full: true },
-  { name: "tenantId", label: "Notaría", required: true, type: "select" },
-  { name: "attendantId", label: "Asesor Asignado", type: "select" },
-  { name: "active", label: "Módulo activo", type: "checkbox", full: true },
+  {
+    name: "tenantId",
+    label: "Notaría",
+    type: "select",
+    required: true,
+    optionsKey: "tenantId",
+  },
+
+  {
+    name: "attendantId",
+    label: "Asesor Asignado",
+    type: "select",
+    optionsKey: "attendantId",
+  },
+
+  {
+    name: "services",
+    label: "Servicios",
+    type: "select",
+    full: true,
+    optionsKey: "services",
+  },
+
+  {
+    name: "active",
+    label: "Módulo activo",
+    type: "checkbox",
+    full: true,
+  },
 ];

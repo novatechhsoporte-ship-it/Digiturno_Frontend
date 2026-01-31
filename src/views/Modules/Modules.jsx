@@ -8,7 +8,7 @@ export const Modules = () => {
     // Data
     modules,
     tenants,
-    attendantOptions,
+    optionsMap,
     loading,
 
     // UI State
@@ -55,7 +55,7 @@ export const Modules = () => {
         onSubmit={onSubmit}
         FORM_FIELDS={FORM_FIELDS}
         tenants={tenants}
-        attendantOptions={attendantOptions}
+        optionsMap={optionsMap}
       />
 
       <DeleteModuleModal
