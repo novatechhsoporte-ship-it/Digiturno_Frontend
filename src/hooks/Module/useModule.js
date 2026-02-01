@@ -3,7 +3,7 @@ import { useState, useCallback, useMemo, useEffect } from "react";
 import { useAuth } from "@/store/authStore";
 import { ModulesApi } from "@core/api/modules";
 import { TenantsApi } from "@core/api/tenants";
-import { ServicesApi } from "../../core/api/services";
+import { ServicesApi } from "@core/api/services";
 import { useCustomForm } from "@utils/useCustomForm.jsx";
 import { moduleSchema, FORM_FIELDS } from "@schemas/Modules";
 import { useQueryAdapter, useMutationAdapter, createQueryKeyFactory, QUERY_PRESETS } from "@config/adapters/queryAdapter";

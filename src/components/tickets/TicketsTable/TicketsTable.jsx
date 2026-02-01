@@ -50,16 +50,16 @@ export const TicketsTable = ({ pendingTickets, loading, selectedTenant, isSuperA
     };
   });
 
-  if (!selectedTenant) {
-    return (
-      <div className="tickets-table">
-        <h2 className="tickets-table__title">Últimos 10 Turnos Pendientes</h2>
-        <div className="tickets-table__empty">
-          {isSuperAdmin ? "Seleccione una notaría para ver los turnos" : "No hay notaría asignada"}
-        </div>
-      </div>
-    );
-  }
+  // if (!selectedTenant) {
+  //   return (
+  //     <div className="tickets-table">
+  //       <h2 className="tickets-table__title">Últimos 10 Turnos Pendientes</h2>
+  //       <div className="tickets-table__empty">
+  //         {isSuperAdmin ? "Seleccione una notaría para ver los turnos" : "No hay notaría asignada"}
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   if (loading) {
     return (

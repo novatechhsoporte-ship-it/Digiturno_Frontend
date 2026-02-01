@@ -18,10 +18,12 @@ export const Tickets = () => {
     editingCustomer,
     showCreateButton,
     isSuperAdmin,
+    servicesMap,
 
     // Forms
     register,
     handleSubmit,
+    onSubmitCreate,
     errors,
     isSubmitting,
     isDisabled,
@@ -44,7 +46,6 @@ export const Tickets = () => {
 
     // Options
     tenantOptions,
-    moduleOptions,
     moduleFilterOptions,
   } = useTickets();
 
@@ -78,11 +79,12 @@ export const Tickets = () => {
         onClose={handleCloseCreateModal}
         register={register}
         handleSubmit={handleSubmit}
+        onSubmitCreate={onSubmitCreate}
         errors={errors}
         isSubmitting={isSubmitting}
         isDisabled={isDisabled}
-        moduleOptions={moduleOptions}
         onCreateTicket={onCreateTicket}
+        servicesMap={servicesMap}
       />
 
       <EditCustomerModal

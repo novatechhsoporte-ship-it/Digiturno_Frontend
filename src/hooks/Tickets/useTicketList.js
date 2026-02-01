@@ -13,7 +13,7 @@ export const useTicketList = (selectedTenant) => {
 
   // Query for pending tickets
   const {
-    data: pendingTicketsData,
+    data: pendingTickets = [],
     isLoading: loading,
     refetch: loadPendingTickets,
   } = useQueryAdapter(
@@ -29,12 +29,6 @@ export const useTicketList = (selectedTenant) => {
       showErrorToast: true,
     }
   );
-
-  const pendingTickets = Array.isArray(pendingTicketsData)
-    ? pendingTicketsData
-    : Array.isArray(pendingTicketsData?.data)
-    ? pendingTicketsData.data
-    : [];
 
   // Initialize Socket.IO connection
   useEffect(() => {
@@ -94,7 +88,7 @@ export const useTicketList = (selectedTenant) => {
   }, [token, selectedTenant, loadPendingTickets]);
 
   return {
-    pendingTickets: Array.isArray(pendingTickets) ? pendingTickets : [],
+    pendingTickets,
     loading,
     loadPendingTickets,
   };

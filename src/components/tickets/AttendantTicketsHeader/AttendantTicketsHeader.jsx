@@ -1,7 +1,7 @@
 import { CustomButton, CustomIcon } from "@components/common";
 import "./AttendantTicketsHeader.scss";
 
-export const AttendantTicketsHeader = ({ canCallNext, handleCallNextTicket, isCallingNext, totalPending }) => {
+export const AttendantTicketsHeader = ({ canCallNext, handleCallNextTicket, isCallingNext, totalPending = [] }) => {
   console.log("totalPending :>> ", totalPending);
   return (
     <header className="attendant-tickets-header">

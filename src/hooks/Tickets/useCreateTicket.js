@@ -1,11 +1,12 @@
 import { useState, useCallback, useMemo } from "react";
-import { toast } from "sonner";
+
+import { ServicesApi } from "@core/api/services";
 import { TicketsApi } from "@core/api/tickets";
 import { useAuth } from "@/store/authStore";
 import { useAbility } from "@hooks/";
 import { useCustomForm } from "@utils/useCustomForm";
 import { ticketSchema, DEFAULT_FORM_VALUES } from "@schemas/Tickets";
-import { createQueryKeyFactory, useMutationAdapter } from "@config/adapters/queryAdapter";
+import { createQueryKeyFactory, useMutationAdapter, useQueryAdapter, QUERY_PRESETS } from "@config/adapters/queryAdapter";
 
 const ticketKeys = createQueryKeyFactory("tickets");
 
@@ -39,6 +40,7 @@ export const useCreateTicket = (selectedTenant, canCreate) => {
         ...(values.email?.trim() && { email: values.email.trim() }),
         ...(values.phone?.trim() && { phone: values.phone.trim() }),
         ...(values.moduleId && { moduleId: values.moduleId }),
+        serviceTypeId: values.serviceTypeId || "",
       };
 
       return TicketsApi.createTicket(payload);
@@ -78,6 +80,26 @@ export const useCreateTicket = (selectedTenant, canCreate) => {
     return canCreate && (isSuperAdmin ? selectedTenant : authUser?.tenantId);
   }, [canCreate, isSuperAdmin, selectedTenant, authUser?.tenantId]);
 
+  // Query for services
+  const { data: services = [] } = useQueryAdapter(
+    ["services", "list"],
+    () => ServicesApi.listServices({ tenantId: authUser.tenantId }),
+    {
+      enabled: true,
+      showErrorToast: true,
+      staleTime: QUERY_PRESETS.SEMI_STATIC,
+    }
+  );
+
+  const servicesMap = useMemo(
+    () =>
+      services.map((s) => ({
+        value: s._id,
+        label: s.name,
+      })),
+    [services]
+  );
+
   return {
     showCreateModal,
     loading: loading || isSubmitting,
@@ -90,5 +112,6 @@ export const useCreateTicket = (selectedTenant, canCreate) => {
     handleShowCreateModal,
     handleCloseCreateModal,
     showCreateButton,
+    servicesMap,
   };
 };

@@ -14,7 +14,7 @@ export const useTickets = () => {
 
   // Filters hook
   const filters = useTicketFilters();
-  const { selectedTenant, selectedModule, tenantOptions, moduleOptions, moduleFilterOptions, isSuperAdmin } = filters;
+  const { selectedTenant, tenantOptions, moduleFilterOptions } = filters;
 
   const ticketList = useTicketList(selectedTenant);
   const { pendingTickets, loading: listLoading, loadPendingTickets } = ticketList;
@@ -34,8 +34,6 @@ export const useTickets = () => {
   const createTicket = useCreateTicket(selectedTenant, canCreate);
 
   return {
-    // State from filters
-    ...filters,
     // State from ticket list
     pendingTickets,
     loading: listLoading || createTicket.loading || editCustomer.loading,
@@ -48,9 +46,11 @@ export const useTickets = () => {
     // Forms
     register: createTicket.register,
     handleSubmit: createTicket.handleSubmit,
+    onSubmitCreate: createTicket.onSubmit,
     errors: createTicket.errors,
     isSubmitting: createTicket.isSubmitting,
     isDisabled: createTicket.isDisabled,
+    servicesMap: createTicket.servicesMap,
     registerCustomer: editCustomer.registerCustomer,
     handleSubmitCustomer: editCustomer.handleSubmitCustomer,
     errorsCustomer: editCustomer.errorsCustomer,
@@ -67,7 +67,6 @@ export const useTickets = () => {
     ticketActions,
     // Options
     tenantOptions,
-    moduleOptions,
     moduleFilterOptions,
   };
 };

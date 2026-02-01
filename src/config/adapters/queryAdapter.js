@@ -1,6 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
+// queryDefaults.ts
+export const QUERY_PRESETS = {
+  STATIC: { staleTime: 30 * 60 * 1000 },
+  SEMI_STATIC: { staleTime: 5 * 60 * 1000 },
+  REALTIME: { staleTime: 0 },
+};
+
 /**
  * Reusable TanStack Query adapter for API calls
  * Provides a consistent interface for queries and mutations with error handling
@@ -30,9 +37,6 @@ export const useQueryAdapter = (queryKey, queryFn, options = {}) => {
     queryFn: async () => {
       try {
         const response = await queryFn();
-        // axiosClient already returns response.data from interceptor
-        // displayAxios returns full axios response: { data: {...}, status, headers }
-        // Extract data if it's an axios response structure
 
         if (response.success && response?.data !== undefined) {
           return response.data;
