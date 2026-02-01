@@ -31,7 +31,6 @@ export const FORM_FIELDS = [
 
   { name: "serviceHoursStart", label: "Hora de Inicio", type: "time" },
   { name: "serviceHoursEnd", label: "Hora de Fin", type: "time" },
-  { name: "maxWaitingTimeMinutes", label: "Tiempo Máximo de Espera (min)", type: "number" },
 
   { name: "status", label: "Notaría activa", type: "checkbox", full: true },
 ];
