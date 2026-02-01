@@ -45,16 +45,31 @@ export const ROLE_LABELS = {
   RECEPTION: "Recepción",
 };
 
-export const STATUS_OPTIONS = [
-  { value: "", label: "Todos" },
-  { value: "true", label: "Activos" },
-  { value: "false", label: "Inactivos" },
-];
-
-export const ROL_OPTIONS = [
-  { value: "", label: "Todos los roles" },
-  { value: "SUPERADMIN", label: "Super Administrador" },
-  { value: "ADMIN", label: "Administrador" },
-  { value: "ATTENDANT", label: "Asesor" },
-  { value: "RECEPTION", label: "Recepción" },
+export const FILTER_FIELDS = [
+  {
+    name: "tenantId",
+    label: "Filtrar por Notaría",
+    type: "select",
+    optionsKey: "tenantsOptions",
+  },
+  // {
+  //   name: "roleName",
+  //   label: "Rol",
+  //   type: "select",
+  //   optionsKey: "roleFilterOptions",
+  // },
+  // {
+  //   name: "status",
+  //   label: "Estado",
+  //   type: "select",
+  //   optionsKey: "statusOptions",
+  // },
+  {
+    name: "search",
+    label: "Buscar",
+    type: "text",
+    placeholder: "Nombre, email...",
+    icon: "mdi:magnify",
+    className: "users__filter-group--search",
+  },
 ];

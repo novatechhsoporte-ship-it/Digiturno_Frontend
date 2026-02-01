@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { toast } from "sonner";
 
 import { useAbility } from "@hooks/";
@@ -7,11 +7,11 @@ import { UsersApi } from "@core/api/users";
 import { TenantsApi } from "@core/api/tenants";
 import { useCustomForm } from "@utils/useCustomForm";
 import { userSchema, FORM_FIELDS, DEFAULT_FORM_VALUES, ROLE_LABELS } from "@schemas/Users";
+import { useQueryAdapter, useMutationAdapter, createQueryKeyFactory, QUERY_PRESETS } from "@config/adapters/queryAdapter";
+
+const usersKeys = createQueryKeyFactory("users");
 
 export const useUsers = () => {
-  const [users, setUsers] = useState([]);
-  const [tenants, setTenants] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -32,32 +32,36 @@ export const useUsers = () => {
     },
   });
 
-  const loadTenants = useCallback(async () => {
-    try {
-      const response = await TenantsApi.listTenants();
-      setTenants(Array.isArray(response?.data) ? response.data : []);
-    } catch {
-      toast.error("Error loading tenants");
-    }
-  }, []);
+  // Query for tenants
+  const { data: tenants = [] } = useQueryAdapter(["tenants", "list"], () => TenantsApi.listTenants(), {
+    enabled: true,
+    showErrorToast: true,
+    staleTime: QUERY_PRESETS.SEMI_STATIC,
+  });
 
-  const loadUsers = useCallback(async () => {
-    try {
-      setLoading(true);
-      const params = {};
-      if (filters.tenantId) params.tenantId = filters.tenantId;
-      if (filters.roleName) params.roleName = filters.roleName;
-      if (filters.status !== "") params.status = filters.status === "true";
-      if (filters.search) params.search = filters.search;
+  const buildUserListParams = (filters) => {
+    const params = {};
 
-      const response = await UsersApi.listUsers(params);
-      setUsers(Array.isArray(response?.data) ? response.data : []);
-    } catch {
-      toast.error("Error loading users");
-    } finally {
-      setLoading(false);
+    if (filters.tenantId) params.tenantId = filters.tenantId;
+    if (filters.roleName) params.roleName = filters.roleName;
+    if (filters.status !== "") params.status = filters.status === "true";
+    if (filters.search) params.search = filters.search;
+
+    return params;
+  };
+
+  const userListParams = useMemo(() => buildUserListParams(filters), [filters]);
+
+  // Query for users
+  const { data: users = [], isLoading: loadingUsers } = useQueryAdapter(
+    usersKeys.list(filters),
+    () => UsersApi.listUsers(userListParams),
+    {
+      enabled: true,
+      showErrorToast: true,
+      keepPreviousData: true,
     }
-  }, [filters]);
+  );
 
   const buildPayload = (values, mode) => {
     const payload = {
@@ -77,6 +81,34 @@ export const useUsers = () => {
     return payload;
   };
 
+  const onFormSuccess = () => {
+    reset(DEFAULT_FORM_VALUES);
+    setShowForm(false);
+    setSelectedUser(null);
+  };
+
+  const invalidateQueries = [usersKeys.list(filters), ["users"]];
+  const updateModuleMutation = useMutationAdapter(({ selectedUser, payload }) => UsersApi.updateUser(selectedUser._id, payload), {
+    successMessage: "Usuario actualizado exitosamente",
+    invalidateQueries,
+    onSuccess: onFormSuccess,
+  });
+
+  const createModuleMutation = useMutationAdapter(({ payload }) => UsersApi.createUser(payload), {
+    successMessage: "Usuario creado exitosamente",
+    invalidateQueries,
+    onSuccess: onFormSuccess,
+  });
+
+  const deleteModuleMutation = useMutationAdapter((userId) => UsersApi.deleteUser(userId), {
+    successMessage: "Usuario eliminado exitosamente",
+    invalidateQueries: [usersKeys.list(filters)],
+    onSuccess: () => {
+      setShowDeleteConfirm(false);
+      setSelectedUser(null);
+    },
+  });
+
   /* ================= CREATE / UPDATE ================= */
   const onSubmit = async (values) => {
     try {
@@ -88,22 +120,14 @@ export const useUsers = () => {
       const payload = buildPayload(values, mode);
 
       if (mode === "edit") {
-        await UsersApi.updateUser(selectedUser._id, payload);
-        toast.success("Usuario actualizado exitosamente");
+        updateModuleMutation.mutate({ selectedUser, payload });
       } else {
-        const response = await UsersApi.createUser(payload);
-        if (response?.data?.success === false) {
-          toast.error(response?.data?.message);
-          return;
-        }
-
-        toast.success("Usuario creado exitosamente");
+        createModuleMutation.mutate({ payload });
       }
 
       reset(DEFAULT_FORM_VALUES);
       setShowForm(false);
       setSelectedUser(null);
-      loadUsers();
     } catch (err) {
       toast.error(err?.response?.data?.error || err?.message || "Operación fallida");
     }
@@ -111,7 +135,6 @@ export const useUsers = () => {
 
   /* ================= EDIT ================= */
   const handleEditUser = (user) => {
-    // setMode("edit");
     setSelectedUser(user);
 
     reset({
@@ -134,23 +157,16 @@ export const useUsers = () => {
     setShowDeleteConfirm(true);
   };
 
-  const handleConfirmDelete = async () => {
-    try {
-      await UsersApi.deleteUser(selectedUser._id);
-      toast.success("Usuario eliminado");
-      setShowDeleteConfirm(false);
-      setSelectedUser(null);
-      loadUsers();
-    } catch {
-      toast.error("Error al eliminar usuario");
+  const handleConfirmDelete = useCallback(() => {
+    if (selectedUser?._id) {
+      deleteModuleMutation.mutate(selectedUser._id);
     }
-  };
+  }, [selectedUser, deleteModuleMutation]);
 
   const handleShowForm = () => {
     if (showForm) {
       reset(DEFAULT_FORM_VALUES);
       setSelectedUser(null);
-      // setMode("create");
     }
     setShowForm(!showForm);
   };
@@ -193,25 +209,16 @@ export const useUsers = () => {
         { value: "NIT", label: "NIT" },
         { value: "PA", label: "Pasaporte" },
       ],
+      tenantsOptions: [
+        { value: "", label: "Todas las notarías" },
+        ...tenants.map((tenant) => ({
+          value: tenant._id,
+          label: tenant.name,
+        })),
+      ],
     }),
     [tenants]
   );
-
-  const TENANT_OPTIONS = [
-    { value: "", label: "Todas las notarías" },
-    ...tenants.map((tenant) => ({
-      value: tenant._id,
-      label: tenant.name,
-    })),
-  ];
-
-  useEffect(() => {
-    loadTenants();
-  }, [loadTenants]);
-
-  useEffect(() => {
-    loadUsers();
-  }, [loadUsers]);
 
   useEffect(() => {
     if (!showForm) {
@@ -224,7 +231,7 @@ export const useUsers = () => {
     //Props
     users,
     tenants,
-    loading,
+    loading: loadingUsers,
     showForm,
     showDeleteConfirm,
     selectedUser,
@@ -233,7 +240,6 @@ export const useUsers = () => {
     filters,
     tableActions,
     optionsMap,
-    TENANT_OPTIONS,
 
     //methods
     register,

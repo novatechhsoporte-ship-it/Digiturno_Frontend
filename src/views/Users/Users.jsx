@@ -1,10 +1,9 @@
-import React from "react";
-
 import { Can } from "@components/Permissions/Can";
 import { USER_PERMISSIONS } from "@core/permissions";
 import { CustomButton, CustomIcon, CustomInput, CustomModal, CustomSelect, CustomTable } from "@components/common";
 import { useUsers } from "@hooks/Users/useUsers";
-import { ROLE_LABELS, STATUS_OPTIONS, ROL_OPTIONS } from "@schemas/Users";
+import { ROLE_LABELS } from "@schemas/Users";
+import { UsersFilters } from "@components/users/UsersFilters";
 
 import "./Users.scss";
 
@@ -21,7 +20,6 @@ export const Users = () => {
     filters,
     tableActions,
     optionsMap,
-    TENANT_OPTIONS,
 
     //methods
     register,
@@ -111,38 +109,8 @@ export const Users = () => {
       </header>
 
       {/* ================= FILTERS ================= */}
-      <div className="users__filters">
-        <CustomSelect
-          label="Filtrar por Notaría"
-          value={filters.tenantId}
-          onChange={(e) => handleFilterChange("tenantId", e.target.value)}
-          options={TENANT_OPTIONS}
-        />
+      <UsersFilters filters={filters} optionsMap={optionsMap} handleFilterChange={handleFilterChange} />
 
-        <CustomSelect
-          label="Rol"
-          value={filters.roleName}
-          onChange={(e) => handleFilterChange("roleName", e.target.value)}
-          options={ROL_OPTIONS}
-        />
-        <CustomSelect
-          label="Estado"
-          value={filters.status}
-          onChange={(e) => handleFilterChange("status", e.target.value)}
-          options={STATUS_OPTIONS}
-        />
-
-        <CustomInput
-          label="Buscar"
-          placeholder="Nombre, email..."
-          icon="mdi:magnify"
-          value={filters.search}
-          onChange={(e) => handleFilterChange("search", e.target.value)}
-          className="users__filter-group--search"
-        />
-      </div>
-
-      {/* ================= MODAL NEW ================= */}
       <CustomModal
         isOpen={showForm}
         onClose={handleShowForm}
