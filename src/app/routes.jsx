@@ -2,7 +2,7 @@ import { createBrowserRouter, RouterProvider, Outlet, Navigate, useLocation } fr
 
 import { ProtectedRoute } from "./ProtectedRoute";
 import { useAuth } from "@/store/authStore";
-import { Layout } from "@/components/layout/layout";
+import { Layout } from "@/components/layout/Layout";
 import { Login } from "@/views/Login/Login";
 import { Dashboard } from "@/views/Dashboard/Dashboard";
 import { Tenants } from "@/views/Tenant/Tenants";
