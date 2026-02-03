@@ -4,7 +4,7 @@
   min-height: 100vh;
   @include flex-column;
   @include flex-center;
-  background: linear-gradient(135deg, $color-primary 0%, darken($color-primary, 15%) 100%);
+  background: $color-primary;
   padding: $spacing-4xl;
   color: $color-white;
 

@@ -1,0 +1,137 @@
+@use "@/styles" as *;
+
+.qr-card {
+  background: $color-white;
+  border: $border-width-thin solid $color-gray-200;
+  border-radius: $border-radius-lg;
+  padding: $spacing-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  transition: $transition-base;
+  box-shadow: $shadow-sm;
+
+  &:hover {
+    box-shadow: $shadow-md;
+    border-color: $color-gray-300;
+  }
+
+  &__header {
+    @include flex-between;
+    align-items: flex-start;
+    gap: $spacing-md;
+  }
+
+  &__info {
+    flex: 1;
+  }
+
+  &__title-row {
+    @include flex-start;
+    gap: $spacing-md;
+    margin-bottom: $spacing-xs;
+  }
+
+  &__icon {
+    color: $color-primary;
+  }
+
+  &__token {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $color-gray-900;
+    margin: 0;
+    word-break: break-all;
+  }
+
+  &__tenant {
+    font-size: $font-size-sm;
+    color: $color-gray-600;
+    margin: 0;
+  }
+
+  &__status-group {
+    @include flex-start;
+    gap: $spacing-xs;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  &__status {
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    text-transform: uppercase;
+
+    &--active {
+      background: $color-success-light;
+      color: $color-success-dark;
+    }
+
+    &--inactive {
+      background: $color-gray-200;
+      color: $color-gray-600;
+    }
+
+    &--expired {
+      background: $color-error-light;
+      color: $color-error-dark;
+    }
+  }
+
+  &__qr-image {
+    display: flex;
+    justify-content: center;
+    padding: $spacing-md;
+    background: $color-gray-50;
+    border-radius: $border-radius-md;
+
+    img {
+      max-width: 200px;
+      max-height: 200px;
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  &__url {
+    @include flex-start;
+    gap: $spacing-sm;
+    padding: $spacing-sm;
+    background: $color-gray-50;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-sm;
+
+    &-link {
+      color: $color-primary;
+      text-decoration: none;
+      word-break: break-all;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+
+  &__detail {
+    @include flex-start;
+    gap: $spacing-sm;
+    font-size: $font-size-sm;
+    color: $color-gray-600;
+  }
+
+  &__actions {
+    @include flex-start;
+    gap: $spacing-sm;
+    padding-top: $spacing-md;
+    border-top: $border-width-thin solid $color-gray-200;
+  }
+}
+

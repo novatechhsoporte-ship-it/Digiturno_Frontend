@@ -1,0 +1,371 @@
+@use "@/styles" as *;
+
+.public-qr {
+  min-height: 100vh;
+  background: $color-white;
+  display: flex;
+  flex-direction: column;
+
+  &--loading,
+  &--error {
+    @include flex-column;
+    @include flex-center;
+    gap: $spacing-lg;
+    text-align: center;
+    min-height: 100vh;
+  }
+
+  &__spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba($color-primary, 0.3);
+    border-top-color: $color-primary;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  &__error-title {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    margin: 0 0 $spacing-sm 0;
+    color: $color-gray-900;
+  }
+
+  &__error-message {
+    font-size: $font-size-base;
+    color: $color-gray-600;
+  }
+
+  // Header
+  &__header {
+    padding: $spacing-lg $spacing-xl;
+    border-bottom: 1px solid $color-gray-200;
+    background: $color-white;
+  }
+
+  &__header-logo {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  // Content
+  &__content {
+    flex: 1;
+    padding: $spacing-xl;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  // Welcome Step
+  &__welcome {
+    @include flex-column;
+    @include flex-center;
+    min-height: 60vh;
+    text-align: center;
+  }
+
+  &__welcome-content {
+    max-width: 600px;
+  }
+
+  &__welcome-title {
+    font-size: $font-size-4xl;
+    font-weight: $font-weight-bold;
+    color: $color-gray-900;
+    margin: 0 0 $spacing-md 0;
+  }
+
+  &__welcome-message {
+    font-size: $font-size-lg;
+    color: $color-gray-600;
+    margin: 0 0 $spacing-2xl 0;
+  }
+
+  &__welcome-button {
+    min-width: 200px;
+    padding: $spacing-md $spacing-xl;
+    font-size: $font-size-lg;
+  }
+
+  // Form Container
+  &__form-container {
+    max-width: 700px;
+    margin: 0 auto;
+    background: $color-white;
+    border-radius: $border-radius-xl;
+    padding: $spacing-3xl;
+    box-shadow: $shadow-lg;
+  }
+
+  &__form-title {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    margin: 0 0 $spacing-xl 0;
+    text-align: center;
+    color: $color-gray-900;
+  }
+
+  &__form {
+    @include flex-column;
+    gap: $spacing-lg;
+  }
+
+  &__form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-lg;
+
+    @include respond-to(md) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__field {
+    &--full {
+      grid-column: 1 / -1;
+    }
+  }
+
+  &__form-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: $spacing-md;
+    margin-top: $spacing-lg;
+    padding-top: $spacing-lg;
+    border-top: 1px solid $color-gray-200;
+  }
+
+  // Services Step
+  &__services {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  &__services-title {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    text-align: center;
+    color: $color-gray-900;
+    margin: 0 0 $spacing-2xl 0;
+  }
+
+  &__services-loading,
+  &__services-empty {
+    text-align: center;
+    padding: $spacing-3xl;
+    color: $color-gray-600;
+    font-size: $font-size-lg;
+  }
+
+  &__services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: $spacing-lg;
+    margin-bottom: $spacing-2xl;
+  }
+
+  &__service-card {
+    background: $color-white;
+    border: 2px solid $color-gray-200;
+    border-radius: $border-radius-lg;
+    padding: $spacing-xl;
+    cursor: pointer;
+    transition: all $transition-base;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: $spacing-md;
+
+    &:hover {
+      border-color: $color-primary;
+      box-shadow: $shadow-md;
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  &__service-card-content {
+    flex: 1;
+  }
+
+  &__service-card-name {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $color-gray-900;
+    margin: 0 0 $spacing-xs 0;
+  }
+
+  &__service-card-description {
+    font-size: $font-size-sm;
+    color: $color-gray-600;
+    margin: 0;
+    line-height: $line-height-relaxed;
+  }
+
+  &__service-card-arrow {
+    font-size: $font-size-2xl;
+    color: $color-primary;
+    font-weight: $font-weight-bold;
+  }
+
+  &__services-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: $spacing-xl;
+  }
+
+  // Ticket Result Step
+  &__ticket-result {
+    @include flex-column;
+    @include flex-center;
+    min-height: 60vh;
+  }
+
+  &__ticket-result-content {
+    text-align: center;
+    max-width: 500px;
+    background: $color-white;
+    border-radius: $border-radius-xl;
+    padding: $spacing-3xl;
+    box-shadow: $shadow-lg;
+  }
+
+  &__ticket-result-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: $color-success-light;
+    color: $color-success;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: $font-size-4xl;
+    font-weight: $font-weight-bold;
+    margin: 0 auto $spacing-lg;
+  }
+
+  &__ticket-result-title {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: $color-gray-900;
+    margin: 0 0 $spacing-lg 0;
+  }
+
+  &__ticket-result-number {
+    font-size: $font-size-6xl;
+    font-weight: $font-weight-extrabold;
+    color: $color-primary;
+    margin: 0 0 $spacing-lg 0;
+    line-height: $line-height-tight;
+  }
+
+  &__ticket-result-message {
+    font-size: $font-size-base;
+    color: $color-gray-600;
+    margin: 0 0 $spacing-xl 0;
+    line-height: $line-height-relaxed;
+  }
+
+  &__ticket-result-info {
+    background: $color-gray-50;
+    border-radius: $border-radius-md;
+    padding: $spacing-lg;
+    margin: 0 0 $spacing-xl 0;
+    text-align: left;
+
+    p {
+      margin: $spacing-xs 0;
+      font-size: $font-size-sm;
+      color: $color-gray-700;
+
+      strong {
+        color: $color-gray-900;
+        font-weight: $font-weight-semibold;
+      }
+    }
+  }
+
+  &__ticket-result-button {
+    min-width: 200px;
+  }
+
+  // Confirmation Modal
+  &__confirm-modal {
+    @include flex-column;
+    gap: $spacing-lg;
+  }
+
+  &__confirm-modal-content {
+    @include flex-column;
+    gap: $spacing-lg;
+  }
+
+  &__confirm-modal-subtitle {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $color-gray-900;
+    margin: 0;
+  }
+
+  &__confirm-modal-info {
+    @include flex-column;
+    gap: $spacing-sm;
+
+    p {
+      margin: 0;
+      font-size: $font-size-base;
+      color: $color-gray-700;
+
+      strong {
+        color: $color-gray-900;
+        font-weight: $font-weight-semibold;
+        margin-right: $spacing-xs;
+      }
+    }
+  }
+
+  &__confirm-modal-divider {
+    height: 1px;
+    background: $color-gray-200;
+    margin: $spacing-md 0;
+  }
+
+  &__confirm-modal-service {
+    background: $color-primary-light;
+    border-radius: $border-radius-md;
+    padding: $spacing-lg;
+  }
+
+  &__confirm-modal-service-name {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $color-gray-900;
+    margin: 0 0 $spacing-xs 0;
+  }
+
+  &__confirm-modal-service-description {
+    font-size: $font-size-sm;
+    color: $color-gray-600;
+    margin: 0;
+  }
+
+  &__confirm-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: $spacing-md;
+    margin-top: $spacing-md;
+    padding-top: $spacing-lg;
+    border-top: 1px solid $color-gray-200;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

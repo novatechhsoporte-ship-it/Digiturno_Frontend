@@ -1,0 +1,22 @@
+@use "@/styles" as *;
+
+.qr-header {
+  @include flex-between;
+  margin-bottom: $spacing-xl;
+  padding-bottom: $spacing-lg;
+  border-bottom: $border-width-thin solid $color-gray-200;
+
+  &__title {
+    font-size: $font-size-3xl;
+    font-weight: $font-weight-bold;
+    color: $color-gray-900;
+    margin: 0 0 $spacing-xs 0;
+  }
+
+  &__subtitle {
+    font-size: $font-size-base;
+    color: $color-gray-600;
+    margin: 0;
+  }
+}
+

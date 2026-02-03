@@ -46,4 +46,16 @@ export const SIDEBAR_MENU = [
     icon: "mdi:television",
     roles: ["SUPERADMIN", "ADMIN"],
   },
+  {
+    path: "/qr",
+    label: "Códigos QR",
+    icon: "mdi:qrcode",
+    roles: ["SUPERADMIN", "ADMIN"],
+  },
+  {
+    path: "/services",
+    label: "Servicios",
+    icon: "mdi:briefcase",
+    roles: ["SUPERADMIN", "ADMIN"],
+  },
 ];

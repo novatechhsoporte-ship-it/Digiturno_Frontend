@@ -6,6 +6,9 @@ import { DisplaysApi } from "@core/api/displays";
 import { TicketsApi } from "@core/api/tickets";
 import { createSocketConnection, disconnectSocket } from "@config/socket";
 import { useQueryAdapter, createQueryKeyFactory } from "@config/adapters/queryAdapter";
+import { speakTicket } from "@config/adapters/speakTickets";
+
+// import { useQueryAdapter, useMutationAdapter, createQueryKeyFactory, QUERY_PRESETS } from "@config/adapters/queryAdapter";
 
 const DISPLAY_TOKEN_KEY = "display_token";
 const displayTicketKeys = createQueryKeyFactory("displayTickets");
@@ -30,7 +33,7 @@ export const useDisplayTickets = () => {
       return TicketsApi.getCurrentDisplayTicket(tenantId);
     },
     {
-      enabled: Boolean(tenantId) && !loading,
+      enabled: !!tenantId && !loading,
       keepPreviousData: true,
       showErrorToast: false,
     }
@@ -38,7 +41,7 @@ export const useDisplayTickets = () => {
 
   console.log("currentTicketData :>> ", currentTicketData);
 
-  // Query for last called tickets (last 3)
+  // Query for last called tickets
   const {
     data: lastCalledData,
     isLoading: loadingCalled,
@@ -52,15 +55,14 @@ export const useDisplayTickets = () => {
       return TicketsApi.getLastCalledTickets(tenantId, 3);
     },
     {
-      enabled: Boolean(tenantId) && !loading,
-      // refetchInterval: 5000,
+      enabled: !!tenantId && !loading,
       showErrorToast: false,
     }
   );
 
   // console.log("lastCalledData :>> ", lastCalledData);
 
-  // Query for next pending tickets (first 3)
+  // Query for next pending tickets
   const {
     data: nextPendingData,
     isLoading: loadingPending,
@@ -74,15 +76,13 @@ export const useDisplayTickets = () => {
       return TicketsApi.getNextPendingTickets(tenantId, 3);
     },
     {
-      enabled: Boolean(tenantId) && !loading,
-      // refetchInterval: 5000,
+      enabled: !!tenantId && !loading,
       showErrorToast: false,
     }
   );
 
   // console.log("nextPendingData :>> ", nextPendingData);
 
-  // Extract current ticket - similar to useTicketList pattern
   // queryAdapter now extracts axios response.data, so we get { success: true, data: ticket }
   const currentTicket = useMemo(() => {
     if (!currentTicketData) return null;
@@ -164,8 +164,11 @@ export const useDisplayTickets = () => {
     const handleConnect = () => {
       console.log("Display conectado a Socket.IO");
       // Backend automatically joins tenant rooms, but we can emit if needed
-      socket.emit("join-tickets");
+      socket.emit("join-public");
+      // socket.emit("join-tickets");
     };
+
+    console.log("🧩 Socket ID display:", socket.id);
 
     if (socket.connected) {
       handleConnect();
@@ -173,16 +176,27 @@ export const useDisplayTickets = () => {
       socket.on("connect", handleConnect);
     }
 
+    socket.on("joined-room", ({ room }) => {
+      console.log("✅ Display unido a sala:", room);
+    });
+
     // Listen to ticket events
     socket.on("ticket:created", () => {
       refetchPending();
     });
 
-    socket.on("ticket:called", () => {
+    socket.on("ticket:called", (payload) => {
+      console.log("payload in displya:>> ", payload);
       // refetchCurrent();
       // refetchCalled();
       // refetchPending();
-      queryClient.setQueryData(displayTicketKeys.list(["current", tenantId]), payload.currentTicket);
+      // queryClient.setQueryData(displayTicketKeys.list(["current", tenantId]), payload.currentTicket);
+      speakTicket({
+        ticketNumber: 1,
+        moduleName: "modulo 1",
+        // ticketNumber: ticketData.ticketNumber,
+        // moduleName: authUser?.module?.name,
+      });
     });
 
     socket.on("ticket:started", () => {
@@ -204,6 +218,12 @@ export const useDisplayTickets = () => {
     });
 
     socket.on("ticket:recalled", () => {
+      speakTicket({
+        ticketNumber: 1,
+        moduleName: "modulo 1",
+        // ticketNumber: ticketData.ticketNumber,
+        // moduleName: authUser?.module?.name,
+      });
       refetchCurrent();
       refetchCalled();
     });
@@ -232,6 +252,33 @@ export const useDisplayTickets = () => {
 
     verifyTokenAndLoadDisplay(token);
   }, [verifyTokenAndLoadDisplay]);
+
+  useEffect(() => {
+    const unlockAudio = () => {
+      const utterance = new SpeechSynthesisUtterance("");
+      window.speechSynthesis.speak(utterance);
+      document.removeEventListener("click", unlockAudio);
+    };
+
+    document.addEventListener("click", unlockAudio);
+  }, []);
+
+  // useEffect(() => {
+  //   if ("speechSynthesis" in window) {
+  //     window.speechSynthesis.getVoices();
+  //   }
+  // }, []);
+
+  useEffect(() => {
+    if (!("speechSynthesis" in window)) return;
+
+    const loadVoices = () => {
+      window.speechSynthesis.getVoices();
+    };
+
+    loadVoices();
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+  }, []);
 
   const isLoading = loading || loadingCurrent || loadingCalled || loadingPending;
   // const hasNoTickets = !isLoading && !currentTicket && lastCalledTickets.length === 0 && nextPendingTickets.length === 0;

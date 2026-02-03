@@ -5,6 +5,7 @@ export { useModule } from "./Module/useModule";
 export { useDisplay } from "./Display/useDisplay";
 export { useDisplayTickets } from "./Display/useDisplayTickets";
 export { useUsers } from "./Users/useUsers";
-export { useTurnosPublicos } from "./TurnosPublicos/useTurnosPublicos";
 export { useTickets } from "./Tickets/useTickets";
 export { useAttendantTickets } from "./Tickets/useAttendantTickets";
+export { useQr } from "./Qr/useQr";
+export { useService } from "./Service/useService";

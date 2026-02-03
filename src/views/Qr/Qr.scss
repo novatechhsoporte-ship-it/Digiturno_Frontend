@@ -1,0 +1,8 @@
+@use "@/styles" as *;
+
+.qr {
+  padding: $spacing-xl;
+  max-width: $container-max-width;
+  margin: 0 auto;
+}
+

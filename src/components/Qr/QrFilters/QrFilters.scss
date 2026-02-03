@@ -1,0 +1,19 @@
+@use "@/styles" as *;
+
+.qr-filters {
+  @include flex-start;
+  gap: $spacing-lg;
+  margin-bottom: $spacing-xl;
+  flex-wrap: wrap;
+
+  &__group {
+    flex: 1;
+    min-width: 200px;
+
+    &--search {
+      flex: 2;
+      min-width: 300px;
+    }
+  }
+}
+

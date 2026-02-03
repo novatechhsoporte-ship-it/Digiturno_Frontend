@@ -21,6 +21,8 @@ export const CurrentTicketCard = ({
   // Real-time timer state
   const [serviceTimer, setServiceTimer] = useState(initialServiceTimer || "00:00");
 
+  const convertUpper = (value) => value?.toUpperCase();
+
   // Update timer every second
   useEffect(() => {
     if (!currentTicket?.startedAt) {
@@ -48,7 +50,7 @@ export const CurrentTicketCard = ({
     return () => clearInterval(interval);
   }, [currentTicket?.startedAt]);
 
-  if (!currentTicket) {
+  if (!currentTicket?._id) {
     return (
       <div className="current-ticket-card current-ticket-card--empty">
         <div className="current-ticket-card__icon">📋</div>
@@ -62,7 +64,7 @@ export const CurrentTicketCard = ({
     <>
       <div className="current-ticket-card">
         <div className="current-ticket-card__header">
-          <div className="current-ticket-card__ticket-number">{currentTicket?.ticketNumber}</div>
+          <div className="current-ticket-card__ticket-number">{convertUpper(currentTicket?.ticketNumber)}</div>
           <div className="current-ticket-card__timer">
             <span className="current-ticket-card__timer-label">Tiempo de atención </span>
             <span className="current-ticket-card__timer-value">{serviceTimer}</span>
@@ -71,14 +73,18 @@ export const CurrentTicketCard = ({
 
         <div className="current-ticket-card__body">
           <div className="current-ticket-card__customer">
-            <div className="current-ticket-card__customer-name">{currentTicket?.customerId?.fullName || "N/A"}</div>
-            <div className="current-ticket-card__customer-document">{currentTicket?.customerId?.documentNumber || ""}</div>
+            <div className="current-ticket-card__customer-name">
+              Nombre: {convertUpper(currentTicket?.customerId?.fullName) || "N/A"}
+            </div>
+            <div className="current-ticket-card__customer-document">
+              Numero de documento: {currentTicket?.customerId?.documentNumber || ""}
+            </div>
           </div>
 
           {currentTicket.moduleId?.name && (
             <div className="current-ticket-card__module">
               <span className="current-ticket-card__module-label">Módulo:</span>
-              <span className="current-ticket-card__module-name">{currentTicket?.moduleId?.name}</span>
+              <span className="current-ticket-card__module-name">{convertUpper(currentTicket?.moduleId?.name)}</span>
             </div>
           )}
 

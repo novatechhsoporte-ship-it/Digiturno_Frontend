@@ -1,0 +1,15 @@
+@use "@/styles" as *;
+
+.delete-qr-modal {
+  &__message {
+    margin-bottom: $spacing-xl;
+    color: $color-gray-700;
+    line-height: $line-height-relaxed;
+  }
+
+  &__actions {
+    @include flex-between;
+    gap: $spacing-md;
+  }
+}
+

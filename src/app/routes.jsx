@@ -15,13 +15,17 @@ import { Display } from "@/views/Display/Display";
 import { Displays } from "@/views/Displays/Displays";
 
 import { ViewsTurn } from "@/views/ViewsTurn/ViewsTurn";
+import { Qr } from "@/views/Qr/Qr";
+import { PublicQr } from "@/views/Qr/PublicQr";
+import { PublicQrDisplay } from "@views/Qr/PublicQrDisplay";
+import { Services } from "@/views/Services/Services";
 
 function AppLayout() {
   const location = useLocation();
   const { token, user } = useAuth();
 
   // Public routes that don't require user authentication
-  const publicRoutes = ["/login", "/display", "/tv"];
+  const publicRoutes = ["/login", "/display", "/tv", "/q"];
   const isPublicRoute = publicRoutes.some((route) => {
     return location.pathname === route || location.pathname.startsWith(`${route}/`);
   });
@@ -52,6 +56,8 @@ const router = createBrowserRouter([
       { path: "display/:tenantId", element: <ViewsTurn /> },
       { path: "tv", element: <Display /> },
       { path: "tv/:tenantId", element: <ViewsTurn /> },
+      { path: "q/:token", element: <PublicQrDisplay /> },
+      { path: "q/:token/form", element: <PublicQr /> },
       {
         path: "dashboard",
         element: (
@@ -107,6 +113,22 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute any={["display.view", "display.manage"]}>
             <Displays />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "qr",
+        element: (
+          <ProtectedRoute any={["qr.view", "qr.manage"]}>
+            <Qr />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "services",
+        element: (
+          <ProtectedRoute any={["service.view", "service.manage"]}>
+            <Services />
           </ProtectedRoute>
         ),
       },

@@ -6,6 +6,7 @@ import { TicketsApi } from "@core/api/tickets";
 import { useAuth } from "@/store/authStore";
 import { getSocket } from "@config/socket";
 import { useQueryAdapter, useMutationAdapter, createQueryKeyFactory } from "@config/adapters/queryAdapter";
+// import { speakTicket } from "@config/adapters/speakTickets";
 
 const ticketKeys = createQueryKeyFactory("tickets");
 
@@ -20,20 +21,24 @@ export const useAttendantTickets = () => {
   const attendantId = authUser?._id;
 
   const {
-    data: { data: pendingTickets } = { data: [] },
+    data: pendingTickets,
+    // data: { data: pendingTickets } = { data: [] },
     isLoading: loadingPending,
     refetch: refetchPendingTickets,
   } = useQueryAdapter(
     ticketKeys.list({ tenantId, status: "pending", limit: 20 }),
     () => TicketsApi.getLastPendingTickets(tenantId),
     {
-      enabled: Boolean(tenantId),
+      enabled: !!tenantId,
       showErrorToast: true,
     }
   );
 
+  console.log("pendingTickets :>> ", pendingTickets);
+
   const {
-    data: currentTicketResponse,
+    data: currentTicket,
+    // data: currentTicketResponse,
     isLoading: loadingCurrent,
     refetch: refetchCurrentTicket,
   } = useQueryAdapter(
@@ -48,16 +53,19 @@ export const useAttendantTickets = () => {
     }
   );
 
-  const currentTicket = useMemo(() => {
-    if (!currentTicketResponse) return null;
+  console.log("currentTicketResponse here:>> ", currentTicket);
+  // console.log("currentTicketResponse here:>> ", currentTicketResponse);
 
-    const data = currentTicketResponse?.data?.data || currentTicketResponse?.data;
-    if (!data || (typeof data === "object" && !Array.isArray(data) && Object.keys(data).length === 0)) {
-      return null;
-    }
+  // const currentTicket = useMemo(() => {
+  //   if (!currentTicketResponse) return null;
 
-    return data;
-  }, [currentTicketResponse]);
+  //   const data = currentTicketResponse?.data?.data || currentTicketResponse?.data;
+  //   if (!data || (typeof data === "object" && !Array.isArray(data) && Object.keys(data).length === 0)) {
+  //     return null;
+  //   }
+
+  //   return data;
+  // }, [currentTicketResponse]);
 
   const serviceTimer = useMemo(() => {
     if (!currentTicket?.startedAt) return "00:00";
@@ -79,12 +87,28 @@ export const useAttendantTickets = () => {
       ["tickets", "current", attendantId, tenantId],
     ],
     onSuccess: (data) => {
+      console.log("data :>> ", data);
       // Update current ticket in cache immediately
       // Only if the ticket belongs to the current attendant (should always be true, but verify for safety)
-      const ticketData = data?.data || data;
-      if (ticketData && ticketData.attendantId?.toString() === attendantId.toString()) {
-        queryClient.setQueryData(["tickets", "current", attendantId, tenantId], { data: ticketData });
+      // speakTicket({
+      //   ticketNumber: 1,
+      //   moduleName: "modulo 1",
+      //   // ticketNumber: ticketData.ticketNumber,
+      //   // moduleName: authUser?.module?.name,
+      // });
+      // const ticketData = data?.data || data;
+      console.log("attendantId :>> ", attendantId);
+      console.log(
+        "data.attendantId?._id?.toString() === attendantId.toString() :>> ",
+        data.attendantId?._id?.toString() === attendantId.toString()
+      );
+      if (data && data.attendantId?._id?.toString() === attendantId.toString()) {
+        queryClient.setQueryData(["tickets", "current", attendantId._id, tenantId], { data });
       }
+      // const ticketData = data?.data || data;
+      // if (ticketData && ticketData.attendantId?.toString() === attendantId.toString()) {
+      //   queryClient.setQueryData(["tickets", "current", attendantId, tenantId], { data: ticketData });
+      // }
       refetchPendingTickets();
     },
   });
@@ -118,6 +142,13 @@ export const useAttendantTickets = () => {
     invalidateQueries: [["tickets", "current", attendantId, tenantId]],
     onSuccess: (data) => {
       // Update current ticket in cache with updated callCount
+
+      speakTicket({
+        ticketNumber: 1,
+        moduleName: "modulo 1",
+        // ticketNumber: ticketData.ticketNumber,
+        // moduleName: authUser?.module?.name,
+      });
       const ticketData = data?.data || data;
       if (ticketData) {
         queryClient.setQueryData(["tickets", "current", attendantId, tenantId], { data: ticketData });
@@ -126,8 +157,10 @@ export const useAttendantTickets = () => {
   });
 
   const handleCallNextTicket = useCallback(() => {
+    console.log("handleCall");
     const moduleId = authUser?.module?._id;
     console.log("moduleId :>> ", moduleId);
+
     if (!attendantId) {
       toast.error("No se pudo identificar al asesor");
       return;
@@ -237,6 +270,12 @@ export const useAttendantTickets = () => {
       socket.off("ticket:recalled");
     };
   }, [token, tenantId, attendantId]);
+
+  useEffect(() => {
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.getVoices();
+    }
+  }, []);
 
   return {
     // Data

@@ -1,0 +1,15 @@
+@use "@/styles" as *;
+
+.services-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: $spacing-lg;
+
+  &--state {
+    padding: $spacing-xl;
+    text-align: center;
+    color: $color-gray-500;
+    font-size: $font-size-base;
+  }
+}
+
