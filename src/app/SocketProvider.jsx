@@ -8,11 +8,9 @@ import { createSocketConnection, disconnectSocket } from "@config/socket";
  */
 export const SocketProvider = ({ token, children }) => {
   useEffect(() => {
-    if (token) {
-      createSocketConnection(token);
-    } else {
-      disconnectSocket();
-    }
+    if (!token) return;
+
+    createSocketConnection(token);
   }, [token]);
 
   return children;
