@@ -3,7 +3,6 @@ import "./ViewCurrentTurn.scss";
 const capitalizeWords = (text = "") => text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 
 export const ViewCurrentTurn = ({ currentLogoSrc, currentTicket }) => {
-  console.log("currentTicket :>> ", currentTicket);
   return (
     <section className="views-turn__right">
       <div className="views-turn__current-wrap">

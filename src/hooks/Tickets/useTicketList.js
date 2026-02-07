@@ -2,8 +2,7 @@ import { useEffect, useRef } from "react";
 import { TicketsApi } from "@core/api/tickets";
 import { useAuth } from "@/store/authStore";
 import { createSocketConnection } from "@config/socket";
-import { useQueryAdapter } from "@config/adapters/queryAdapter";
-import { createQueryKeyFactory } from "@config/adapters/queryAdapter";
+import { useQueryAdapter, createQueryKeyFactory } from "@config/adapters/queryAdapter";
 
 const ticketKeys = createQueryKeyFactory("tickets");
 

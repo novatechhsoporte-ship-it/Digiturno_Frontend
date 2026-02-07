@@ -29,11 +29,11 @@ export const ViewsTurn = () => {
         <section className="views-turn__left">
           <div className="views-turn__left-body">
             <ViewItemCallTickets title="Próximos Turnos" description="No hay turnos pendientes" tickets={nextPendingTickets} />
-            <ViewItemCallTickets
+            {/* <ViewItemCallTickets
               title="Últimos Llamados"
               description="No hay turnos llamados recientemente"
               tickets={lastCalledTickets}
-            />
+            /> */}
           </div>
         </section>
 

@@ -43,13 +43,6 @@ export const TicketsApi = {
   callTicket: (ticketId, payload = {}) => axiosClient.post(`/tickets/${ticketId}/call`, payload),
 
   /**
-   * Start ticket (assign to module/attendant)
-   * @param {string} ticketId
-   * @param {object} payload - { moduleId, attendantId }
-   */
-  startTicket: (ticketId, payload) => axiosClient.post(`/tickets/${ticketId}/start`, payload),
-
-  /**
    * Complete ticket
    * @param {string} ticketId
    * @param {object} payload - { notes? }
@@ -102,7 +95,7 @@ export const TicketsApi = {
    * Recall a ticket that is already in progress (increment call count)
    * @param {string} ticketId
    */
-  getNextPendingTickets: (ticketId) => axiosClient.get(`/tickets/display/pending/${ticketId}`),
+  getNextPendingTickets: (ticketId, limit) => axiosClient.get(`/tickets/display/pending/${ticketId}?limit=${limit}`),
 
   /**
    * Recall a ticket that is already in progress (increment call count)

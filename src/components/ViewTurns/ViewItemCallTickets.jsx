@@ -1,7 +1,6 @@
 const capitalizeWords = (text = "") => text.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
 
 export const ViewItemCallTickets = ({ title, tickets = [], description }) => {
-  console.log("tickets :>> ", tickets);
   return (
     <div className="views-turn__panel">
       <div className="views-turn__panel-title">{capitalizeWords(title)}</div>
