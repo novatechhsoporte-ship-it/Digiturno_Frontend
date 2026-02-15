@@ -31,20 +31,18 @@ export const useAuth = () => {
   const submit = async (values) => {
     try {
       const { data, success } = await axiosClient.post("/auth/login", values);
-      console.log("data :>> ", data);
 
       if (!success) {
         toast.error(`${data.message}`);
         throw new Error(data?.message || "Error al iniciar sesión");
       }
 
-      const { token, user, permissions, expiresIn } = data;
-      const ttlMinutes = expiresIn ? parseInt(expiresIn) / 60 : 15;
+      const { token, user, permissions } = data;
 
       toast.success(`Bienvenido ${user.fullName}`);
 
-      login(token, user, permissions, ttlMinutes);
-      const allowedRoles = ["ATTENDANT", "RECEPTION"];
+      login(token, user, permissions);
+      const allowedRoles = ["ATTENDANT"];
 
       const navigateTo = user.roles.some((role) => allowedRoles.includes(role)) ? "/attendant-tickets" : "/tickets";
       navigate(navigateTo);

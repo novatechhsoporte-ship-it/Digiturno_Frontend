@@ -26,21 +26,13 @@ export const useCreateTicket = (selectedTenant, canCreate) => {
 
   const { mutateAsync: createTicket, isLoading: loading } = useMutationAdapter(
     async (values) => {
-      const finalTenantId = isSuperAdmin ? selectedTenant : authUser?.tenantId;
-
-      if (!finalTenantId) {
-        throw new Error("Debe seleccionar una notaría");
-      }
+      const cleanPayload = Object.fromEntries(
+        Object.entries(values).filter(([_, v]) => v !== "" && v !== null && v !== undefined)
+      );
 
       const payload = {
-        documentNumber: values.documentNumber.trim(),
-        fullName: values.fullName.trim(),
-        tenantId: finalTenantId,
-        origin: "RECEPTION",
-        ...(values.email?.trim() && { email: values.email.trim() }),
-        ...(values.phone?.trim() && { phone: values.phone.trim() }),
-        ...(values.moduleId && { moduleId: values.moduleId }),
-        serviceTypeId: values.serviceTypeId || "",
+        ...cleanPayload,
+        tenantId: authUser?.tenantId,
       };
 
       return TicketsApi.createTicket(payload);
@@ -77,7 +69,7 @@ export const useCreateTicket = (selectedTenant, canCreate) => {
 
   // Check if button should be shown
   const showCreateButton = useMemo(() => {
-    return canCreate && (isSuperAdmin ? selectedTenant : authUser?.tenantId);
+    return canCreate || (isSuperAdmin ? selectedTenant : authUser?.tenantId);
   }, [canCreate, isSuperAdmin, selectedTenant, authUser?.tenantId]);
 
   // Query for services

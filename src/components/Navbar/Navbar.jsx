@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 
 import { CustomIcon } from "@components/common";
@@ -12,6 +11,20 @@ export const Navbar = ({ onMenuClick }) => {
   const handleLogout = () => {
     logout();
     navigate("/login", { replace: true });
+  };
+
+  const ROLE_LABELS = {
+    SUPERADMIN: "Super Administrador",
+    ADMIN: "Administrador",
+    ATTENDANT: "Operador",
+    RECEPTION: "Recepción",
+  };
+
+  const getUserRoleLabel = () => {
+    if (!user?.roles?.length) return "Usuario";
+
+    const role = user.roles[0];
+    return ROLE_LABELS[role] || "Usuario";
   };
 
   return (
@@ -35,7 +48,7 @@ export const Navbar = ({ onMenuClick }) => {
                 </div>
                 <div className="navbar__user-details">
                   <span className="navbar__user-name">{user.fullName || user.email}</span>
-                  <span className="navbar__user-role">{user.roles && user.roles.length > 0 ? user.roles[0] : "Usuario"}</span>
+                  <span className="navbar__user-role">{getUserRoleLabel()}</span>
                 </div>
               </div>
               <button className="navbar__logout-btn" onClick={handleLogout} aria-label="Cerrar sesión">

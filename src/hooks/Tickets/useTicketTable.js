@@ -29,11 +29,6 @@ export const useTicketTable = (handleEditCustomer) => {
         accessor: (ticket) => ticket.customerId?.documentNumber || "",
       },
       {
-        key: "module",
-        label: "Módulo",
-        accessor: (ticket) => ticket.moduleId?.name || "Sin asignar",
-      },
-      {
         key: "status",
         label: "Estado",
         accessor: (ticket) => ticket.status,

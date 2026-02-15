@@ -4,9 +4,8 @@ import { toast } from "sonner";
 
 import { TicketsApi } from "@core/api/tickets";
 import { useAuth } from "@/store/authStore";
-import { getSocket } from "@config/socket";
+import { getSocket } from "@config/socket/socket";
 import { useQueryAdapter, useMutationAdapter, createQueryKeyFactory } from "@config/adapters/queryAdapter";
-// import { speakTicket } from "@config/adapters/speakTickets";
 
 const ticketKeys = createQueryKeyFactory("tickets");
 
@@ -22,7 +21,6 @@ export const useAttendantTickets = () => {
 
   const {
     data: pendingTickets,
-    // data: { data: pendingTickets } = { data: [] },
     isLoading: loadingPending,
     refetch: refetchPendingTickets,
   } = useQueryAdapter(
@@ -34,11 +32,8 @@ export const useAttendantTickets = () => {
     }
   );
 
-  console.log("pendingTickets :>> ", pendingTickets);
-
   const {
     data: currentTicket,
-    // data: currentTicketResponse,
     isLoading: loadingCurrent,
     refetch: refetchCurrentTicket,
   } = useQueryAdapter(
@@ -52,20 +47,6 @@ export const useAttendantTickets = () => {
       refetchOnWindowFocus: false,
     }
   );
-
-  console.log("currentTicketResponse here:>> ", currentTicket);
-  // console.log("currentTicketResponse here:>> ", currentTicketResponse);
-
-  // const currentTicket = useMemo(() => {
-  //   if (!currentTicketResponse) return null;
-
-  //   const data = currentTicketResponse?.data?.data || currentTicketResponse?.data;
-  //   if (!data || (typeof data === "object" && !Array.isArray(data) && Object.keys(data).length === 0)) {
-  //     return null;
-  //   }
-
-  //   return data;
-  // }, [currentTicketResponse]);
 
   const serviceTimer = useMemo(() => {
     if (!currentTicket?.startedAt) return "00:00";
@@ -87,28 +68,12 @@ export const useAttendantTickets = () => {
       ["tickets", "current", attendantId, tenantId],
     ],
     onSuccess: (data) => {
-      console.log("data :>> ", data);
       // Update current ticket in cache immediately
       // Only if the ticket belongs to the current attendant (should always be true, but verify for safety)
-      // speakTicket({
-      //   ticketNumber: 1,
-      //   moduleName: "modulo 1",
-      //   // ticketNumber: ticketData.ticketNumber,
-      //   // moduleName: authUser?.module?.name,
-      // });
-      // const ticketData = data?.data || data;
-      console.log("attendantId :>> ", attendantId);
-      console.log(
-        "data.attendantId?._id?.toString() === attendantId.toString() :>> ",
-        data.attendantId?._id?.toString() === attendantId.toString()
-      );
       if (data && data.attendantId?._id?.toString() === attendantId.toString()) {
         queryClient.setQueryData(["tickets", "current", attendantId._id, tenantId], { data });
       }
-      // const ticketData = data?.data || data;
-      // if (ticketData && ticketData.attendantId?.toString() === attendantId.toString()) {
-      //   queryClient.setQueryData(["tickets", "current", attendantId, tenantId], { data: ticketData });
-      // }
+
       refetchPendingTickets();
     },
   });
@@ -143,12 +108,6 @@ export const useAttendantTickets = () => {
     onSuccess: (data) => {
       // Update current ticket in cache with updated callCount
 
-      speakTicket({
-        ticketNumber: 1,
-        moduleName: "modulo 1",
-        // ticketNumber: ticketData.ticketNumber,
-        // moduleName: authUser?.module?.name,
-      });
       const ticketData = data?.data || data;
       if (ticketData) {
         queryClient.setQueryData(["tickets", "current", attendantId, tenantId], { data: ticketData });
@@ -157,9 +116,7 @@ export const useAttendantTickets = () => {
   });
 
   const handleCallNextTicket = useCallback(() => {
-    console.log("handleCall");
     const moduleId = authUser?.module?._id;
-    console.log("moduleId :>> ", moduleId);
 
     if (!attendantId) {
       toast.error("No se pudo identificar al asesor");

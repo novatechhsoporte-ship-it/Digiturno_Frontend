@@ -1,8 +1,6 @@
 @use "@/styles/index" as *;
 
-/* =========================
-   NAVBAR
-========================= */
+/* =========== NAVBAR =========== */
 
 .navbar {
   position: sticky;
@@ -19,9 +17,7 @@
     border-bottom-right-radius: $border-radius-xl;
   }
 
-  /* =========================
-     CONTENT
-  ========================= */
+  /* =========== CONTENT =========== */
 
   &__content {
     @include flex-between;
@@ -46,9 +42,7 @@
     flex-shrink: 0;
   }
 
-  /* =========================
-     MENU BUTTON
-  ========================= */
+  /* =========== MENU BUTTON =========== */
 
   &__menu-btn {
     @include button-reset;
@@ -75,9 +69,7 @@
     }
   }
 
-  /* =========================
-     TITLE
-  ========================= */
+  /* =========== TITLE =========== */
 
   &__title {
     font-size: $font-size-lg;
@@ -89,9 +81,7 @@
     text-shadow: 0 2px 4px rgba($color-black, 0.1);
   }
 
-  /* =========================
-     USER
-  ========================= */
+  /* =========== USER =========== */
 
   &__user-info {
     @include flex-start;
@@ -136,6 +126,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-transform: capitalize;
   }
 
   &__user-role {
@@ -144,9 +135,7 @@
     text-transform: capitalize;
   }
 
-  /* =========================
-     LOGOUT
-  ========================= */
+  /* =========== LOGOUT =========== */
 
   &__logout-btn {
     @include flex-center;

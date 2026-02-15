@@ -1,14 +1,13 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { TicketsApi } from "@core/api/tickets";
 import { useAuth } from "@/store/authStore";
-import { createSocketConnection } from "@config/socket";
 import { useQueryAdapter, createQueryKeyFactory } from "@config/adapters/queryAdapter";
+import { getSocket } from "@config/socket/socket";
 
 const ticketKeys = createQueryKeyFactory("tickets");
 
 export const useTicketList = (selectedTenant) => {
   const { token } = useAuth();
-  const socketRef = useRef(null);
 
   // Query for pending tickets
   const {
@@ -31,59 +30,30 @@ export const useTicketList = (selectedTenant) => {
 
   // Initialize Socket.IO connection
   useEffect(() => {
-    if (token && selectedTenant) {
-      socketRef.current = createSocketConnection(token);
+    const socket = getSocket();
+    if (!socket) return;
 
-      const socket = socketRef.current;
+    const events = ["ticket:created", "ticket:called", "ticket:started", "ticket:completed", "ticket:abandoned"];
 
-      // Join tickets room when connected
-      const handleConnect = () => {
-        socket.emit("join-tickets");
-      };
+    const handler = () => {
+      console.log("Refrescando tickets por evento de socket");
+      loadPendingTickets();
+    };
 
-      if (socket.connected) {
-        handleConnect();
-      } else {
-        socket.on("connect", handleConnect);
-      }
+    const registerEvents = () => {
+      events.forEach((event) => socket.on(event, handler));
+    };
 
-      // Listen to ticket events
-      socket.on("ticket:created", () => {
-        // console.log("Evento ticket:created recibido en useTicketList");
-        loadPendingTickets();
-      });
-
-      socket.on("ticket:called", () => {
-        // console.log("Evento ticket:called recibido en useTicketList");
-        loadPendingTickets();
-      });
-
-      socket.on("ticket:started", () => {
-        // console.log("Evento ticket:started recibido en useTicketList");
-        loadPendingTickets();
-      });
-
-      socket.on("ticket:completed", () => {
-        // console.log("Evento ticket:completed recibido en useTicketList");
-        loadPendingTickets();
-      });
-
-      socket.on("ticket:abandoned", () => {
-        // console.log("Evento ticket:abandoned recibido en useTicketList");
-        loadPendingTickets();
-      });
-
-      return () => {
-        if (socket) {
-          socket.off("connect", handleConnect);
-          socket.off("ticket:created");
-          socket.off("ticket:called");
-          socket.off("ticket:started");
-          socket.off("ticket:completed");
-          socket.off("ticket:abandoned");
-        }
-      };
+    if (socket.connected) {
+      registerEvents();
+    } else {
+      socket.once("connect", registerEvents);
     }
+
+    return () => {
+      events.forEach((event) => socket.off(event, handler));
+      socket.off("connect", registerEvents);
+    };
   }, [token, selectedTenant, loadPendingTickets]);
 
   return {

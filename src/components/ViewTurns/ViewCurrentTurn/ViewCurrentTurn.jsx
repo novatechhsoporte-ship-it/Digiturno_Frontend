@@ -6,7 +6,7 @@ export const ViewCurrentTurn = ({ currentLogoSrc, currentTicket }) => {
   return (
     <section className="views-turn__right">
       <div className="views-turn__current-wrap">
-        <img className="views-turn__current-logo" src={currentLogoSrc} alt="Logo" />
+        {/* <img className="views-turn__current-logo" src={currentLogoSrc} alt="Logo" /> */}
 
         {currentTicket ? (
           <div className="views-turn__current">

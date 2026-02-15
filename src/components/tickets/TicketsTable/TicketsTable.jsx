@@ -1,7 +1,7 @@
 import { CustomTable } from "@components/common";
 import "./TicketsTable.scss";
 
-export const TicketsTable = ({ pendingTickets, loading, selectedTenant, isSuperAdmin, ticketColumns, ticketActions }) => {
+export const TicketsTable = ({ pendingTickets, loading, ticketColumns, ticketActions }) => {
   const columnsWithRender = ticketColumns.map((col) => {
     if (col.key === "customer") {
       return {
@@ -10,7 +10,9 @@ export const TicketsTable = ({ pendingTickets, loading, selectedTenant, isSuperA
           const value = col.accessor(ticket);
           return (
             <div className="customer-info">
-              <span className="customer-info__name">{value}</span>
+              <span className="customer-info__name" title={value}>
+                {value}
+              </span>
             </div>
           );
         },

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
-import { getSocket } from "@config/socket";
+import { getSocket } from "@config/socket/socket.js";
 import { createQueryKeyFactory } from "@config/adapters/queryAdapter";
 
 const ticketKeys = createQueryKeyFactory("tickets");
