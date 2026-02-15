@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { createSocketConnection, disconnectSocket } from "@config/socket";
+import { createSocketConnection, disconnectSocket } from "./socket";
 
 /**
  * SocketProvider
@@ -8,7 +8,11 @@ import { createSocketConnection, disconnectSocket } from "@config/socket";
  */
 export const SocketProvider = ({ token, children }) => {
   useEffect(() => {
-    if (!token) return;
+    console.log("token :>> ", token);
+    if (!token) {
+      disconnectSocket();
+      return;
+    }
 
     createSocketConnection(token);
   }, [token]);

@@ -26,19 +26,19 @@ export const SIDEBAR_MENU = [
     path: "/tenants",
     label: "Notarias",
     icon: "mdi:home-analytics",
-    roles: ["SUPERADMIN", "ADMIN", "ATTENDANT"],
+    roles: ["SUPERADMIN", "ADMIN", "ATTENDANT", "RECEPTION"],
   },
   {
     path: "/modules",
     label: "Modulos",
     icon: "mdi:view-module-outline",
-    roles: ["SUPERADMIN", "ADMIN", "ATTENDANT"],
+    roles: ["SUPERADMIN", "ADMIN"],
   },
   {
     path: "/users",
     label: "Usuarios",
     icon: "mdi:users-group",
-    roles: ["SUPERADMIN", "ADMIN", "ATTENDANT"],
+    roles: ["SUPERADMIN", "ADMIN"],
   },
   {
     path: "/displays",

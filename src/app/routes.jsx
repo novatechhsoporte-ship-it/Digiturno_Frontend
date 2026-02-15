@@ -50,7 +50,7 @@ const router = createBrowserRouter([
   {
     element: <AppLayout />,
     children: [
-      { index: true, element: <Navigate to="/dashboard" replace /> },
+      // { index: true, element: <Navigate to="/dashboard" replace /> },
       { path: "login", element: <Login /> },
       { path: "display", element: <Display /> },
       { path: "display/:tenantId", element: <ViewsTurn /> },
@@ -58,14 +58,14 @@ const router = createBrowserRouter([
       { path: "tv/:tenantId", element: <ViewsTurn /> },
       { path: "q/:token", element: <PublicQrDisplay /> },
       { path: "q/:token/form", element: <PublicQr /> },
-      {
-        path: "dashboard",
-        element: (
-          <ProtectedRoute any={["dashboard.view", "dashboard.manage"]}>
-            <Dashboard />
-          </ProtectedRoute>
-        ),
-      },
+      // {
+      //   path: "dashboard",
+      //   element: (
+      //     <ProtectedRoute any={["dashboard.view", "dashboard.manage"]}>
+      //       <Dashboard />
+      //     </ProtectedRoute>
+      //   ),
+      // },
       {
         path: "tenants",
         element: (
