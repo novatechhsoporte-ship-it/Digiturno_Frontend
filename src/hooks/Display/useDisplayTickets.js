@@ -123,14 +123,19 @@ export const useDisplayTickets = () => {
       refetchPending();
     };
 
+    // const handleTicketCalled = (payload) => {
+    //   speakTicket({
+    //     ticketNumber: payload.ticketNumber,
+    //     moduleName: payload.moduleName,
+    //     attempt: payload.attempts,
+    //   });
+    //   refetchCurrent();
+    //   refetchPending();
+    // };
     const handleTicketCalled = (payload) => {
       speakTicket({
-        ticketNumber: payload.ticketNumber,
-        moduleName: payload.moduleName,
-        attempt: payload.attempts,
+        audioUrl: payload.audioUrl,
       });
-      refetchCurrent();
-      refetchPending();
     };
 
     const handleTicketRecalled = () => {
