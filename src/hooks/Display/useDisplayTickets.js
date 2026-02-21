@@ -156,15 +156,15 @@ export const useDisplayTickets = () => {
     };
   }, [tenantId, token]);
 
-  useEffect(() => {
-    const unlockAudio = () => {
-      const utterance = new SpeechSynthesisUtterance("");
-      window.speechSynthesis.speak(utterance);
-      document.removeEventListener("click", unlockAudio);
-    };
+  // useEffect(() => {
+  //   const unlockAudio = () => {
+  //     const utterance = new SpeechSynthesisUtterance("");
+  //     window.speechSynthesis.speak(utterance);
+  //     document.removeEventListener("click", unlockAudio);
+  //   };
 
-    document.addEventListener("click", unlockAudio);
-  }, []);
+  //   document.addEventListener("click", unlockAudio);
+  // }, []);
 
   useEffect(() => {
     if (!("speechSynthesis" in window)) return;

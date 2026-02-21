@@ -11,12 +11,19 @@ const spellTicket = (ticket) => {
 export const speakTicket = ({ ticketNumber, moduleName, attempt = 1 }) => {
   if (!("speechSynthesis" in window)) return;
 
-  window.speechSynthesis.cancel();
+  const synth = window.speechSynthesis;
+
+  // 🔹 Si está pausado (pasa en TVs)
+  if (synth.paused) {
+    synth.resume();
+  }
+
+  // 🔹 Cancelar cualquier voz anterior
+  synth.cancel();
 
   const spelledTicket = spellTicket(ticketNumber);
 
   let suffix = "";
-
   if (attempt >= 3) {
     suffix = ", último llamado";
   } else if (attempt === 2) {
@@ -29,11 +36,18 @@ export const speakTicket = ({ ticketNumber, moduleName, attempt = 1 }) => {
 
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = "es-CO";
-  utterance.rate = 0.85;
-  utterance.pitch = 1.2;
+  utterance.rate = 0.9; // 🔹 ligeramente más estable que 0.85
+  utterance.pitch = 1;
   utterance.volume = 1;
 
-  const voices = window.speechSynthesis.getVoices();
+  // 🔹 Asegurar que las voces estén cargadas
+  let voices = synth.getVoices();
+
+  if (!voices.length) {
+    synth.onvoiceschanged = () => {
+      voices = synth.getVoices();
+    };
+  }
 
   const selectedVoice =
     voices.find((v) => v.lang.startsWith("es") && v.name.toLowerCase().includes("sabina")) ||
@@ -45,5 +59,7 @@ export const speakTicket = ({ ticketNumber, moduleName, attempt = 1 }) => {
     utterance.voice = selectedVoice;
   }
 
-  window.speechSynthesis.speak(utterance);
+  setTimeout(() => {
+    synth.speak(utterance);
+  }, 100);
 };

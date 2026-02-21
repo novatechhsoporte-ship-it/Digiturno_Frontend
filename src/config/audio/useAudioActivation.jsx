@@ -1,51 +1,31 @@
-import { useEffect, useState, useCallback } from "react";
-
-const SILENCE_URL = `/sounds/silence.wav`;
+import { useState, useCallback } from "react";
 
 export const useAudioActivation = () => {
   const [isUnlocked, setIsUnlocked] = useState(false);
-  const [isChecking, setIsChecking] = useState(true);
 
-  const tryPlay = async () => {
+  const unlockAudio = useCallback(() => {
     try {
-      const audio = document.createElement("audio");
-      audio.src = SILENCE_URL;
-      audio.setAttribute("playsinline", "true");
-      document.body.appendChild(audio);
+      if (!("speechSynthesis" in window)) {
+        console.warn("SpeechSynthesis no soportado");
+        return;
+      }
 
-      await audio.play();
-      audio.pause();
-      audio.remove();
+      const utterance = new SpeechSynthesisUtterance(" ");
+      utterance.volume = 0;
+      utterance.rate = 1;
+      utterance.pitch = 1;
 
-      return true;
-    } catch {
-      return false;
-    }
-  };
+      window.speechSynthesis.speak(utterance);
 
-  const unlockAudio = useCallback(async () => {
-    const success = await tryPlay();
-    if (success) {
       setIsUnlocked(true);
-      console.log("Audio desbloqueado");
-    } else {
-      console.log("El navegador sigue bloqueando audio");
+      console.log("🔊 Speech desbloqueado correctamente");
+    } catch (err) {
+      console.error("Error desbloqueando speech:", err);
     }
-  }, []);
-
-  useEffect(() => {
-    const check = async () => {
-      const unlocked = await tryPlay();
-      setIsUnlocked(unlocked);
-      setIsChecking(false);
-    };
-
-    check();
   }, []);
 
   return {
     isUnlocked,
-    isChecking,
     unlockAudio,
   };
 };
