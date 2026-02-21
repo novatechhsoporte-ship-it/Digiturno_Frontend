@@ -30,7 +30,7 @@ export const DisplayPairing = () => {
         const savedCode = localStorage.getItem(PAIRING_CODE_KEY);
         if (savedCode) {
           setPairingCode(savedCode);
-          setPairingExpiresAt(new Date(Date.now() + 5 * 60 * 1000));
+          setPairingExpiresAt(new Date(Date.now() + 5 * 60 * 100000));
           setLoading(false);
         } else {
           // No saved code, generate one automatically

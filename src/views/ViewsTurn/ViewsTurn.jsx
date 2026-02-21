@@ -1,13 +1,17 @@
 import { useDisplayTickets } from "@hooks/Display/useDisplayTickets";
-import { ViewCurrentTurn } from "../../components/ViewTurns/ViewCurrentTurn/ViewCurrentTurn";
+import { ViewCurrentTurn } from "@components/ViewTurns/ViewCurrentTurn/ViewCurrentTurn";
+import { ViewItemCallTickets } from "@components/ViewTurns/ViewItemCallTickets";
+import { AudioActivationBanner } from "./AudioActivationOverlay/AudioActivationBanner";
+import { AudioActivationOverlay } from "./AudioActivationOverlay/AudioActivationOverlay";
+import { useAudioActivation } from "@config/audio/useAudioActivation";
 import "./ViewsTurn.scss";
-import { ViewItemCallTickets } from "../../components/ViewTurns/ViewItemCallTickets";
 
 const headerLogoSrc = `${import.meta.env.BASE_URL}brand/novatechhheader.svg`;
 const currentLogoSrc = `${import.meta.env.BASE_URL}brand/Fusa.svg`;
 
 export const ViewsTurn = () => {
-  const { currentTicket, lastCalledTickets, nextPendingTickets, hasNoTickets, isInitialLoading } = useDisplayTickets();
+  const { currentTicket, nextPendingTickets, isInitialLoading } = useDisplayTickets();
+  const { isUnlocked, isChecking, unlockAudio } = useAudioActivation();
 
   if (isInitialLoading) {
     return (
@@ -21,24 +25,24 @@ export const ViewsTurn = () => {
   }
 
   return (
-    <section className="views-turn">
-      <header className="views-turn__header">
-        <img className="views-turn__header-logo views-turn__header-logo--left" src={headerLogoSrc} alt="Novatech" />
-      </header>
-      <div className="views-turn__grid">
-        <section className="views-turn__left">
-          <div className="views-turn__left-body">
-            <ViewItemCallTickets title="Próximos Turnos" description="No hay turnos pendientes" tickets={nextPendingTickets} />
-            {/* <ViewItemCallTickets
-              title="Últimos Llamados"
-              description="No hay turnos llamados recientemente"
-              tickets={lastCalledTickets}
-            /> */}
-          </div>
-        </section>
+    <>
+      {!isUnlocked && <AudioActivationOverlay onActivate={unlockAudio} />}
 
-        <ViewCurrentTurn currentLogoSrc={currentLogoSrc} currentTicket={currentTicket} />
-      </div>
-    </section>
+      <AudioActivationBanner onActivate={unlockAudio} />
+      <section className="views-turn">
+        <header className="views-turn__header">
+          <img className="views-turn__header-logo views-turn__header-logo--left" src={headerLogoSrc} alt="Novatech" />
+        </header>
+        <div className="views-turn__grid">
+          <section className="views-turn__left">
+            <div className="views-turn__left-body">
+              <ViewItemCallTickets title="Próximos Turnos" description="No hay turnos pendientes" tickets={nextPendingTickets} />
+            </div>
+          </section>
+
+          <ViewCurrentTurn currentLogoSrc={currentLogoSrc} currentTicket={currentTicket} />
+        </div>
+      </section>
+    </>
   );
 };

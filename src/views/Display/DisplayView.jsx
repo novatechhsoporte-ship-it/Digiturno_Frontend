@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { DisplaysApi } from "@core/api/displays";
 import { toast } from "sonner";
-import { createSocketConnection, getSocket, disconnectSocket } from "@config/socket";
+import { createSocketConnection, disconnectSocket } from "@config/socket/socket";
 import "./DisplayView.scss";
 
 const DISPLAY_TOKEN_KEY = "display_token";

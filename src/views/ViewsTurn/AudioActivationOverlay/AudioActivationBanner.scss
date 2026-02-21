@@ -1,0 +1,20 @@
+@use "@/styles" as *;
+
+.audio-banner {
+  position: fixed;
+  bottom: $spacing-lg;
+  right: $spacing-lg;
+  background: $color-primary;
+  color: $color-white;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $border-radius-lg;
+  font-size: $font-size-sm;
+  cursor: pointer;
+  box-shadow: $shadow-lg;
+  opacity: 0.9;
+  transition: 0.2s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+}

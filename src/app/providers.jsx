@@ -10,6 +10,11 @@ const queryClient = new QueryClient();
 export default function AppProviders({ children }) {
   const { token, expiresAt, logout } = useAuth();
 
+  const raw = localStorage.getItem("auth");
+  const parsed = JSON.parse(raw);
+
+  console.log(parsed?.state?.token);
+
   useEffect(() => {
     if (expiresAt && Date.now() >= expiresAt) {
       logout();

@@ -1,14 +1,14 @@
 import { useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
+import { io } from "socket.io-client";
 import { toast } from "sonner";
 
 import { DisplaysApi } from "@core/api/displays";
 import { TicketsApi } from "@core/api/tickets";
-import { createSocketConnection } from "@config/socket";
-import { getSocket } from "@config/socket";
 import { useQueryAdapter, createQueryKeyFactory } from "@config/adapters/queryAdapter";
 import { speakTicket } from "@config/adapters/speakTickets";
 
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || "http://localhost:4000";
 const DISPLAY_TOKEN_KEY = "display_token";
 const displayTicketKeys = createQueryKeyFactory("displayTickets");
 
@@ -18,21 +18,9 @@ export const useDisplayTickets = () => {
   const token = localStorage.getItem(DISPLAY_TOKEN_KEY);
   const isEnabled = Boolean(token && tenantId);
 
-  const fetchDisplayInfo = async (token, tenantId) => {
-    const response = await DisplaysApi.getCurrentDisplay(token);
-    const info = response.data?.data || response.data;
-    const displayTenantId = info.tenantId?._id?.toString() || info.tenantId?.toString();
-
-    if (displayTenantId !== tenantId) {
-      throw new Error("DISPLAY_NOT_BELONGS_TO_TENANT");
-    }
-
-    return response;
-  };
-
   const { data: displayInfo, isLoading: loadingDisplay } = useQueryAdapter(
     ["display", tenantId],
-    () => fetchDisplayInfo(token, tenantId),
+    () => DisplaysApi.getCurrentDisplay(token, tenantId),
     {
       enabled: isEnabled,
       retry: false,
@@ -64,7 +52,6 @@ export const useDisplayTickets = () => {
     },
     {
       enabled: !!tenantId,
-      // keepPreviousData: true,
       showErrorToast: false,
     }
   );
@@ -91,29 +78,52 @@ export const useDisplayTickets = () => {
   // Initialize Socket.IO connection
   useEffect(() => {
     if (!tenantId) return;
-
-    const token = localStorage.getItem(DISPLAY_TOKEN_KEY);
     if (!token) return;
 
-    let socket = getSocket();
-    if (!socket) {
-      socket = createSocketConnection(token);
+    // Crear conexión independiente para display (no usar el singleton)
+    let displaySocket = socketRef.current;
+
+    // Si no hay socket o está desconectado, crear uno nuevo
+    if (!displaySocket || !displaySocket.connected) {
+      // Desconectar socket anterior si existe
+      if (displaySocket) {
+        displaySocket.removeAllListeners();
+        displaySocket.disconnect();
+      }
+
+      // Crear nueva conexión con token de display
+      displaySocket = io(SOCKET_URL, {
+        transports: ["websocket"],
+        auth: { token },
+        reconnection: true,
+        autoConnect: true,
+        reconnectionAttempts: 5,
+      });
+
+      socketRef.current = displaySocket;
+
+      // Handlers para eventos de conexión
+      const handleConnect = () => {
+        // console.log("Display socket conectado:", displaySocket.id);
+        refetchCurrent();
+        refetchPending();
+      };
+
+      const handleConnectError = (err) => {
+        console.error("Error conectando display socket:", err.message);
+      };
+
+      // Registrar listeners de conexión
+      displaySocket.on("connect", handleConnect);
+      displaySocket.on("connect_error", handleConnectError);
     }
 
-    socketRef.current = socket;
-
-    socket.on("connect", () => {
-      // console.log("🧩 Socket conectado (display):", socket.id);
-      refetchCurrent();
+    // Handlers para eventos de tickets
+    const handleTicketCreated = () => {
       refetchPending();
-    });
+    };
 
-    // Listen to ticket events
-    socket.on("ticket:created", () => {
-      refetchPending();
-    });
-
-    socket.on("ticket:called", (payload) => {
+    const handleTicketCalled = (payload) => {
       speakTicket({
         ticketNumber: payload.ticketNumber,
         moduleName: payload.moduleName,
@@ -121,16 +131,30 @@ export const useDisplayTickets = () => {
       });
       refetchCurrent();
       refetchPending();
-    });
+    };
 
+    const handleTicketRecalled = () => {
+      refetchCurrent();
+      refetchPending();
+    };
+
+    // Agregar listeners de tickets
+    displaySocket.on("ticket:created", handleTicketCreated);
+    displaySocket.on("ticket:called", handleTicketCalled);
+    displaySocket.on("ticket:recalled", handleTicketRecalled);
+
+    // Cleanup: limpiar listeners y desconectar cuando cambien tenantId o token
     return () => {
-      if (socket) {
-        socket.off("connect");
-        socket.off("ticket:created");
-        socket.off("ticket:recalled");
+      if (displaySocket) {
+        // Limpiar todos los listeners
+        displaySocket.removeAllListeners();
+
+        // Desconectar y limpiar referencia
+        displaySocket.disconnect();
+        socketRef.current = null;
       }
     };
-  }, [tenantId]);
+  }, [tenantId, token]);
 
   useEffect(() => {
     const unlockAudio = () => {
