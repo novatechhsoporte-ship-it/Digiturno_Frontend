@@ -8,4 +8,4 @@ export { useUsers } from "./Users/useUsers";
 export { useTickets } from "./Tickets/useTickets";
 export { useAttendantTickets } from "./Tickets/useAttendantTickets";
 export { useQr } from "./Qr/useQr";
-export { useService } from "./Service/useService";
+export { useServices } from "./Services/useServices";

@@ -1,5 +1,5 @@
 import { ServicesHeader, ServicesFilters, ServiceFormModal, DeleteServiceModal, ServicesList } from "@components/Services";
-import { useService } from "@hooks/";
+import { useServices } from "@hooks/";
 
 import "./Services.scss";
 
@@ -36,8 +36,9 @@ export const Services = () => {
     handleConfirmDelete,
     setShowDeleteConfirm,
     handleFilterChange,
-    deleteServiceMutation,
-  } = useService();
+    setShowForm,
+    isDeleting,
+  } = useServices();
 
   return (
     <section className="services">
@@ -58,6 +59,8 @@ export const Services = () => {
         FORM_FIELDS={FORM_FIELDS}
         tenants={tenants}
         isSuperAdmin={isSuperAdmin}
+        watch={watch}
+        setValue={setValue}
       />
 
       <DeleteServiceModal
@@ -65,7 +68,7 @@ export const Services = () => {
         onClose={() => setShowDeleteConfirm(false)}
         serviceName={selectedService?.name}
         onConfirm={handleConfirmDelete}
-        isDeleting={deleteServiceMutation.isPending}
+        isDeleting={isDeleting}
       />
 
       <ServicesList services={services} loading={loading} onEdit={handleEditService} onDelete={handleAskDelete} />

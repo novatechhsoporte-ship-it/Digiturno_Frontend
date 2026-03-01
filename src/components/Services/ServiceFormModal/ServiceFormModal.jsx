@@ -14,8 +14,10 @@ export const ServiceFormModal = ({
   FORM_FIELDS,
   tenants,
   isSuperAdmin,
+  setValue,
 }) => {
   const renderField = (field) => {
+    // Checkbox
     if (field.type === "checkbox") {
       return (
         <div key={field.name} className="service-form-modal__field service-form-modal__field--full">
@@ -27,19 +29,12 @@ export const ServiceFormModal = ({
       );
     }
 
+    // Select (tenantId)
     if (field.type === "select") {
-      let options = [];
-      if (field.name === "tenantId") {
-        options = tenants.map((tenant) => ({
-          value: tenant._id,
-          label: tenant.name,
-        }));
-      }
+      // Ocultar tenantId si NO es superAdmin
+      if (field.name === "tenantId" && !isSuperAdmin) return null;
 
-      // Hide tenantId field if not super admin
-      if (field.name === "tenantId" && !isSuperAdmin) {
-        return null;
-      }
+      const options = tenants.map((t) => ({ value: t._id, label: t.name }));
 
       return (
         <div key={field.name} className={`service-form-modal__field ${field.full ? "service-form-modal__field--full" : ""}`}>
@@ -54,6 +49,26 @@ export const ServiceFormModal = ({
       );
     }
 
+    // Número — usamos onChange con setValue para garantizar que el valor sea number, no string
+    if (field.type === "number") {
+      return (
+        <div key={field.name} className={`service-form-modal__field ${field.full ? "service-form-modal__field--full" : ""}`}>
+          <CustomInput
+            label={field.label}
+            type="number"
+            min={1}
+            required={field.required}
+            error={errors[field.name]?.message}
+            {...register(field.name, {
+              setValueAs: (v) => (v === "" ? undefined : Number(v)),
+            })}
+            onChange={(e) => setValue(field.name, e.target.value === "" ? undefined : Number(e.target.value), { shouldValidate: true })}
+          />
+        </div>
+      );
+    }
+
+    // Texto por defecto
     return (
       <div key={field.name} className={`service-form-modal__field ${field.full ? "service-form-modal__field--full" : ""}`}>
         <CustomInput

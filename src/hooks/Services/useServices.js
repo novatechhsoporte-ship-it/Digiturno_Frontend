@@ -1,16 +1,19 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
+
 import { ServicesApi } from "@core/api/services";
 import { TenantsApi } from "@core/api/tenants";
-import { useCustomForm } from "@utils/useCustomForm.jsx";
-import { serviceSchema, FORM_FIELDS } from "@schemas/Services";
-import { useQueryAdapter, useMutationAdapter, createQueryKeyFactory } from "@config/adapters/queryAdapter";
 import { useAuth } from "@/store/authStore";
+import { useAbility } from "@hooks/";
+import { useCustomForm } from "@utils/useCustomForm";
+import { serviceSchema, DEFAULT_SERVICE_VALUES, FORM_FIELDS } from "@schemas/Services";
+import { createQueryKeyFactory, useMutationAdapter, useQueryAdapter, QUERY_PRESETS } from "@config/adapters/queryAdapter";
 
 const serviceKeys = createQueryKeyFactory("services");
 
 export const useServices = () => {
   const { user } = useAuth();
-  const isSuperAdmin = user?.roles?.includes("SUPERADMIN") || false;
+  const { isSuperAdmin } = useAbility();
+
   const userTenantId = user?.tenantId;
 
   const [showForm, setShowForm] = useState(false);
@@ -23,45 +26,38 @@ export const useServices = () => {
     search: "",
   });
 
-  const { register, handleSubmit, errors, isSubmitting, isDisabled, reset, watch, setValue } = useCustomForm({
+  const { register, handleSubmit, errors, isSubmitting, reset, watch, setValue } = useCustomForm({
     schema: serviceSchema,
     formOptions: {
       defaultValues: {
-        name: "",
-        description: "",
+        ...DEFAULT_SERVICE_VALUES,
         tenantId: isSuperAdmin ? "" : userTenantId || "",
-        active: true,
       },
     },
   });
 
-  // Query for tenants
-  const { data: tenantsResponse = [], isLoading: loadingTenants } = useQueryAdapter(
+  const isDisabled = isSubmitting;
+
+  const { data: tenantsRaw = [], isLoading: loadingTenants } = useQueryAdapter(
     ["tenants", "list"],
     () => TenantsApi.listTenants(),
     {
-      enabled: true,
+      enabled: isSuperAdmin,
       showErrorToast: true,
+      staleTime: QUERY_PRESETS.SEMI_STATIC.staleTime,
     }
   );
 
-  const tenants = tenantsResponse?.data ?? [];
+  const tenants = useMemo(() => tenantsRaw?.data ?? tenantsRaw ?? [], [tenantsRaw]);
 
-  // Query for services
-  const {
-    data: servicesResponse = [],
-    isLoading: loadingServices,
-    refetch: refetchServices,
-  } = useQueryAdapter(
+  const { data: servicesRaw = [], isLoading: loadingServices } = useQueryAdapter(
     serviceKeys.list(filters),
     () => {
       const params = {};
-      // If not super admin, use user's tenantId
       const tenantIdToUse = isSuperAdmin ? filters.tenantId : userTenantId;
       if (tenantIdToUse) params.tenantId = tenantIdToUse;
       if (filters.active !== "") params.active = filters.active === "true";
       if (filters.search) params.search = filters.search;
-
       return ServicesApi.listServices(params);
     },
     {
@@ -70,87 +66,89 @@ export const useServices = () => {
     }
   );
 
-  const services = servicesResponse?.data ?? [];
+  const services = useMemo(() => servicesRaw?.data ?? servicesRaw ?? [], [servicesRaw]);
 
-  // Mutation for create/update
-  const createServiceMutation = useMutationAdapter(
+  const _closeForm = useCallback(() => {
+    setShowForm(false);
+    setSelectedService(null);
+    setMode("create");
+  }, []);
+
+  const _buildPayload = (values) => ({
+    name: values.name,
+    ...(values.description && { description: values.description }),
+    active: values.active ?? true,
+  });
+
+  const { mutateAsync: createService, isPending: creating } = useMutationAdapter(
     ({ tenantId, payload }) => ServicesApi.createService(tenantId, payload),
     {
       successMessage: "Servicio creado exitosamente",
-      invalidateQueries: [serviceKeys.list(filters)],
+      invalidateQueries: [serviceKeys.lists()],
       onSuccess: () => {
-        reset();
-        setShowForm(false);
-        setSelectedService(null);
+        reset({ ...DEFAULT_SERVICE_VALUES, tenantId: isSuperAdmin ? "" : userTenantId || "" });
+        _closeForm();
       },
     }
   );
 
-  const updateServiceMutation = useMutationAdapter(
+  const { mutateAsync: updateService, isPending: updating } = useMutationAdapter(
     ({ serviceId, payload }) => ServicesApi.updateService(serviceId, payload),
     {
       successMessage: "Servicio actualizado exitosamente",
-      invalidateQueries: [serviceKeys.list(filters)],
+      invalidateQueries: [serviceKeys.lists()],
       onSuccess: () => {
-        reset();
-        setShowForm(false);
-        setSelectedService(null);
+        reset({ ...DEFAULT_SERVICE_VALUES, tenantId: isSuperAdmin ? "" : userTenantId || "" });
+        _closeForm();
       },
     }
   );
 
-  // Mutation for delete
-  const deleteServiceMutation = useMutationAdapter((serviceId) => ServicesApi.deleteService(serviceId), {
+  const { mutate: deleteService, isPending: deleting } = useMutationAdapter((serviceId) => ServicesApi.deleteService(serviceId), {
     successMessage: "Servicio eliminado exitosamente",
-    invalidateQueries: [serviceKeys.list(filters)],
+    invalidateQueries: [serviceKeys.lists()],
     onSuccess: () => {
       setShowDeleteConfirm(false);
       setSelectedService(null);
     },
   });
 
-  /* ================= CREATE / UPDATE ================= */
-  const onSubmit = async (values) => {
-    const payload = {
-      name: values.name.trim(),
-      ...(values.description && { description: values.description.trim() }),
-      active: values.active,
-    };
+  const onSubmit = useCallback(
+    async (values) => {
+      const payload = _buildPayload(values);
 
-    if (mode === "edit") {
-      updateServiceMutation.mutate({
-        serviceId: selectedService._id,
-        payload,
-      });
-    } else {
-      // If not super admin, use user's tenantId
-      const tenantIdToUse = isSuperAdmin ? values.tenantId : userTenantId;
-      createServiceMutation.mutate({
-        tenantId: tenantIdToUse,
-        payload,
-      });
-    }
-  };
+      if (mode === "edit") {
+        await updateService({ serviceId: selectedService._id, payload });
+      } else {
+        const tenantIdToUse = isSuperAdmin ? values.tenantId : userTenantId;
+        await createService({ tenantId: tenantIdToUse, payload });
+      }
+    },
+    [mode, selectedService, isSuperAdmin, userTenantId, createService, updateService]
+  );
 
-  /* ================= EDIT ================= */
+  const handleShowForm = useCallback(() => {
+    setMode("create");
+    setSelectedService(null);
+    reset({ ...DEFAULT_SERVICE_VALUES, tenantId: isSuperAdmin ? "" : userTenantId || "" });
+    setShowForm(true);
+  }, [reset, isSuperAdmin, userTenantId]);
+
   const handleEditService = useCallback(
     (service) => {
       setMode("edit");
       setSelectedService(service);
-
       reset({
         name: service.name || "",
         description: service.description || "",
         tenantId: service.tenantId?._id || service.tenantId || "",
         active: service.active ?? true,
       });
-
       setShowForm(true);
     },
     [reset]
   );
 
-  /* ================= DELETE ================= */
   const handleAskDelete = useCallback((service) => {
     setSelectedService(service);
     setShowDeleteConfirm(true);
@@ -158,30 +156,16 @@ export const useServices = () => {
 
   const handleConfirmDelete = useCallback(() => {
     if (selectedService?._id) {
-      deleteServiceMutation.mutate(selectedService._id);
+      deleteService(selectedService._id);
     }
-  }, [selectedService, deleteServiceMutation]);
-
-  const handleShowForm = useCallback(() => {
-    setMode("create");
-    setSelectedService(null);
-    reset({
-      name: "",
-      description: "",
-      tenantId: isSuperAdmin ? "" : userTenantId || "",
-      active: true,
-    });
-    setShowForm(true);
-  }, [reset, isSuperAdmin, userTenantId]);
+  }, [selectedService, deleteService]);
 
   const handleFilterChange = useCallback((key, value) => {
-    setFilters((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
+    setFilters((prev) => ({ ...prev, [key]: value }));
   }, []);
 
-  const loading = loadingServices || loadingTenants;
+  const loading = loadingServices || (isSuperAdmin && loadingTenants);
+  const isMutating = creating || updating || deleting;
 
   return {
     // Data
@@ -199,11 +183,11 @@ export const useServices = () => {
     mode,
     filters,
 
-    // Form methods
+    // Form
     register,
     handleSubmit,
     errors,
-    isSubmitting,
+    isSubmitting: isMutating,
     isDisabled,
     onSubmit,
     watch,
@@ -216,8 +200,7 @@ export const useServices = () => {
     handleConfirmDelete,
     setShowDeleteConfirm,
     handleFilterChange,
-    deleteServiceMutation,
     setShowForm,
+    isDeleting: deleting,
   };
 };
-
