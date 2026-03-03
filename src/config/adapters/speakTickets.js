@@ -1,3 +1,13 @@
+const spellTicket = (ticket) => {
+  return ticket
+    .split("")
+    .map((char) => {
+      if (char === "-") return " guión ";
+      return ` ${char} `;
+    })
+    .join("");
+};
+
 export const speakTicket = ({ ticketNumber, moduleName, attempt = 1 }) => {
   if (!("speechSynthesis" in window)) return;
 
