@@ -123,19 +123,14 @@ export const useDisplayTickets = () => {
       refetchPending();
     };
 
-    // const handleTicketCalled = (payload) => {
-    //   speakTicket({
-    //     ticketNumber: payload.ticketNumber,
-    //     moduleName: payload.moduleName,
-    //     attempt: payload.attempts,
-    //   });
-    //   refetchCurrent();
-    //   refetchPending();
-    // };
     const handleTicketCalled = (payload) => {
       speakTicket({
-        audioUrl: payload.audioUrl,
+        ticketNumber: payload.ticketNumber,
+        moduleName: payload.moduleName,
+        attempt: payload.attempts,
       });
+      refetchCurrent();
+      refetchPending();
     };
 
     const handleTicketRecalled = () => {
@@ -161,15 +156,15 @@ export const useDisplayTickets = () => {
     };
   }, [tenantId, token]);
 
-  // useEffect(() => {
-  //   const unlockAudio = () => {
-  //     const utterance = new SpeechSynthesisUtterance("");
-  //     window.speechSynthesis.speak(utterance);
-  //     document.removeEventListener("click", unlockAudio);
-  //   };
+  useEffect(() => {
+    const unlockAudio = () => {
+      const utterance = new SpeechSynthesisUtterance("");
+      window.speechSynthesis.speak(utterance);
+      document.removeEventListener("click", unlockAudio);
+    };
 
-  //   document.addEventListener("click", unlockAudio);
-  // }, []);
+    document.addEventListener("click", unlockAudio);
+  }, []);
 
   useEffect(() => {
     if (!("speechSynthesis" in window)) return;
