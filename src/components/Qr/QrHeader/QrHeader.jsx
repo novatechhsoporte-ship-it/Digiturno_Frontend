@@ -10,7 +10,7 @@ export const QrHeader = ({ onNewQr }) => {
         <p className="qr-header__subtitle">Administra los códigos QR de acceso público</p>
       </div>
 
-      <Can any={["qr.create", "qr.manage"]}>
+      <Can any={["qr.create"]}>
         <CustomButton variant="primary" onClick={onNewQr}>
           <CustomIcon name="mdi:qrcode-plus" size="sm" />
           Crear Código QR

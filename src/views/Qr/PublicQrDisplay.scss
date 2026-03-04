@@ -65,6 +65,7 @@
     text-align: center;
     text-shadow: $shadow-sm;
     line-height: $line-height-tight;
+    text-transform: capitalize;
 
     @include respond-to(sm) {
       font-size: $font-size-3xl;

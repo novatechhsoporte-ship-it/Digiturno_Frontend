@@ -4,5 +4,19 @@
   padding: $spacing-xl;
   max-width: $container-max-width;
   margin: 0 auto;
-}
 
+  &__admin-single {
+    gap: 24px;
+  }
+
+  &__admin-single,
+  &__admin-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__regenate {
+    min-width: 220px;
+  }
+}

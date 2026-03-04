@@ -1,13 +1,19 @@
 import { z } from "zod";
 
 export const ticketSchema = z.object({
-  documentNumber: z.string().min(1, "El número de documento es requerido"),
+  documentNumber: z
+    .string()
+    .min(1, "El número de documento es requerido")
+    .regex(/^\d+$/, "El documento debe contener solo números"),
   documentType: z.enum(["CC", "CE", "PA", "TI", "NIT", "PASSPORT"], {
     errorMap: () => ({ message: "Tipo de documento inválido" }),
   }),
   fullName: z.string().min(1, "El nombre completo es requerido"),
   email: z.string().email("Correo inválido").optional().or(z.literal("")),
-  phone: z.string().min(1, "El teléfono es requerido"),
+  phone: z
+    .string()
+    .min(1, "El teléfono es requerido")
+    .regex(/^\d{10}$/, "El teléfono debe tener exactamente 10 dígitos numéricos"),
   moduleId: z.string().optional(),
   serviceTypeId: z.string(),
 });

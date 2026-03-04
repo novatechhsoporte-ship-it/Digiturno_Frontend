@@ -2,370 +2,398 @@
 
 .public-qr {
   min-height: 100vh;
-  background: $color-white;
   display: flex;
   flex-direction: column;
+  background-color: $color-gray-50;
+  font-family: $font-family-primary, system-ui, sans-serif;
 
   &--loading,
   &--error {
-    @include flex-column;
-    @include flex-center;
-    gap: $spacing-lg;
+    justify-content: center;
+    align-items: center;
     text-align: center;
-    min-height: 100vh;
+    padding: $spacing-xl;
   }
 
   &__spinner {
-    width: 50px;
-    height: 50px;
-    border: 4px solid rgba($color-primary, 0.3);
-    border-top-color: $color-primary;
-    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    border: $border-width-thick solid $color-gray-200;
+    border-top: $border-width-thick solid $color-primary;
+    border-radius: $border-radius-full;
     animation: spin 1s linear infinite;
+    margin: 0 auto $spacing-lg;
   }
 
-  &__error-title {
-    font-size: $font-size-2xl;
-    font-weight: $font-weight-bold;
-    margin: 0 0 $spacing-sm 0;
-    color: $color-gray-900;
-  }
-
-  &__error-message {
-    font-size: $font-size-base;
-    color: $color-gray-600;
-  }
-
-  // Header
   &__header {
-    padding: $spacing-lg $spacing-xl;
-    border-bottom: 1px solid $color-gray-200;
-    background: $color-white;
+    background-color: $color-white;
+    padding: $spacing-md;
+    box-shadow: $shadow-sm;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: $z-index-sticky;
   }
 
   &__header-logo {
-    height: 40px;
-    width: auto;
+    height: 45px;
+    max-width: 200px;
     object-fit: contain;
   }
 
-  // Content
   &__content {
     flex: 1;
-    padding: $spacing-xl;
-    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    margin: 0 auto;
-  }
-
-  // Welcome Step
-  &__welcome {
-    @include flex-column;
-    @include flex-center;
-    min-height: 60vh;
-    text-align: center;
-  }
-
-  &__welcome-content {
     max-width: 600px;
-  }
-
-  &__welcome-title {
-    font-size: $font-size-4xl;
-    font-weight: $font-weight-bold;
-    color: $color-gray-900;
-    margin: 0 0 $spacing-md 0;
-  }
-
-  &__welcome-message {
-    font-size: $font-size-lg;
-    color: $color-gray-600;
-    margin: 0 0 $spacing-2xl 0;
-  }
-
-  &__welcome-button {
-    min-width: 200px;
-    padding: $spacing-md $spacing-xl;
-    font-size: $font-size-lg;
-  }
-
-  // Form Container
-  &__form-container {
-    max-width: 700px;
+    /* Optimal reading width for mobile/tablet */
     margin: 0 auto;
+    padding: $spacing-xl $spacing-md;
+  }
+
+  /* Utils for animation */
+  .fade-in {
+    animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .scale-up {
+    animation: scaleUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  .mt-6 {
+    margin-top: $spacing-xl;
+  }
+
+  .w-full {
+    width: 100%;
+  }
+
+  /* STEP 0: Welcome */
+  &__welcome {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: $spacing-xl;
     background: $color-white;
     border-radius: $border-radius-xl;
-    padding: $spacing-3xl;
     box-shadow: $shadow-lg;
   }
 
-  &__form-title {
+  &__welcome-icon {
+    font-size: $font-size-5xl;
+    color: $color-primary;
+    margin-bottom: $spacing-md;
+  }
+
+  &__welcome-title {
+    font-size: $font-size-3xl;
+    font-weight: $font-weight-bold;
+    color: $color-gray-900;
+    margin-bottom: $spacing-sm;
+  }
+
+  &__welcome-message {
+    color: $color-gray-600;
+    font-size: $font-size-lg;
+    margin-bottom: $spacing-xl;
+    line-height: $line-height-normal;
+  }
+
+  &__welcome-button {
+    width: 100%;
+    border-radius: $border-radius-md;
+    font-weight: $font-weight-semibold;
+    padding: 0.5rem;
+  }
+
+  &__welcome-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  /* STEP CONTAINERS */
+  &__step {
+    background: $color-white;
+    border-radius: $border-radius-xl;
+    padding: $spacing-xl;
+    box-shadow: $shadow-md;
+  }
+
+  &__step-header {
+    text-align: center;
+    margin-bottom: $spacing-xl;
+  }
+
+  &__step-title {
     font-size: $font-size-2xl;
     font-weight: $font-weight-bold;
-    margin: 0 0 $spacing-xl 0;
-    text-align: center;
     color: $color-gray-900;
   }
 
-  &__form {
-    @include flex-column;
-    gap: $spacing-lg;
+  &__step-subtitle {
+    color: $color-gray-600;
+    margin-top: $spacing-xs;
   }
 
+  /* FORM STYLES */
   &__form-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
     gap: $spacing-lg;
-
-    @include respond-to(md) {
-      grid-template-columns: 1fr;
-    }
   }
 
-  &__field {
-    &--full {
+  @include respond-to(sm) {
+    &__form-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    &__field--full {
       grid-column: 1 / -1;
+    }
+
+    .sm\\:w-auto {
+      width: auto !important;
     }
   }
 
   &__form-actions {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column-reverse;
     gap: $spacing-md;
-    margin-top: $spacing-lg;
+    border-top: $border-width-thin solid $border-color-default;
     padding-top: $spacing-lg;
-    border-top: 1px solid $color-gray-200;
   }
 
-  // Services Step
-  &__services {
-    max-width: 1000px;
-    margin: 0 auto;
+  @include respond-to(sm) {
+    &__form-actions {
+      flex-direction: row;
+      justify-content: space-between;
+    }
   }
 
-  &__services-title {
-    font-size: $font-size-2xl;
-    font-weight: $font-weight-bold;
-    text-align: center;
-    color: $color-gray-900;
-    margin: 0 0 $spacing-2xl 0;
-  }
+  /* SERVICES CARDS MOVED TO SEPARATE COMPONENT */
 
-  &__services-loading,
-  &__services-empty {
-    text-align: center;
-    padding: $spacing-3xl;
-    color: $color-gray-600;
-    font-size: $font-size-lg;
-  }
-
-  &__services-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: $spacing-lg;
-    margin-bottom: $spacing-2xl;
-  }
-
-  &__service-card {
-    background: $color-white;
-    border: 2px solid $color-gray-200;
-    border-radius: $border-radius-lg;
-    padding: $spacing-xl;
-    cursor: pointer;
-    transition: all $transition-base;
+  /* SUMMARY */
+  &__summary {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: $spacing-lg;
+  }
+
+  &__summary-card {
+    background: $color-gray-50;
+    border-radius: $border-radius-lg;
+    padding: $spacing-lg;
+    border: $border-width-thin solid $color-gray-200;
+  }
+
+  &__summary-subtitle {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $color-gray-900;
+    margin-bottom: $spacing-md;
+    padding-bottom: $spacing-sm;
+    border-bottom: $border-width-thin solid $color-gray-200;
+  }
+
+  &__summary-info p {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    color: $color-gray-600;
+    margin-bottom: $spacing-sm;
+    font-size: $font-size-base;
+
+    strong {
+      color: $color-gray-900;
+    }
+  }
+
+  &__summary-service {
+    display: flex;
     align-items: center;
     gap: $spacing-md;
 
-    &:hover {
-      border-color: $color-primary;
-      box-shadow: $shadow-md;
-      transform: translateY(-2px);
+    &-icon {
+      background: rgba($color-success, 0.1);
+      color: $color-success;
+      width: 40px;
+      height: 40px;
+      border-radius: $border-radius-full;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: $font-size-2xl;
     }
 
-    &:active {
+    &-name {
+      font-size: $font-size-lg;
+      font-weight: $font-weight-semibold;
+      color: $color-gray-900;
+    }
+
+    &-description {
+      font-size: $font-size-sm;
+      color: $color-gray-600;
+    }
+  }
+
+  &__summary-actions {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: $spacing-md;
+    margin-top: $spacing-xl;
+
+    button {
+      max-height: 40px;
+      padding: 1.5rem 6rem;
+    }
+  }
+
+  @include respond-to(sm) {
+    &__summary-actions {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+
+  /* RESULT */
+  &__result {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__result-content {
+    background: $color-white;
+    border-radius: $border-radius-xl;
+    padding: $spacing-2xl $spacing-xl;
+    text-align: center;
+    box-shadow: $shadow-2xl;
+    width: 100%;
+  }
+
+  &__result-icon {
+    color: $color-success;
+    margin-bottom: $spacing-md;
+    animation: bounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+
+  &__result-title {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: $color-gray-900;
+    margin-bottom: $spacing-xl;
+  }
+
+  &__result-ticket-box {
+    background: linear-gradient(135deg, $color-primary, $color-primary-dark);
+    border-radius: $border-radius-lg;
+    padding: $spacing-xl;
+    color: $color-white;
+    margin-bottom: $spacing-xl;
+    box-shadow: $shadow-lg;
+  }
+
+  &__result-ticket-label {
+    font-size: $font-size-sm;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: $spacing-sm;
+  }
+
+  &__result-number {
+    font-size: $font-size-6xl;
+    font-weight: $font-weight-extrabold;
+    line-height: 1;
+  }
+
+  &__result-message {
+    font-weight: $font-weight-medium;
+    color: $color-gray-600;
+    margin-bottom: $spacing-xl;
+  }
+
+  &__result-info {
+    background: $color-gray-50;
+    border-radius: $border-radius-md;
+    padding: $spacing-md;
+    margin-bottom: $spacing-xl;
+
+    &-row {
+      display: flex;
+      justify-content: space-between;
+      color: $color-gray-600;
+      font-size: $font-size-base;
+      margin-bottom: $spacing-sm;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      strong {
+        color: $color-gray-900;
+      }
+    }
+  }
+
+  &__result-button {
+    width: 100%;
+    border-radius: $border-radius-md;
+  }
+
+  /* Animations */
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    to {
+      opacity: 1;
       transform: translateY(0);
     }
   }
 
-  &__service-card-content {
-    flex: 1;
-  }
+  @keyframes scaleUp {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
 
-  &__service-card-name {
-    font-size: $font-size-lg;
-    font-weight: $font-weight-semibold;
-    color: $color-gray-900;
-    margin: 0 0 $spacing-xs 0;
-  }
-
-  &__service-card-description {
-    font-size: $font-size-sm;
-    color: $color-gray-600;
-    margin: 0;
-    line-height: $line-height-relaxed;
-  }
-
-  &__service-card-arrow {
-    font-size: $font-size-2xl;
-    color: $color-primary;
-    font-weight: $font-weight-bold;
-  }
-
-  &__services-actions {
-    display: flex;
-    justify-content: center;
-    margin-top: $spacing-xl;
-  }
-
-  // Ticket Result Step
-  &__ticket-result {
-    @include flex-column;
-    @include flex-center;
-    min-height: 60vh;
-  }
-
-  &__ticket-result-content {
-    text-align: center;
-    max-width: 500px;
-    background: $color-white;
-    border-radius: $border-radius-xl;
-    padding: $spacing-3xl;
-    box-shadow: $shadow-lg;
-  }
-
-  &__ticket-result-icon {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: $color-success-light;
-    color: $color-success;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: $font-size-4xl;
-    font-weight: $font-weight-bold;
-    margin: 0 auto $spacing-lg;
-  }
-
-  &__ticket-result-title {
-    font-size: $font-size-2xl;
-    font-weight: $font-weight-bold;
-    color: $color-gray-900;
-    margin: 0 0 $spacing-lg 0;
-  }
-
-  &__ticket-result-number {
-    font-size: $font-size-6xl;
-    font-weight: $font-weight-extrabold;
-    color: $color-primary;
-    margin: 0 0 $spacing-lg 0;
-    line-height: $line-height-tight;
-  }
-
-  &__ticket-result-message {
-    font-size: $font-size-base;
-    color: $color-gray-600;
-    margin: 0 0 $spacing-xl 0;
-    line-height: $line-height-relaxed;
-  }
-
-  &__ticket-result-info {
-    background: $color-gray-50;
-    border-radius: $border-radius-md;
-    padding: $spacing-lg;
-    margin: 0 0 $spacing-xl 0;
-    text-align: left;
-
-    p {
-      margin: $spacing-xs 0;
-      font-size: $font-size-sm;
-      color: $color-gray-700;
-
-      strong {
-        color: $color-gray-900;
-        font-weight: $font-weight-semibold;
-      }
+    to {
+      opacity: 1;
+      transform: scale(1);
     }
   }
 
-  &__ticket-result-button {
-    min-width: 200px;
-  }
-
-  // Confirmation Modal
-  &__confirm-modal {
-    @include flex-column;
-    gap: $spacing-lg;
-  }
-
-  &__confirm-modal-content {
-    @include flex-column;
-    gap: $spacing-lg;
-  }
-
-  &__confirm-modal-subtitle {
-    font-size: $font-size-lg;
-    font-weight: $font-weight-semibold;
-    color: $color-gray-900;
-    margin: 0;
-  }
-
-  &__confirm-modal-info {
-    @include flex-column;
-    gap: $spacing-sm;
-
-    p {
-      margin: 0;
-      font-size: $font-size-base;
-      color: $color-gray-700;
-
-      strong {
-        color: $color-gray-900;
-        font-weight: $font-weight-semibold;
-        margin-right: $spacing-xs;
-      }
+  @keyframes bounce {
+    0% {
+      transform: scale(0);
     }
-  }
 
-  &__confirm-modal-divider {
-    height: 1px;
-    background: $color-gray-200;
-    margin: $spacing-md 0;
-  }
+    50% {
+      transform: scale(1.2);
+    }
 
-  &__confirm-modal-service {
-    background: $color-primary-light;
-    border-radius: $border-radius-md;
-    padding: $spacing-lg;
-  }
-
-  &__confirm-modal-service-name {
-    font-size: $font-size-lg;
-    font-weight: $font-weight-semibold;
-    color: $color-gray-900;
-    margin: 0 0 $spacing-xs 0;
-  }
-
-  &__confirm-modal-service-description {
-    font-size: $font-size-sm;
-    color: $color-gray-600;
-    margin: 0;
-  }
-
-  &__confirm-modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: $spacing-md;
-    margin-top: $spacing-md;
-    padding-top: $spacing-lg;
-    border-top: 1px solid $color-gray-200;
-  }
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+    100% {
+      transform: scale(1);
+    }
   }
 }
