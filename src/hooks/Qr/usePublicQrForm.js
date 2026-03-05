@@ -27,12 +27,12 @@ export const usePublicQrForm = (token) => {
 
   const tenant = tenantResponse?.tenant || tenantResponse?.data?.tenant || tenantResponse;
 
-  // Fetch Services once tenant is available
+  // Fetch Services once token is available
   const { data: servicesResponse, isLoading: loadingServices } = useQueryAdapter(
-    serviceKeys.list({ tenantId: tenant?._id, active: true }),
-    () => ServicesApi.listServices({ tenantId: tenant._id, active: true }),
+    serviceKeys.list({ token, active: true }),
+    () => QrApi.getPublicServicesByQrToken(token),
     {
-      enabled: !!tenant?._id,
+      enabled: !!token,
     }
   );
 

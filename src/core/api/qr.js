@@ -11,6 +11,14 @@ export const QrApi = {
   },
 
   /**
+   * Get active services for a tenant by QR token (PUBLIC - no auth required)
+   * @param {string} token - Public token from QR code
+   */
+  getPublicServicesByQrToken: (token) => {
+    return axiosClient.get(`/qr/public/${token}/services`);
+  },
+
+  /**
    * Create public access QR code for a tenant (ADMIN only - requires user auth)
    * @param {object} payload - { tenantId, expiresAt? }
    */
