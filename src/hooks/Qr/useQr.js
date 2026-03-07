@@ -28,7 +28,6 @@ export const useQr = () => {
     formOptions: {
       defaultValues: {
         tenantId: isSuperAdmin ? "" : userTenantId || "",
-        expiresAt: "",
       },
     },
   });
@@ -105,7 +104,6 @@ export const useQr = () => {
   const onSubmit = async (values) => {
     const payload = {
       tenantId: values.tenantId,
-      expiresAt: values.expiresAt ? new Date(values.expiresAt).toISOString() : null,
     };
 
     if (mode === "edit") {
@@ -114,7 +112,6 @@ export const useQr = () => {
         qrId: selectedQr._id,
         payload: {
           isActive: isActiveValue !== undefined ? isActiveValue : selectedQr.isActive,
-          expiresAt: payload.expiresAt,
         },
       });
     } else {
@@ -136,7 +133,6 @@ export const useQr = () => {
 
         reset({
           tenantId: fullQrData.tenantId?._id || fullQrData.tenantId || "",
-          expiresAt: fullQrData.expiresAt ? new Date(fullQrData.expiresAt).toISOString().slice(0, 16) : "",
           isActive: fullQrData.isActive,
         });
       } catch (error) {
@@ -144,7 +140,6 @@ export const useQr = () => {
         // Fallback to original qr data
         reset({
           tenantId: qr.tenantId?._id || qr.tenantId || "",
-          expiresAt: qr.expiresAt ? new Date(qr.expiresAt).toISOString().slice(0, 16) : "",
           isActive: qr.isActive,
         });
       }
@@ -171,7 +166,6 @@ export const useQr = () => {
     setSelectedQr(null);
     reset({
       tenantId: isSuperAdmin ? "" : userTenantId || "",
-      expiresAt: "",
     });
     setShowForm(true);
   }, [reset, isSuperAdmin, userTenantId]);

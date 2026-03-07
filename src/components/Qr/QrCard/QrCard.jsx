@@ -2,7 +2,7 @@ import { CustomButton, CustomIcon } from "@components/common";
 import "./QrCard.scss";
 
 export const QrCard = ({ qr, onEdit, onDelete }) => {
-  const { publicToken, tenantId, isActive, expiresAt, createdAt, qrBase64, publicUrl } = qr;
+  const { publicToken, tenantId, isActive, createdAt, qrBase64, publicUrl } = qr;
   const tenantName = tenantId?.name || "Sin notaría";
 
   const formatDate = (date) => {
@@ -16,7 +16,6 @@ export const QrCard = ({ qr, onEdit, onDelete }) => {
     });
   };
 
-  const isExpired = expiresAt && new Date(expiresAt) < new Date();
 
   return (
     <div className="qr-card">
@@ -35,7 +34,6 @@ export const QrCard = ({ qr, onEdit, onDelete }) => {
           <span className={`qr-card__status qr-card__status--${isActive ? "active" : "inactive"}`}>
             {isActive ? "Activo" : "Inactivo"}
           </span>
-          {isExpired && <span className="qr-card__status qr-card__status--expired">Expirado</span>}
         </div>
       </div>
 
@@ -60,12 +58,6 @@ export const QrCard = ({ qr, onEdit, onDelete }) => {
           <span>Creado: {formatDate(createdAt)}</span>
         </div>
 
-        {expiresAt && (
-          <div className="qr-card__detail">
-            <CustomIcon name="mdi:calendar-clock" size="sm" />
-            <span>Expira: {formatDate(expiresAt)}</span>
-          </div>
-        )}
       </div>
 
       <div className="qr-card__actions">

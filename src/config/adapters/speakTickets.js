@@ -8,49 +8,37 @@ const spellTicket = (ticket) => {
     .join("");
 };
 
-export const speakTicket = ({ ticketNumber, moduleName, attempt = 1 }) => {
-  if (!("speechSynthesis" in window)) {
-    console.error("❌ SpeechSynthesis no es soportado en este navegador.");
+// Queue for handling simultaneous calls
+let announcementQueue = [];
+let isProcessingQueue = false;
+
+/**
+ * Processes the announcement queue sequentially
+ */
+const processQueue = () => {
+  if (announcementQueue.length === 0) {
+    isProcessingQueue = false;
+    console.log("🏁 Cola de anuncios vacía.");
     return;
   }
 
+  isProcessingQueue = true;
+  const currentAnnouncement = announcementQueue.shift();
   const synth = window.speechSynthesis;
 
-  // 1. Cancelar cualquier proceso previo para evitar colas bloqueadas
-  synth.cancel();
-
-  const spelledTicket = spellTicket(ticketNumber);
-  let suffix = "";
-  if (attempt >= 3) {
-    suffix = ", último llamado";
-  } else if (attempt === 2) {
-    suffix = ", segundo llamado";
-  }
-
-  const text = moduleName
-    ? `Turno ${spelledTicket}, dirigirse al módulo ${moduleName}${suffix}`
-    : `Turno ${spelledTicket}, por favor acercarse${suffix}`;
+  const { text, ticketNumber, attempt } = currentAnnouncement;
+  console.log(`🗣️ Procesando anuncio: "${text}" (Intento: ${attempt})`);
 
   const utterance = new SpeechSynthesisUtterance(text);
 
   // Configuración de voz
   utterance.lang = "es-CO";
-  utterance.rate = 0.9;
+  utterance.rate = 0.85; // Un poco más lento para mayor claridad
   utterance.pitch = 1;
   utterance.volume = 1;
 
-  // 2. Debugging de voces
+  // Selección de voz
   let voices = synth.getVoices();
-
-  // Log de todas las voces para ver qué tiene instalado la Mini PC
-  console.log("🔍 Voces totales detectadas:", voices.length);
-  if (voices.length > 0) {
-    console.log(
-      "🎙️ Lista de voces:",
-      voices.map((v) => `${v.name} (${v.lang})`)
-    );
-  }
-
   const selectedVoice =
     voices.find((v) => v.lang.startsWith("es") && v.name.toLowerCase().includes("sabina")) ||
     voices.find((v) => v.lang.startsWith("es") && v.name.toLowerCase().includes("helena")) ||
@@ -58,26 +46,65 @@ export const speakTicket = ({ ticketNumber, moduleName, attempt = 1 }) => {
     voices.find((v) => v.default);
 
   if (selectedVoice) {
-    console.log("✅ Voz seleccionada:", selectedVoice.name);
     utterance.voice = selectedVoice;
-  } else {
-    console.warn("⚠️ No se encontró una voz en español, usando la predeterminada del sistema.");
   }
 
-  // 3. Listeners de depuración para la Mini PC
-  utterance.onstart = () => console.log("▶️ Reproducción de audio iniciada...");
-  utterance.onend = () => console.log("✅ Reproducción de audio finalizada con éxito.");
-  utterance.onerror = (event) => console.error("❌ Error en SpeechSynthesisUtterance:", event.error);
+  utterance.onstart = () => {
+    console.log(`▶️ Iniciando audio para turno: ${ticketNumber}`);
+  };
 
-  // 4. Ejecución con mayor margen de tiempo (Safe Timeout)
-  setTimeout(() => {
-    // Forzamos el resume justo antes de hablar (crítico en TVs)
-    if (synth.paused) {
-      console.log("⏯️ El sintetizador estaba pausado, reanudando...");
-      synth.resume();
-    }
+  utterance.onend = () => {
+    console.log(`✅ Audio finalizado para turno: ${ticketNumber}. Pasando al siguiente...`);
+    // Breve pausa entre anuncios
+    setTimeout(() => {
+      processQueue();
+    }, 500);
+  };
 
-    console.log("🗣️ Intentando decir:", text);
-    synth.speak(utterance);
-  }, 250); // 250ms da tiempo al hardware de la Mini PC a procesar el cancel()
+  utterance.onerror = (event) => {
+    console.error("❌ Error en SpeechSynthesis:", event.error);
+    processQueue();
+  };
+
+  // Asegurar que no esté pausado (común en navegadores por inactividad)
+  if (synth.paused) {
+    synth.resume();
+  }
+
+  synth.speak(utterance);
+};
+
+export const speakTicket = ({ ticketNumber, moduleName, attempt = 1 }) => {
+  console.log("📢 Nueva solicitud de anuncio:", { ticketNumber, moduleName, attempt });
+
+  if (!("speechSynthesis" in window)) {
+    console.error("❌ SpeechSynthesis no es soportado en este navegador.");
+    return;
+  }
+
+  const spelledTicket = spellTicket(ticketNumber);
+  let suffix = "";
+
+  if (attempt >= 3) {
+    suffix = ", último llamado";
+  } else if (attempt === 2) {
+    suffix = ", segundo llamado";
+  }
+
+  // Incluir el módulo en el texto hablado
+  const modulePart = moduleName ? `, al módulo ${moduleName}` : "";
+  const text = `Turno ${spelledTicket}, por favor acercarse${modulePart}${suffix}`;
+
+  console.log(`📝 Texto generado para la cola: "${text}"`);
+
+  // Añadir a la cola
+  announcementQueue.push({ text, ticketNumber, attempt });
+
+  // Iniciar procesamiento si no está en marcha
+  if (!isProcessingQueue) {
+    console.log("🚀 Iniciando procesamiento de la cola...");
+    processQueue();
+  } else {
+    console.log("⏱️ Anuncio añadido a la cola interna. Esperando turno...");
+  }
 };
