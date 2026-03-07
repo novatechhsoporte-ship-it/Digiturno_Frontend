@@ -97,7 +97,7 @@ export const usePublicQrForm = (token) => {
       fullName: formValues.fullName.trim(),
       phone: formValues.phone.trim(),
       email: formValues.email?.trim() || undefined,
-      serviceId: selectedService._id,
+      serviceTypeId: selectedService._id,
       origin: "PUBLIC",
     });
   };
