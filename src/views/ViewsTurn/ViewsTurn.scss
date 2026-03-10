@@ -74,10 +74,6 @@
   }
 
   &__left-body {
-    display: grid;
-    grid-template-rows: 1fr 1fr;
-    gap: $spacing-lg;
-    min-height: 0;
   }
 
   &__panel {
@@ -139,12 +135,9 @@
   }
 
   &__called {
-    display: grid;
-    gap: $spacing-sm;
-    align-content: start;
-    min-height: 0;
-    grid-template-rows: repeat(3, minmax(0, 1fr));
-    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
 
   &__called-item {

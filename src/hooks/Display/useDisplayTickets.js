@@ -62,12 +62,12 @@ export const useDisplayTickets = () => {
     isLoading: loadingPending,
     refetch: refetchPending,
   } = useQueryAdapter(
-    displayTicketKeys.list({ type: "pending", tenantId, limit: 6 }),
+    displayTicketKeys.list({ type: "pending", tenantId, limit: 8 }),
     () => {
       if (!tenantId) {
         return Promise.resolve([]);
       }
-      return TicketsApi.getNextPendingTickets(tenantId, 6);
+      return TicketsApi.getNextPendingTickets(tenantId, 8);
     },
     {
       enabled: !!tenantId,

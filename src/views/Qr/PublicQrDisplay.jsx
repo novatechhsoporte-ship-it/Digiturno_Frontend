@@ -47,7 +47,7 @@ export const PublicQrDisplay = () => {
   return (
     <div className="qr-display">
       {tenant?.logo && <img src={tenant.logo} alt={`Logo de ${tenant.name}`} className="qr-display__logo" />}
-      {tenant?.name && <h1 className="qr-display__name">{tenant.name}</h1>}
+      {tenant?.name && <h1 className="qr-display__name">Bienvenido a la {tenant.name}</h1>}
 
       <img src={qr} alt="Escanea para tomar turno" className="qr-display__image" />
 
