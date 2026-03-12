@@ -145,6 +145,7 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: $spacing-md;
+    max-height: 325px;
 
     @include respond-to(md) {
       grid-template-columns: repeat(2, 1fr);
@@ -154,7 +155,7 @@
   &__called-item {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     gap: $spacing-md;
     padding: $spacing-lg $spacing-xl;
     border-radius: $border-radius-lg;
@@ -163,6 +164,7 @@
     min-height: 0;
     overflow: hidden;
     box-shadow: $shadow-sm;
+    max-height: 150px;
   }
 
   &__called-item:nth-child(odd) {
