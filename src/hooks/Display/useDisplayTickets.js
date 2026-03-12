@@ -126,6 +126,7 @@ export const useDisplayTickets = () => {
     const handleTicketCalled = (payload) => {
       speakTicket({
         ticketNumber: payload.ticketNumber,
+        customerName: payload.customerName,
         moduleName: payload.moduleName,
         attempt: payload.attempts,
       });

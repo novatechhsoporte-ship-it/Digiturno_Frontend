@@ -12,6 +12,9 @@ export const ViewCurrentTurn = ({ currentLogoSrc, currentTicket }) => {
           <div className="views-turn__current">
             <p className="views-turn__current-label">Turno Actual</p>
             <p className="views-turn__current-number">{capitalizeWords(currentTicket.ticketNumber)}</p>
+            {currentTicket.customerId?.fullName && (
+              <p className="views-turn__current-name">{capitalizeWords(currentTicket.customerId.fullName)}</p>
+            )}
             <p className="views-turn__current-module">{capitalizeWords(currentTicket.moduleId?.name ?? "Sin módulo")}</p>
             {currentTicket.moduleId?.description && (
               <p className="views-turn__current-description">{capitalizeWords(currentTicket.moduleId.description)}</p>

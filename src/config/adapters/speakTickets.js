@@ -74,7 +74,7 @@ const processQueue = () => {
   synth.speak(utterance);
 };
 
-export const speakTicket = ({ ticketNumber, moduleName, attempt = 1 }) => {
+export const speakTicket = ({ ticketNumber, customerName, moduleName, attempt = 1 }) => {
   console.log("📢 Nueva solicitud de anuncio:", { ticketNumber, moduleName, attempt });
 
   if (!("speechSynthesis" in window)) {
@@ -91,9 +91,10 @@ export const speakTicket = ({ ticketNumber, moduleName, attempt = 1 }) => {
     suffix = ", segundo llamado";
   }
 
-  // Incluir el módulo en el texto hablado
+  // Incluir el módulo y nombre en el texto hablado
   const modulePart = moduleName ? `, al módulo ${moduleName}` : "";
-  const text = `Turno ${spelledTicket}, por favor acercarse${modulePart}${suffix}`;
+  const namePart = customerName ? `, ${customerName}` : "";
+  const text = `Turno ${spelledTicket}${namePart}, por favor acercarse${modulePart}${suffix}`;
 
   console.log(`📝 Texto generado para la cola: "${text}"`);
 

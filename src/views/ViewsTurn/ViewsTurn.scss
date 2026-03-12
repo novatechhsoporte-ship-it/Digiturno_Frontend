@@ -74,6 +74,13 @@
   }
 
   &__left-body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-md;
+
+    @include respond-to(lg) {
+      // grid-template-columns: repeat(2, 1fr);
+    }
   }
 
   &__panel {
@@ -135,9 +142,13 @@
   }
 
   &__called {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-md;
+
+    @include respond-to(md) {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
   &__called-item {
@@ -145,12 +156,13 @@
     align-items: center;
     justify-content: space-between;
     gap: $spacing-md;
-    padding: $spacing-md $spacing-lg;
+    padding: $spacing-lg $spacing-xl;
     border-radius: $border-radius-lg;
     background: $color-white;
-    border: $border-width-thin solid $color-gray-200;
+    border: $border-width-medium solid $color-gray-200;
     min-height: 0;
     overflow: hidden;
+    box-shadow: $shadow-sm;
   }
 
   &__called-item:nth-child(odd) {
@@ -162,13 +174,16 @@
   }
 
   &__called-number {
-    font-size: clamp(18px, 1.9vw, 30px);
+    font-size: 40px;
     font-weight: $font-weight-extrabold;
+    color: $color-primary;
   }
 
   &__called-module {
-    font-size: clamp(12px, 1.2vw, 16px);
-    opacity: 0.85;
+    font-size: clamp(14px, 1.4vw, 20px);
+    font-weight: $font-weight-bold;
+    color: $color-gray-700;
+    opacity: 0.95;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -233,6 +248,14 @@
     font-weight: $font-weight-extrabold;
     line-height: $line-height-tight;
     color: $color-primary;
+  }
+
+  &__current-name {
+    font-size: clamp(28px, 3.5vw, 64px);
+    font-weight: $font-weight-bold;
+    color: $color-gray-700;
+    margin-bottom: $spacing-md;
+    word-break: break-word;
   }
 
   &__current-module {
