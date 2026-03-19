@@ -22,7 +22,7 @@ export const useUsers = () => {
     search: "",
   });
 
-  const { canAny } = useAbility();
+  const { canAny, isSuperAdmin } = useAbility();
   const mode = selectedUser ? "edit" : "create";
 
   const { register, handleSubmit, errors, isSubmitting, isDisabled, reset } = useCustomForm({
@@ -240,6 +240,7 @@ export const useUsers = () => {
     filters,
     tableActions,
     optionsMap,
+    isSuperAdmin,
 
     //methods
     register,

@@ -30,6 +30,7 @@
   margin-bottom: $spacing-xs;
   color: $color-gray-900;
   word-break: break-word;
+  text-transform: capitalize;
 }
 
 .tenant-card__tax-id {

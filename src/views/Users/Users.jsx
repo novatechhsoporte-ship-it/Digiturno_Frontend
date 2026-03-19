@@ -20,6 +20,7 @@ export const Users = () => {
     filters,
     tableActions,
     optionsMap,
+    isSuperAdmin,
 
     //methods
     register,
@@ -77,7 +78,7 @@ export const Users = () => {
       label: "Rol",
       render: (user) => <span className="role-badge">{user.roles?.map((r) => ROLE_LABELS[r.name || r] || r).join(", ")}</span>,
     },
-    {
+    isSuperAdmin && {
       key: "tenantId",
       label: "Notaría",
       render: (user) => <span>{user.tenantId?.name || "Sin notaría"}</span>,
@@ -89,7 +90,7 @@ export const Users = () => {
         <span className={`status-badge ${user.status ? "active" : "inactive"}`}>{user.status ? "Activo" : "Inactivo"}</span>
       ),
     },
-  ];
+  ].filter(Boolean);
 
   return (
     <section className="users">

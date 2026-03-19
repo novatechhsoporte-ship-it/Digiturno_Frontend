@@ -56,11 +56,31 @@ export const CustomTable = ({
           <tbody>
             {data.map((row, rowIndex) => (
               <tr key={rowIndex}>
-                {columns.map((col) => (
-                  <td key={col.key} data-label={col.label}>
-                    {col.render ? col.render(row) : row[col.key]}
-                  </td>
-                ))}
+                {columns.map((col) => {
+                  const isEmailColumn =
+                    col.key &&
+                    typeof col.key === "string" &&
+                    col.key.toLowerCase().includes("email");
+
+                  const cellValue = row[col.key];
+                  const isEmailValue =
+                    typeof cellValue === "string" &&
+                    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cellValue);
+
+                  const shouldCapitalize = !(isEmailColumn || isEmailValue);
+
+                  return (
+                    <td
+                      key={col.key}
+                      data-label={col.label}
+                      style={{
+                        textTransform: shouldCapitalize ? "capitalize" : "none",
+                      }}
+                    >
+                      {col.render ? col.render(row) : cellValue}
+                    </td>
+                  );
+                })}
 
                 {hasActions && (
                   <td className="custom-table__actions" data-label="Acciones">

@@ -96,7 +96,7 @@
   }
 
   &__panel-title {
-    font-size: $font-size-lg;
+    font-size: $font-size-3xl;
     font-weight: $font-weight-extrabold;
     letter-spacing: 0.5px;
     text-transform: uppercase;
@@ -158,17 +158,21 @@
     justify-content: center;
     gap: $spacing-md;
     padding: $spacing-lg $spacing-xl;
-    border-radius: $border-radius-lg;
+    border-radius: $border-radius-xl;
     background: $color-white;
-    border: $border-width-medium solid $color-gray-200;
+    border: $border-width-thin solid $color-gray-200;
+    border-left: 8px solid $color-primary;
     min-height: 0;
     overflow: hidden;
-    box-shadow: $shadow-sm;
+    box-shadow: $shadow-md;
     max-height: 150px;
+    transition:
+      transform $transition-fast,
+      box-shadow $transition-fast;
   }
 
   &__called-item:nth-child(odd) {
-    background: $color-gray-100;
+    background: #f8fafc;
   }
 
   &__called-item:nth-child(even) {
@@ -176,19 +180,22 @@
   }
 
   &__called-number {
-    font-size: 40px;
+    font-size: 45px;
     font-weight: $font-weight-extrabold;
     color: $color-primary;
+    line-height: $line-height-tight;
+    letter-spacing: 1px;
   }
 
   &__called-module {
-    font-size: clamp(14px, 1.4vw, 20px);
-    font-weight: $font-weight-bold;
-    color: $color-gray-700;
-    opacity: 0.95;
+    font-size: clamp(20px, 2.5vw, 28px);
+    font-weight: $font-weight-extrabold;
+    color: $color-gray-800;
+    text-align: right;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 50%;
   }
 
   /* RIGHT */
