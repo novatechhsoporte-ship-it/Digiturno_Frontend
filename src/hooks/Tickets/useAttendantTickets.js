@@ -116,6 +116,10 @@ export const useAttendantTickets = () => {
   });
 
   const handleCallNextTicket = useCallback(() => {
+    if (callNextTicketMutation.isPending) {
+      return;
+    }
+
     const moduleId = authUser?.module?._id;
 
     if (!attendantId) {
@@ -127,7 +131,7 @@ export const useAttendantTickets = () => {
       attendantId,
       ...(moduleId && { moduleId }),
     });
-  }, [attendantId, callNextTicketMutation]);
+  }, [attendantId, callNextTicketMutation, authUser?.module?._id]);
 
   const handleAbandonTicket = useCallback((ticketId) => {
     if (!ticketId) return;
