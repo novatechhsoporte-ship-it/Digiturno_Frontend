@@ -1,4 +1,5 @@
 import { z } from "zod";
+import React from "react";
 
 export const ticketSchema = z.object({
   documentNumber: z
@@ -15,7 +16,10 @@ export const ticketSchema = z.object({
     .min(1, "El teléfono es requerido")
     .regex(/^\d{10}$/, "El teléfono debe tener exactamente 10 dígitos numéricos"),
   moduleId: z.string().optional(),
-  serviceTypeId: z.string(),
+  serviceTypeId: z.string().min(1, "El tipo de servicio es requerido"),
+  dataTreatmentAccepted: z.boolean().refine((val) => val === true, {
+    message: "Debe aceptar el tratamiento de datos para continuar",
+  }),
 });
 
 export const customerUpdateSchema = z.object({
@@ -31,6 +35,8 @@ export const DEFAULT_FORM_VALUES = {
   email: "",
   phone: "",
   moduleId: "",
+  serviceTypeId: "",
+  dataTreatmentAccepted: false,
 };
 
 export const DEFAULT_CUSTOMER_UPDATE_VALUES = {
@@ -64,7 +70,7 @@ export const TICKET_FORM_FIELDS = [
   },
   {
     name: "documentType",
-    label: "Typo de Documento",
+    label: "Tipo de Documento",
     required: true,
     type: "select",
     placeholder: "Seleccione tipo documento",
@@ -86,6 +92,22 @@ export const TICKET_FORM_FIELDS = [
     name: "serviceTypeId",
     label: "Tipo de servicio",
     type: "select",
+    required: true,
+    placeholder: "Seleccione un servicio",
     optionsKey: "services",
+  },
+  {
+    name: "dataTreatmentAccepted",
+    label: (
+      <span>
+        He leído y acepto los{" "}
+        <a href="/autorizacion-datos" target="_blank" rel="noopener noreferrer" className="generic-form-modal__link">
+          términos y condiciones
+        </a>
+      </span>
+    ),
+    type: "checkbox",
+    required: true,
+    full: true,
   },
 ];

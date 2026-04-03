@@ -57,6 +57,7 @@ export const usePublicQrForm = (token) => {
         phone: "",
         email: "",
         serviceTypeId: "",
+        dataTreatmentAccepted: false,
       },
     },
   });
@@ -71,7 +72,7 @@ export const usePublicQrForm = (token) => {
   };
 
   const handleCustomerDataNext = async () => {
-    const isStep1Valid = await trigger(["documentType", "documentNumber", "fullName", "phone", "email"]);
+    const isStep1Valid = await trigger(["documentType", "documentNumber", "fullName", "phone", "email", "dataTreatmentAccepted"]);
     if (isStep1Valid) {
       nextStep();
     } else {
@@ -98,6 +99,7 @@ export const usePublicQrForm = (token) => {
       phone: formValues.phone.trim(),
       email: formValues.email?.trim() || undefined,
       serviceTypeId: selectedService._id,
+      dataTreatmentAccepted: formValues.dataTreatmentAccepted,
       origin: "PUBLIC",
     });
   };

@@ -58,8 +58,12 @@ export const TicketsApi = {
   /**
    * Get last 20 pending tickets (for attendant view)
    * @param {string} tenantId
+   * @param {string} [moduleId]
    */
-  getLastPendingTickets: (tenantId) => axiosClient.get(`/tickets/last-pending/${tenantId}`),
+  getLastPendingTickets: (tenantId, moduleId) =>
+    axiosClient.get(`/tickets/last-pending/${tenantId}`, {
+      params: moduleId ? { moduleId } : {},
+    }),
 
   /**
    * Get current ticket in progress for an attendant
@@ -102,4 +106,11 @@ export const TicketsApi = {
    * @param {string} ticketId
    */
   getLastCalledTickets: (ticketId) => axiosClient.get(`/tickets/display/last-called/${ticketId}`),
+
+  /**
+   * Transfer ticket to Cashier
+   * @param {string} ticketId
+   * @param {object} payload - { tenantId }
+   */
+  transferToCashier: (ticketId, payload) => axiosClient.post(`/tickets/${ticketId}/transfer-to-cashier`, payload),
 };

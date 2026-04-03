@@ -97,6 +97,7 @@
 
   // SECCIÓN CHECKBOX
   &--checkbox {
+    flex-wrap: wrap;
     flex-direction: row;
     align-items: center;
     gap: $spacing-sm;
@@ -107,6 +108,7 @@
       align-items: center;
       cursor: pointer;
       gap: $spacing-sm;
+      width: 100%;
     }
 
     .custom-input__checkbox {
@@ -114,6 +116,13 @@
       height: 18px;
       cursor: pointer;
       accent-color: $color-primary;
+    }
+
+    .custom-input__error-msg {
+      width: 100%;
+      margin-left: calc(18px + #{$spacing-sm});
+      font-size: $font-size-xs;
+      color: $color-error;
     }
   }
 }

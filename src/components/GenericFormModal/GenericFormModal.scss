@@ -1,3 +1,5 @@
+@use "@/styles" as *;
+
 .generic-form-modal {
   &__grid {
     display: grid;
@@ -22,9 +24,20 @@
     margin-top: 1.5rem;
   }
 
-  &__checkbox {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+  &--checkbox {
+    padding-top: 0.5rem;
+  }
+
+  &__link {
+    color: $color-primary;
+    text-decoration: none;
+    font-weight: $font-weight-medium;
+    border-bottom: 1px solid transparent;
+    transition: all $transition-fast;
+
+    &:hover {
+      color: $color-primary-hover;
+      border-bottom-color: $color-primary-hover;
+    }
   }
 }

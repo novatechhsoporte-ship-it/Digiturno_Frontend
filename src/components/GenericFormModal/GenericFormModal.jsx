@@ -22,10 +22,13 @@ export const GenericFormModal = ({
     if (field.type === "checkbox") {
       return (
         <div key={field.name} className={fieldClass}>
-          <label className="generic-form-modal__checkbox">
-            <input type="checkbox" {...register(field.name)} />
-            <span>{field.label}</span>
-          </label>
+          <CustomInput
+            type="checkbox"
+            label={field.label}
+            required={field.required}
+            error={errors[field.name]?.message}
+            {...register(field.name)}
+          />
         </div>
       );
     }

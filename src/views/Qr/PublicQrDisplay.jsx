@@ -10,6 +10,13 @@ export const PublicQrDisplay = () => {
   const [tenant, setTenant] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const formatTenantName = (name) => {
+    if (!name) return "";
+    return name.replace(/notaria/gi, "Notaría");
+  };
+
+  const formattedName = formatTenantName(tenant?.name);
+
   useEffect(() => {
     const fetchQr = async () => {
       try {
@@ -47,7 +54,7 @@ export const PublicQrDisplay = () => {
   return (
     <div className="qr-display">
       {tenant?.logo && <img src={tenant.logo} alt={`Logo de ${tenant.name}`} className="qr-display__logo" />}
-      {tenant?.name && <h1 className="qr-display__name">Bienvenido a la {tenant.name}</h1>}
+      {tenant?.name && <h1 className="qr-display__name">Bienvenido a la {formattedName}</h1>}
 
       <img src={qr} alt="Escanea para tomar turno" className="qr-display__image" />
 

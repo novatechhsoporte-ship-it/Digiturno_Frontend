@@ -14,18 +14,20 @@ export const useAttendantTickets = () => {
   const queryClient = useQueryClient();
   const [showCompleteConfirm, setShowCompleteConfirm] = useState(false);
   const [showAbandonConfirm, setShowAbandonConfirm] = useState(false);
+  const [showTransferConfirm, setShowTransferConfirm] = useState(false);
   const [pendingTicketId, setPendingTicketId] = useState(null);
 
   const tenantId = authUser?.tenantId;
   const attendantId = authUser?._id;
+  const moduleId = authUser?.module?._id;
 
   const {
     data: pendingTickets,
     isLoading: loadingPending,
     refetch: refetchPendingTickets,
   } = useQueryAdapter(
-    ticketKeys.list({ tenantId, status: "pending", limit: 20 }),
-    () => TicketsApi.getLastPendingTickets(tenantId),
+    ticketKeys.list({ tenantId, moduleId, status: "pending", limit: 20 }),
+    () => TicketsApi.getLastPendingTickets(tenantId, moduleId),
     {
       enabled: !!tenantId,
       showErrorToast: true,
@@ -115,6 +117,21 @@ export const useAttendantTickets = () => {
     },
   });
 
+  const transferToCashierMutation = useMutationAdapter(
+    (ticketId) => TicketsApi.transferToCashier(ticketId, { tenantId }),
+    {
+      successMessage: "Turno transferido a Caja exitosamente",
+      invalidateQueries: [
+        ticketKeys.list({ tenantId, status: "pending", limit: 20 }),
+        ["tickets", "current", attendantId, tenantId],
+      ],
+      onSuccess: () => {
+        queryClient.setQueryData(["tickets", "current", attendantId, tenantId], null);
+        refetchPendingTickets();
+      },
+    }
+  );
+
   const handleCallNextTicket = useCallback(() => {
     if (callNextTicketMutation.isPending) {
       return;
@@ -171,6 +188,20 @@ export const useAttendantTickets = () => {
     },
     [recallTicketMutation]
   );
+
+  const handleTransferToCashier = useCallback((ticketId) => {
+    if (!ticketId) return;
+    setPendingTicketId(ticketId);
+    setShowTransferConfirm(true);
+  }, []);
+
+  const confirmTransferToCashier = useCallback(() => {
+    if (pendingTicketId) {
+      transferToCashierMutation.mutate(pendingTicketId);
+      setShowTransferConfirm(false);
+      setPendingTicketId(null);
+    }
+  }, [pendingTicketId, transferToCashierMutation]);
 
   const canCallNext = !currentTicket?._id && !loadingCurrent;
 
@@ -265,9 +296,14 @@ export const useAttendantTickets = () => {
     // Modals
     showCompleteConfirm,
     showAbandonConfirm,
+    showTransferConfirm,
     setShowCompleteConfirm,
     setShowAbandonConfirm,
+    setShowTransferConfirm,
     confirmCompleteTicket,
     confirmAbandonTicket,
+    confirmTransferToCashier,
+    handleTransferToCashier,
+    isTransferring: transferToCashierMutation.isPending,
   };
 };

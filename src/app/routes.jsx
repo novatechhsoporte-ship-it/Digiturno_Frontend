@@ -19,13 +19,14 @@ import { Qr } from "@/views/Qr/Qr";
 import { PublicQr } from "@/views/Qr/PublicQr";
 import { PublicQrDisplay } from "@views/Qr/PublicQrDisplay";
 import { Services } from "@/views/Services/Services";
+import { DataTreatmentAuthorization } from "@/views/Public/DataTreatment/DataTreatmentAuthorization";
 
 function AppLayout() {
   const location = useLocation();
   const { token, user } = useAuth();
 
   // Public routes that don't require user authentication
-  const publicRoutes = ["/login", "/display", "/tv", "/q"];
+  const publicRoutes = ["/login", "/display", "/tv", "/q", "/autorizacion-datos"];
   const isPublicRoute = publicRoutes.some((route) => {
     return location.pathname === route || location.pathname.startsWith(`${route}/`);
   });
@@ -58,14 +59,15 @@ const router = createBrowserRouter([
       { path: "tv/:tenantId", element: <ViewsTurn /> },
       { path: "q/:token", element: <PublicQrDisplay /> },
       { path: "q/:token/form", element: <PublicQr /> },
-      // {
-      //   path: "dashboard",
-      //   element: (
-      //     <ProtectedRoute any={["dashboard.view", "dashboard.manage"]}>
-      //       <Dashboard />
-      //     </ProtectedRoute>
-      //   ),
-      // },
+      { path: "autorizacion-datos", element: <DataTreatmentAuthorization /> },
+      {
+        path: "dashboard",
+        element: (
+          <ProtectedRoute any={["dashboard.view", "dashboard.manage"]}>
+            <Dashboard />
+          </ProtectedRoute>
+        ),
+      },
       {
         path: "tenants",
         element: (

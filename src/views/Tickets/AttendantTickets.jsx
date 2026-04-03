@@ -17,6 +17,7 @@ export const AttendantTickets = () => {
     handleAbandonTicket,
     handleCompleteTicket,
     handleRecallTicket,
+    handleTransferToCashier,
 
     // State
     canCallNext,
@@ -24,14 +25,18 @@ export const AttendantTickets = () => {
     isAbandoning,
     isCompleting,
     isRecalling,
+    isTransferring,
 
     // Modals
     showCompleteConfirm,
     showAbandonConfirm,
+    showTransferConfirm,
     setShowCompleteConfirm,
     setShowAbandonConfirm,
+    setShowTransferConfirm,
     confirmCompleteTicket,
     confirmAbandonTicket,
+    confirmTransferToCashier,
   } = useAttendantTickets();
   useTicketSocket();
 
@@ -60,6 +65,11 @@ export const AttendantTickets = () => {
           setShowAbandonConfirm={setShowAbandonConfirm}
           confirmCompleteTicket={confirmCompleteTicket}
           confirmAbandonTicket={confirmAbandonTicket}
+          onTransferToCashier={handleTransferToCashier}
+          confirmTransferToCashier={confirmTransferToCashier}
+          showTransferConfirm={showTransferConfirm}
+          setShowTransferConfirm={setShowTransferConfirm}
+          isTransferring={isTransferring}
         />
       </div>
 

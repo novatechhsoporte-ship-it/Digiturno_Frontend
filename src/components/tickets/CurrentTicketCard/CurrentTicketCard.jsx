@@ -17,6 +17,11 @@ export const CurrentTicketCard = ({
   setShowAbandonConfirm,
   confirmCompleteTicket,
   confirmAbandonTicket,
+  onTransferToCashier,
+  isTransferring,
+  showTransferConfirm,
+  setShowTransferConfirm,
+  confirmTransferToCashier,
 }) => {
   // Real-time timer state
   const [serviceTimer, setServiceTimer] = useState(initialServiceTimer || "00:00");
@@ -112,14 +117,21 @@ export const CurrentTicketCard = ({
           <CustomButton
             variant="secondary"
             onClick={() => onRecallTicket(currentTicket?._id)}
-            disabled={isCompleting || isAbandoning || isRecalling || currentTicket.callCount >= 3}
+            disabled={isCompleting || isAbandoning || isRecalling || currentTicket.callCount >= 3 || isTransferring}
           >
             {isRecalling ? "Llamando..." : "Volver a Llamar"}
           </CustomButton>
           <CustomButton
+            className="current-ticket-card__btn-cashier"
+            onClick={() => onTransferToCashier(currentTicket?._id)}
+            disabled={isCompleting || isAbandoning || isRecalling || isTransferring}
+          >
+            {isTransferring ? "Transfiriendo..." : "Dirigir a Caja"}
+          </CustomButton>
+          <CustomButton
             variant="primary"
             onClick={() => onCompleteTicket(currentTicket?._id)}
-            disabled={isCompleting || isAbandoning || isRecalling}
+            disabled={isCompleting || isAbandoning || isRecalling || isTransferring}
           >
             {isCompleting ? "Completando..." : "Completar Turno"}
           </CustomButton>
@@ -156,6 +168,23 @@ export const CurrentTicketCard = ({
             </CustomButton>
             <CustomButton variant="danger" onClick={() => confirmAbandonTicket()} disabled={isAbandoning}>
               {isAbandoning ? "Abandonando..." : "Abandonar"}
+            </CustomButton>
+          </div>
+        </div>
+      </CustomModal>
+
+      {/* Transfer to Cashier Confirmation Modal */}
+      <CustomModal isOpen={showTransferConfirm} onClose={() => setShowTransferConfirm(false)} title="Dirigir a Caja" size="sm">
+        <div className="current-ticket-card__modal">
+          <p className="current-ticket-card__modal-message">
+            ¿Estás seguro de que deseas transferir el turno <strong>{currentTicket?.ticketNumber}</strong> al módulo de <strong>Caja</strong>?
+          </p>
+          <div className="current-ticket-card__modal-actions">
+            <CustomButton variant="outline" onClick={() => setShowTransferConfirm(false)}>
+              Cancelar
+            </CustomButton>
+            <CustomButton className="current-ticket-card__btn-cashier" onClick={() => confirmTransferToCashier()} disabled={isTransferring}>
+              {isTransferring ? "Transfiriendo..." : "Confirmar Transferencia"}
             </CustomButton>
           </div>
         </div>

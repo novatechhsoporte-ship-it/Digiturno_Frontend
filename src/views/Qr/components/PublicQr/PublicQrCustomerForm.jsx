@@ -83,6 +83,29 @@ export const PublicQrCustomerForm = ({ register, errors, onNext, onCancel }) => 
               {...register("email")}
             />
           </div>
+
+          <div className="public-qr__field public-qr__field--full mt-2">
+            <CustomInput
+              type="checkbox"
+              required
+              error={errors.dataTreatmentAccepted?.message}
+              {...register("dataTreatmentAccepted")}
+              label={
+                <span className="public-qr__checkbox-label-text">
+                  He leído y acepto los{" "}
+                  <a
+                    href="/autorizacion-datos"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="public-qr__link"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    términos y condiciones de tratamiento de datos
+                  </a>
+                </span>
+              }
+            />
+          </div>
         </div>
 
         <div className="public-qr__form-actions mt-6">
