@@ -1,0 +1,86 @@
+@use "@/styles" as *;
+
+.bottom-bar {
+  height: 56px;
+  background: var(--cobalt-mid);
+  border-top: 1px solid rgba(160, 120, 80, 0.3);
+  box-shadow: 0 -2px 20px rgba(26, 47, 94, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  z-index: 10;
+  flex-shrink: 0;
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .icon {
+      color: var(--bronze-light);
+      font-size: 18px;
+    }
+
+    .audio-visual {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      height: 18px;
+
+      span {
+        width: 3px;
+        border-radius: 2px;
+        background: var(--bronze-light);
+        animation: audioWave 1.2s ease-in-out infinite;
+
+        &:nth-child(2) {
+          background: rgba(196, 149, 106, 0.7);
+          animation-delay: 0.2s;
+        }
+        &:nth-child(3) {
+          background: rgba(196, 149, 106, 0.5);
+          animation-delay: 0.4s;
+        }
+      }
+    }
+
+    .text {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+  }
+
+  &__center {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 13px;
+    letter-spacing: 0.03em;
+    text-align: center;
+    display: none;
+    @include respond-to(md) {
+      display: block;
+    }
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: #4ade80;
+      border-radius: 50%;
+      animation: statusPulse 2s ease-in-out infinite;
+    }
+
+    .text {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+    }
+  }
+}

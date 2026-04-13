@@ -1,0 +1,14 @@
+@use "@/styles" as *;
+
+.geometric-background {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(135deg, #e8eef8 0%, #ffffff 50%, #f0f4fb 100%);
+
+  svg {
+    width: 100%;
+    height: 100%;
+    opacity: 0.15;
+  }
+}

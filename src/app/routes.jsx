@@ -14,7 +14,7 @@ import { Forbidden } from "@/views/Forbidden/Forbidden";
 import { Display } from "@/views/Display/Display";
 import { Displays } from "@/views/Displays/Displays";
 
-import { ViewsTurn } from "@/views/ViewsTurn/ViewsTurn";
+import { TurnsView } from "@/views/TurnsView/TurnsView";
 import { Qr } from "@/views/Qr/Qr";
 import { PublicQr } from "@/views/Qr/PublicQr";
 import { PublicQrDisplay } from "@views/Qr/PublicQrDisplay";
@@ -54,9 +54,9 @@ const router = createBrowserRouter([
       // { index: true, element: <Navigate to="/dashboard" replace /> },
       { path: "login", element: <Login /> },
       { path: "display", element: <Display /> },
-      { path: "display/:tenantId", element: <ViewsTurn /> },
+      { path: "display/:tenantId", element: <TurnsView /> },
       { path: "tv", element: <Display /> },
-      { path: "tv/:tenantId", element: <ViewsTurn /> },
+      { path: "tv/:tenantId", element: <TurnsView /> },
       { path: "q/:token", element: <PublicQrDisplay /> },
       { path: "q/:token/form", element: <PublicQr /> },
       { path: "autorizacion-datos", element: <DataTreatmentAuthorization /> },

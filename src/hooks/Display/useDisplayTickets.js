@@ -122,6 +122,11 @@ export const useDisplayTickets = () => {
     const handleTicketCreated = () => {
       refetchPending();
     };
+    
+    const handleTicketCompleted = () => {
+      refetchCurrent();
+      refetchPending();
+    };
 
     const handleTicketCalled = (payload) => {
       speakTicket({
@@ -141,6 +146,8 @@ export const useDisplayTickets = () => {
 
     // Agregar listeners de tickets
     displaySocket.on("ticket:created", handleTicketCreated);
+    displaySocket.on("ticket:completed", handleTicketCompleted);
+    displaySocket.on("ticket:abandoned", handleTicketCompleted);
     displaySocket.on("ticket:called", handleTicketCalled);
     displaySocket.on("ticket:recalled", handleTicketRecalled);
 
