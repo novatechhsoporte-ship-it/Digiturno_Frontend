@@ -7,12 +7,14 @@ export const useAbility = () => {
 
   const can = (permission) => {
     if (isSuperAdmin) return true;
-    return permissions.some((p) => p.name === permission);
+    const hasPermission = permissions.some((p) => p.name === permission);
+    return hasPermission;
   };
 
   const canAny = (permissionList) => {
     if (isSuperAdmin) return true;
-    return permissions.some((p) => permissionList.includes(p.name));
+    const hasPermission = permissions.some((p) => permissionList.includes(p.name));
+    return hasPermission;
   };
 
   const canAll = (permissionList) => {

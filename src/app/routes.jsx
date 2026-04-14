@@ -20,6 +20,8 @@ import { PublicQr } from "@/views/Qr/PublicQr";
 import { PublicQrDisplay } from "@views/Qr/PublicQrDisplay";
 import { Services } from "@/views/Services/Services";
 import { DataTreatmentAuthorization } from "@/views/Public/DataTreatment/DataTreatmentAuthorization";
+import { SettingsView } from "@/views/SettingsView/SettingsView";
+import { PermissionsPanel } from "@/views/SettingsView/components/Permissions/PermissionsPanel";
 
 function AppLayout() {
   const location = useLocation();
@@ -133,6 +135,25 @@ const router = createBrowserRouter([
             <Services />
           </ProtectedRoute>
         ),
+      },
+
+      {
+        path: "settings",
+        element: (
+          <ProtectedRoute any={["settings.view", "settings.permissions.manage"]}>
+            <SettingsView />
+          </ProtectedRoute>
+        ),
+        children: [
+          {
+            path: "permissions",
+            element: (
+              <ProtectedRoute any={["settings.permissions.manage"]}>
+                <PermissionsPanel />
+              </ProtectedRoute>
+            ),
+          },
+        ],
       },
 
       { path: "*", element: <Navigate to="/tickets" replace /> },

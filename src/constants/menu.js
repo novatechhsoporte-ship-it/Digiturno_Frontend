@@ -4,12 +4,12 @@
  * Vacío significa que todos los usuarios pueden verlo
  */
 export const SIDEBAR_MENU = [
-  // {
-  //   path: "/dashboard",
-  //   label: "Dashboard",
-  //   icon: "mdi:view-dashboard",
-  //   roles: [],
-  // },
+  {
+    path: "/dashboard",
+    label: "Dashboard",
+    icon: "mdi:view-dashboard",
+    roles: ["SUPERADMIN", "ADMIN"],
+  },
   {
     path: "/tickets",
     label: "Turnos",
@@ -56,6 +56,12 @@ export const SIDEBAR_MENU = [
     path: "/services",
     label: "Servicios",
     icon: "mdi:briefcase",
+    roles: ["SUPERADMIN", "ADMIN"],
+  },
+  {
+    path: "/settings",
+    label: "Configuración",
+    icon: "mdi:cog",
     roles: ["SUPERADMIN", "ADMIN"],
   },
 ];

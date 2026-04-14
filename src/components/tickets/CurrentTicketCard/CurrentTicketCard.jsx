@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { CustomButton, CustomModal } from "@components/common";
+import { useAbility } from "@hooks";
 import "./CurrentTicketCard.scss";
 
 export const CurrentTicketCard = ({
@@ -23,6 +24,8 @@ export const CurrentTicketCard = ({
   setShowTransferConfirm,
   confirmTransferToCashier,
 }) => {
+  const { can } = useAbility();
+
   // Real-time timer state
   const [serviceTimer, setServiceTimer] = useState(initialServiceTimer || "00:00");
 
@@ -121,13 +124,17 @@ export const CurrentTicketCard = ({
           >
             {isRecalling ? "Llamando..." : "Volver a Llamar"}
           </CustomButton>
-          <CustomButton
-            className="current-ticket-card__btn-cashier"
-            onClick={() => onTransferToCashier(currentTicket?._id)}
-            disabled={isCompleting || isAbandoning || isRecalling || isTransferring}
-          >
-            {isTransferring ? "Transfiriendo..." : "Dirigir a Caja"}
-          </CustomButton>
+          
+          {can("public.transfer") && (
+            <CustomButton
+              className="current-ticket-card__btn-cashier"
+              onClick={() => onTransferToCashier(currentTicket?._id)}
+              disabled={isCompleting || isAbandoning || isRecalling || isTransferring}
+            >
+              {isTransferring ? "Transfiriendo..." : "Dirigir a Caja"}
+            </CustomButton>
+          )}
+
           <CustomButton
             variant="primary"
             onClick={() => onCompleteTicket(currentTicket?._id)}
