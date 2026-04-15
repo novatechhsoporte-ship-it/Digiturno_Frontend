@@ -21,8 +21,10 @@ export const createSocketConnection = (token) => {
     auth: { token },
     reconnection: true,
     autoConnect: true,
-    reconnectionAttempts: 5,
-    // timeout: 10000,
+    reconnectionAttempts: Infinity,
+    reconnectionDelay: 1000,
+    reconnectionDelayMax: 10000,
+    timeout: 20000,
   });
 
   socket.on("connect_error", (err) => {
