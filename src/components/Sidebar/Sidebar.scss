@@ -12,7 +12,9 @@
   border-radius: $border-radius-sm;
   color: $color-gray-300;
 
-  transition: background-color $transition-fast, color $transition-fast;
+  transition:
+    background-color $transition-fast,
+    color $transition-fast;
 
   &:hover {
     background-color: rgba($color-white, 0.1);
@@ -45,7 +47,9 @@
   overflow-y: auto;
 
   transform: translateX(-100%);
-  transition: transform $transition-base, width $transition-base;
+  transition:
+    transform $transition-base,
+    width $transition-base;
 
   @include respond-to(md) {
     transform: translateX(0);
@@ -61,7 +65,9 @@
 
     & .sidebar__header {
       padding: $spacing-md;
+      flex-direction: column;
       justify-content: center;
+      gap: $spacing-md;
     }
 
     & .sidebar__logo-container,
@@ -126,14 +132,16 @@
 
   &__logo-main {
     @extend %sidebar-logo;
-    height: 50px;
-    filter: brightness(0) invert(1);
+    height: 38px;
+    max-width: 150px;
+    width: auto;
   }
 
   &__logo-icon {
     @extend %sidebar-logo;
-    height: 40px;
-    filter: brightness(0) invert(1);
+    height: 30px;
+    max-width: 30px;
+    width: auto;
   }
 
   &__logo-tenant {
@@ -212,7 +220,10 @@
     font-weight: $font-weight-medium;
     color: $color-gray-300;
 
-    transition: background-color $transition-fast, color $transition-fast, transform $transition-fast;
+    transition:
+      background-color $transition-fast,
+      color $transition-fast,
+      transform $transition-fast;
 
     &:hover {
       background-color: rgba($color-white, 0.05);

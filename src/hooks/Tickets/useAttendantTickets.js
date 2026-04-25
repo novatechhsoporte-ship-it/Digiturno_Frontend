@@ -10,7 +10,7 @@ import { useQueryAdapter, useMutationAdapter, createQueryKeyFactory } from "@con
 const ticketKeys = createQueryKeyFactory("tickets");
 
 export const useAttendantTickets = () => {
-  const { user: authUser, token } = useAuth();
+  const { user: authUser, token, permissions } = useAuth();
   const queryClient = useQueryClient();
   const [showCompleteConfirm, setShowCompleteConfirm] = useState(false);
   const [showAbandonConfirm, setShowAbandonConfirm] = useState(false);
@@ -21,13 +21,19 @@ export const useAttendantTickets = () => {
   const attendantId = authUser?._id;
   const moduleId = authUser?.module?._id;
 
+  const isSupportCaller = useMemo(() => {
+    return permissions?.some((p) => p.name === "public.support_caller");
+  }, [permissions]);
+
+  const effectiveModuleId = isSupportCaller ? null : moduleId;
+
   const {
     data: pendingTickets,
     isLoading: loadingPending,
     refetch: refetchPendingTickets,
   } = useQueryAdapter(
-    ticketKeys.list({ tenantId, moduleId, status: "pending", limit: 20 }),
-    () => TicketsApi.getLastPendingTickets(tenantId, moduleId),
+    ticketKeys.list({ tenantId, moduleId: effectiveModuleId, status: "pending", limit: 20 }),
+    () => TicketsApi.getLastPendingTickets(tenantId, effectiveModuleId),
     {
       enabled: !!tenantId,
       showErrorToast: true,
@@ -117,20 +123,34 @@ export const useAttendantTickets = () => {
     },
   });
 
-  const transferToCashierMutation = useMutationAdapter(
-    (ticketId) => TicketsApi.transferToCashier(ticketId, { tenantId }),
-    {
-      successMessage: "Turno transferido a Caja exitosamente",
-      invalidateQueries: [
-        ticketKeys.list({ tenantId, status: "pending", limit: 20 }),
-        ["tickets", "current", attendantId, tenantId],
-      ],
-      onSuccess: () => {
-        queryClient.setQueryData(["tickets", "current", attendantId, tenantId], null);
-        refetchPendingTickets();
-      },
-    }
-  );
+  const transferToCashierMutation = useMutationAdapter((ticketId) => TicketsApi.transferToCashier(ticketId, { tenantId }), {
+    successMessage: "Turno transferido a Caja exitosamente",
+    invalidateQueries: [
+      ticketKeys.list({ tenantId, status: "pending", limit: 20 }),
+      ["tickets", "current", attendantId, tenantId],
+    ],
+    onSuccess: () => {
+      queryClient.setQueryData(["tickets", "current", attendantId, tenantId], null);
+      refetchPendingTickets();
+    },
+  });
+
+  const callTicketMutation = useMutationAdapter(({ ticketId, payload }) => TicketsApi.callTicket(ticketId, payload), {
+    successMessage: "Turno llamado exitosamente",
+    invalidateQueries: [
+      ticketKeys.list({ tenantId, status: "pending", limit: 20 }),
+      ["tickets", "current", attendantId, tenantId],
+    ],
+    onSuccess: (data) => {
+      const ticketData = data?.data || data;
+      if (ticketData && ticketData.attendantId?._id?.toString() === attendantId.toString()) {
+        queryClient.setQueryData(["tickets", "current", attendantId, tenantId], {
+          data: ticketData,
+        });
+      }
+      refetchPendingTickets();
+    },
+  });
 
   const handleCallNextTicket = useCallback(() => {
     if (callNextTicketMutation.isPending) {
@@ -202,6 +222,21 @@ export const useAttendantTickets = () => {
       setPendingTicketId(null);
     }
   }, [pendingTicketId, transferToCashierMutation]);
+
+  const handleCallTicket = useCallback(
+    (ticketId) => {
+      if (!ticketId || !attendantId) return;
+
+      callTicketMutation.mutate({
+        ticketId,
+        payload: {
+          attendantId,
+          moduleId: authUser?.module?._id || null,
+        },
+      });
+    },
+    [attendantId, callTicketMutation, authUser?.module?._id]
+  );
 
   const canCallNext = !currentTicket?._id && !loadingCurrent;
 
@@ -278,6 +313,7 @@ export const useAttendantTickets = () => {
 
     // Actions
     handleCallNextTicket,
+    handleCallTicket,
     handleAbandonTicket,
     handleCompleteTicket,
     handleRecallTicket,
@@ -305,5 +341,6 @@ export const useAttendantTickets = () => {
     confirmTransferToCashier,
     handleTransferToCashier,
     isTransferring: transferToCashierMutation.isPending,
+    isSupportCaller,
   };
 };

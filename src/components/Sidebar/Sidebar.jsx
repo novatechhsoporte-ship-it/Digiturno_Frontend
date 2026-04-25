@@ -35,8 +35,8 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }) => {
 
       <aside className={`sidebar ${isOpen ? "sidebar--open" : ""} ${isCollapsed ? "sidebar--collapsed" : ""}`}>
         <div className="sidebar__header">
-          {!isCollapsed && <img src="/brand/novatechh.svg" alt="Novatechh" className="sidebar__logo-main" />}
-          {isCollapsed && <img src="/brand/novatechh.svg" alt="Novatechh" className="sidebar__logo-icon" />}
+          {!isCollapsed && <img src="/brand/novatechhheader.svg" alt="Novatechh" className="sidebar__logo-main" />}
+          {isCollapsed && <img src="/brand/novatechhheader.svg" alt="Novatechh" className="sidebar__logo-icon" />}
           <div className="sidebar__header-actions">
             {onToggleCollapse && (
               <button

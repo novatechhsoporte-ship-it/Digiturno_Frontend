@@ -1,8 +1,8 @@
 import { useMemo } from "react";
-import { CustomTable } from "@components/common";
+import { CustomTable, CustomButton, CustomIcon } from "@components/common";
 import "./AttendantTicketsList.scss";
 
-export const AttendantTicketsList = ({ pendingTickets, loading, onAbandonTicket }) => {
+export const AttendantTicketsList = ({ pendingTickets, loading, onAbandonTicket, isSupportCaller, onCallTicket }) => {
   const columns = useMemo(
     () => [
       {
@@ -25,8 +25,23 @@ export const AttendantTicketsList = ({ pendingTickets, loading, onAbandonTicket 
         label: "Creado",
         render: (ticket) => <span>{new Date(ticket.createdAt).toLocaleTimeString()}</span>,
       },
+      ...(isSupportCaller
+        ? [
+            {
+              key: "actions",
+              label: "Acciones",
+              render: (ticket) => (
+                <div className="attendant-tickets-list__actions">
+                  <CustomButton variant="primary" size="sm" onClick={() => onCallTicket(ticket._id)} title="Llamar turno">
+                    <CustomIcon name="mdi:phone" size="xs" />
+                  </CustomButton>
+                </div>
+              ),
+            },
+          ]
+        : []),
     ],
-    []
+    [isSupportCaller, onCallTicket]
   );
 
   return (
@@ -36,7 +51,12 @@ export const AttendantTicketsList = ({ pendingTickets, loading, onAbandonTicket 
       ) : pendingTickets?.length === 0 ? (
         <div className="attendant-tickets-list__empty">No hay turnos pendientes</div>
       ) : (
-        <CustomTable title="Últimos Turnos Pendientes" columns={columns} data={pendingTickets} loading={loading} />
+        <CustomTable
+          title={isSupportCaller ? "Turnos Globales Pendientes" : "Últimos Turnos Pendientes"}
+          columns={columns}
+          data={pendingTickets}
+          loading={loading}
+        />
       )}
     </div>
   );

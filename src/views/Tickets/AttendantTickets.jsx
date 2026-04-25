@@ -18,6 +18,7 @@ export const AttendantTickets = () => {
     handleCompleteTicket,
     handleRecallTicket,
     handleTransferToCashier,
+    handleCallTicket,
 
     // State
     canCallNext,
@@ -26,6 +27,7 @@ export const AttendantTickets = () => {
     isCompleting,
     isRecalling,
     isTransferring,
+    isSupportCaller,
 
     // Modals
     showCompleteConfirm,
@@ -73,7 +75,13 @@ export const AttendantTickets = () => {
         />
       </div>
 
-      <AttendantTicketsList pendingTickets={pendingTickets} loading={loading} onAbandonTicket={handleAbandonTicket} />
+      <AttendantTicketsList
+        pendingTickets={pendingTickets}
+        loading={loading}
+        onAbandonTicket={handleAbandonTicket}
+        onCallTicket={handleCallTicket}
+        isSupportCaller={isSupportCaller}
+      />
     </section>
   );
 };

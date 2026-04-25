@@ -46,47 +46,53 @@ export const useSettingsPermissions = () => {
     return data ? { type, data } : null;
   }, [selectedEntityId, users, modules]);
 
-  const handleOpenAssignModal = (entity, type) => {
+  const handleOpenAssignModal = useCallback((entity, type) => {
     setSelectedEntityId({ type, id: entity._id || entity.id });
     setIsModalOpen(true);
-  };
+  }, []);
 
-  const handleCloseModal = () => {
+  const handleCloseModal = useCallback(() => {
     setIsModalOpen(false);
     setSelectedEntityId(null);
-  };
+  }, []);
 
-  const handleAssignPermission = async (permissionId) => {
-    if (!selectedEntity) return;
+  const handleAssignPermission = useCallback(
+    async (permissionId) => {
+      if (!selectedEntityId) return;
 
-    try {
-      const { type, data } = selectedEntity;
-      const endpoint = `/permissions/assign/${type}/${data._id || data.id}`;
+      try {
+        const { type, id } = selectedEntityId;
+        const endpoint = `/permissions/assign/${type}/${id}`;
 
-      await axiosClient.post(endpoint, { permissionId });
-      toast.success("Permiso asignado correctamente");
-      fetchInitialData(true);
-    } catch (error) {
-      console.error("Error assigning permission:", error);
-      toast.error("Error al asignar permiso");
-    }
-  };
+        await axiosClient.post(endpoint, { permissionId });
+        toast.success("Permiso asignado correctamente");
+        fetchInitialData(true);
+      } catch (error) {
+        console.error("Error assigning permission:", error);
+        toast.error("Error al asignar permiso");
+      }
+    },
+    [selectedEntityId, fetchInitialData]
+  );
 
-  const handleRemovePermission = async (permissionId) => {
-    if (!selectedEntity) return;
+  const handleRemovePermission = useCallback(
+    async (permissionId) => {
+      if (!selectedEntityId) return;
 
-    try {
-      const { type, data } = selectedEntity;
-      const endpoint = `/permissions/assign/${type}/${data._id || data.id}`;
+      try {
+        const { type, id } = selectedEntityId;
+        const endpoint = `/permissions/assign/${type}/${id}`;
 
-      await axiosClient.delete(endpoint, { data: { permissionId } });
-      toast.success("Permiso removido correctamente");
-      fetchInitialData(true);
-    } catch (error) {
-      console.error("Error removing permission:", error);
-      toast.error("Error al remover permiso");
-    }
-  };
+        await axiosClient.delete(endpoint, { data: { permissionId } });
+        toast.success("Permiso removido correctamente");
+        fetchInitialData(true);
+      } catch (error) {
+        console.error("Error removing permission:", error);
+        toast.error("Error al remover permiso");
+      }
+    },
+    [selectedEntityId, fetchInitialData]
+  );
 
   return {
     publicPermissions,

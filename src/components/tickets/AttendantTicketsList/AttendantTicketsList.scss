@@ -53,4 +53,8 @@
     color: $color-gray-600;
     font-weight: $font-weight-medium;
   }
+
+  &__actions {
+    @include flex-center;
+  }
 }
