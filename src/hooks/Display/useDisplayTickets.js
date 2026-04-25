@@ -77,52 +77,46 @@ export const useDisplayTickets = () => {
 
   // Initialize Socket.IO connection
   useEffect(() => {
-    if (!tenantId) return;
-    if (!token) return;
+    if (!tenantId || !token) return;
 
-    // Crear conexión independiente para display (no usar el singleton)
+    // Obtener o inicializar el socket
     let displaySocket = socketRef.current;
 
-    // Si no hay socket o está desconectado, crear uno nuevo
     if (!displaySocket || !displaySocket.connected) {
-      // Desconectar socket anterior si existe
       if (displaySocket) {
         displaySocket.removeAllListeners();
         displaySocket.disconnect();
       }
 
-      // Crear nueva conexión con token de display
       displaySocket = io(SOCKET_URL, {
         transports: ["websocket"],
         auth: { token },
         reconnection: true,
         autoConnect: true,
-        reconnectionAttempts: 5,
+        reconnectionAttempts: 10,
+        reconnectionDelay: 5000,
       });
 
       socketRef.current = displaySocket;
 
-      // Handlers para eventos de conexión
-      const handleConnect = () => {
-        // console.log("Display socket conectado:", displaySocket.id);
+      // Eventos de conexión básica
+      displaySocket.on("connect", () => {
         refetchCurrent();
         refetchPending();
-      };
+      });
 
-      const handleConnectError = (err) => {
+      displaySocket.on("connect_error", (err) => {
         console.error("Error conectando display socket:", err.message);
-      };
-
-      // Registrar listeners de conexión
-      displaySocket.on("connect", handleConnect);
-      displaySocket.on("connect_error", handleConnectError);
+        // Si el token falló, recargamos en 15 seg para intentar recuperar sesión
+        if (err.message === "jwt expired" || err.message === "auth error") {
+          setTimeout(() => window.location.reload(), 15000);
+        }
+      });
     }
 
-    // Handlers para eventos de tickets
-    const handleTicketCreated = () => {
-      refetchPending();
-    };
-    
+    // Definir los Handlers de los eventos
+    const handleTicketCreated = () => refetchPending();
+
     const handleTicketCompleted = () => {
       refetchCurrent();
       refetchPending();
@@ -144,22 +138,17 @@ export const useDisplayTickets = () => {
       refetchPending();
     };
 
-    // Agregar listeners de tickets
-    displaySocket.on("ticket:created", handleTicketCreated);
-    displaySocket.on("ticket:completed", handleTicketCompleted);
-    displaySocket.on("ticket:abandoned", handleTicketCompleted);
-    displaySocket.on("ticket:called", handleTicketCalled);
-    displaySocket.on("ticket:recalled", handleTicketRecalled);
+    displaySocket.off("ticket:created").on("ticket:created", handleTicketCreated);
+    displaySocket.off("ticket:completed").on("ticket:completed", handleTicketCompleted);
+    displaySocket.off("ticket:abandoned").on("ticket:abandoned", handleTicketCompleted);
+    displaySocket.off("ticket:called").on("ticket:called", handleTicketCalled);
+    displaySocket.off("ticket:recalled").on("ticket:recalled", handleTicketRecalled);
 
-    // Cleanup: limpiar listeners y desconectar cuando cambien tenantId o token
+    // Cleanup: Limpieza al desmontar
     return () => {
       if (displaySocket) {
-        // Limpiar todos los listeners
+        console.log("Limpiando listeners de socket...");
         displaySocket.removeAllListeners();
-
-        // Desconectar y limpiar referencia
-        displaySocket.disconnect();
-        socketRef.current = null;
       }
     };
   }, [tenantId, token]);
@@ -183,6 +172,54 @@ export const useDisplayTickets = () => {
 
     loadVoices();
     window.speechSynthesis.onvoiceschanged = loadVoices;
+  }, []);
+
+  // --- REFRESCO PROGRAMADO (07:45 AM) ---
+  // Limpia memoria y caché del navegador antes de iniciar el día.
+  useEffect(() => {
+    const checkSchedule = () => {
+      const now = new Date();
+      if (now.getHours() === 7 && now.getMinutes() === 45) {
+        console.log("Reinicio preventivo matutino.");
+        window.location.reload();
+      }
+    };
+    const scheduleInterval = setInterval(checkSchedule, 60000);
+    return () => clearInterval(scheduleInterval);
+  }, []);
+
+  // --- WATCHDOG DE RED Y VISIBILIDAD ---
+  // Si vuelve el internet o la pantalla se "despierta", sincroniza datos inmediatamente.
+  useEffect(() => {
+    const handleRecovery = () => {
+      if (document.visibilityState === "visible" || navigator.onLine) {
+        console.log("Sistema online/visible. Sincronizando...");
+        refetchCurrent();
+        refetchPending();
+        if (socketRef.current && !socketRef.current.connected) {
+          socketRef.current.connect();
+        }
+      }
+    };
+
+    window.addEventListener("visibilitychange", handleRecovery);
+    window.addEventListener("online", handleRecovery);
+    return () => {
+      window.removeEventListener("visibilitychange", handleRecovery);
+      window.removeEventListener("online", handleRecovery);
+    };
+  }, []);
+
+  // --- MONITOR DE SALUD DEL SOCKET ---
+  // Si el socket muere y no revive en 5 min, reinicia la app para forzar reconexión.
+  useEffect(() => {
+    const healthCheck = setInterval(() => {
+      if (socketRef.current && !socketRef.current.connected) {
+        console.warn("Socket caído. Forzando recarga del sistema...");
+        window.location.reload();
+      }
+    }, 300000); // 5 minutos
+    return () => clearInterval(healthCheck);
   }, []);
 
   const isLoading = loadingDisplay || loadingCurrent || loadingPending;
