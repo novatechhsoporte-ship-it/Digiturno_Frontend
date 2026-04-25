@@ -20,12 +20,14 @@ export const Modules = () => {
     filters,
 
     // Form methods
+    control,
     register,
     handleSubmit,
     errors,
     isSubmitting,
     isDisabled,
     onSubmit,
+    setValue,
 
     // Actions
     handleShowForm,
@@ -47,6 +49,7 @@ export const Modules = () => {
         isOpen={showForm}
         onClose={handleShowForm}
         mode={mode}
+        control={control}
         register={register}
         handleSubmit={handleSubmit}
         errors={errors}
@@ -56,6 +59,7 @@ export const Modules = () => {
         FORM_FIELDS={FORM_FIELDS}
         tenants={tenants}
         optionsMap={optionsMap}
+        setValue={setValue}
       />
 
       <DeleteModuleModal

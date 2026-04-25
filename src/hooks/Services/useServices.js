@@ -78,6 +78,8 @@ export const useServices = () => {
     name: values.name,
     ...(values.description && { description: values.description }),
     active: values.active ?? true,
+    averageServiceTimeMinutes: values.averageServiceTimeMinutes ?? null,
+    maxServiceTimeMinutes: values.maxServiceTimeMinutes ?? null,
   });
 
   const { mutateAsync: createService, isPending: creating } = useMutationAdapter(
@@ -143,6 +145,8 @@ export const useServices = () => {
         description: service.description || "",
         tenantId: service.tenantId?._id || service.tenantId || "",
         active: service.active ?? true,
+        averageServiceTimeMinutes: service.averageServiceTimeMinutes ?? null,
+        maxServiceTimeMinutes: service.maxServiceTimeMinutes ?? null,
       });
       setShowForm(true);
     },

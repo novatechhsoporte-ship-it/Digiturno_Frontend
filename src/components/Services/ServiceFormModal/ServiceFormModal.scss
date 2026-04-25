@@ -46,5 +46,15 @@
     padding-top: $spacing-lg;
     border-top: 1px solid $color-gray-200;
   }
-}
 
+  &__hint {
+    margin: $spacing-xs 0 0 0;
+    font-size: $font-size-xs;
+    color: $color-warning-dark;
+    background-color: rgba($color-warning, 0.08);
+    border-left: 3px solid $color-warning;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $border-radius-xs;
+    line-height: $line-height-snug;
+  }
+}

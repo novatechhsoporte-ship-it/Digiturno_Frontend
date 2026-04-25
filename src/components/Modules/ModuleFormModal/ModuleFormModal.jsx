@@ -13,6 +13,8 @@ export const ModuleFormModal = ({
   onSubmit,
   FORM_FIELDS,
   optionsMap = {},
+  control,
+  setValue,
 }) => {
   const renderField = (field) => {
     const fieldClass = ["module-form-modal__field", field.full && "module-form-modal__field--full"].filter(Boolean).join(" ");
@@ -42,6 +44,28 @@ export const ModuleFormModal = ({
             options={options}
             {...register(field.name)}
           />
+        </div>
+      );
+    }
+
+    // Number
+    if (field.type === "number") {
+      return (
+        <div key={field.name} className={fieldClass}>
+          <CustomInput
+            label={field.label}
+            type="number"
+            min={0}
+            required={field.required}
+            error={errors[field.name]?.message}
+            {...register(field.name, {
+              setValueAs: (v) => (v === "" ? null : Number(v)),
+            })}
+            onChange={(e) =>
+              setValue?.(field.name, e.target.value === "" ? null : Number(e.target.value), { shouldValidate: true })
+            }
+          />
+          {field.hint && <p className="module-form-modal__hint">{field.hint}</p>}
         </div>
       );
     }

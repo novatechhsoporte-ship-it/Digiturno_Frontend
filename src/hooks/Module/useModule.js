@@ -24,7 +24,7 @@ export const useModule = () => {
     search: "",
   });
 
-  const { register, handleSubmit, errors, isSubmitting, isDisabled, reset, setValue } = useCustomForm({
+  const { register, handleSubmit, errors, isSubmitting, isDisabled, reset, setValue, control } = useCustomForm({
     schema: moduleSchema,
     formOptions: {
       defaultValues: {
@@ -33,6 +33,7 @@ export const useModule = () => {
         tenantId: "",
         attendantId: "",
         active: true,
+        maxQueueCapacity: null,
       },
     },
   });
@@ -153,6 +154,7 @@ export const useModule = () => {
       attendantId: values.attendantId === "" ? null : values.attendantId,
       active: values.active,
       services: Array.isArray(values.services) ? values.services : [values.services],
+      maxQueueCapacity: values.maxQueueCapacity ?? null,
     };
 
     if (mode === "edit") {
@@ -184,6 +186,7 @@ export const useModule = () => {
         attendantId: module.attendantId?._id || module.attendantId || "",
         active: module.active ?? true,
         services: serviceId || "",
+        maxQueueCapacity: module.maxQueueCapacity ?? null,
       });
 
       setShowForm(true);
@@ -270,6 +273,8 @@ export const useModule = () => {
     isSubmitting,
     isDisabled,
     onSubmit,
+    control,
+    setValue,
 
     // Actions
     handleShowForm,

@@ -56,14 +56,17 @@ export const ServiceFormModal = ({
           <CustomInput
             label={field.label}
             type="number"
-            min={1}
+            min={field.name === "maxQueueCapacity" ? 0 : 1}
             required={field.required}
             error={errors[field.name]?.message}
             {...register(field.name, {
-              setValueAs: (v) => (v === "" ? undefined : Number(v)),
+              setValueAs: (v) => (v === "" ? null : Number(v)),
             })}
-            onChange={(e) => setValue(field.name, e.target.value === "" ? undefined : Number(e.target.value), { shouldValidate: true })}
+            onChange={(e) =>
+              setValue(field.name, e.target.value === "" ? null : Number(e.target.value), { shouldValidate: true })
+            }
           />
+          {field.hint && <p className="service-form-modal__hint">{field.hint}</p>}
         </div>
       );
     }
@@ -100,4 +103,3 @@ export const ServiceFormModal = ({
     </CustomModal>
   );
 };
-

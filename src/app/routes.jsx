@@ -57,8 +57,6 @@ const router = createBrowserRouter([
       { path: "login", element: <Login /> },
       { path: "display", element: <Display /> },
       { path: "display/:tenantId", element: <TurnsView /> },
-      { path: "tv", element: <Display /> },
-      { path: "tv/:tenantId", element: <TurnsView /> },
       { path: "q/:token", element: <PublicQrDisplay /> },
       { path: "q/:token/form", element: <PublicQr /> },
       { path: "autorizacion-datos", element: <DataTreatmentAuthorization /> },
