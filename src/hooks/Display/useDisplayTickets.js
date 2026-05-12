@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 import { toast } from "sonner";
@@ -15,6 +15,7 @@ const displayTicketKeys = createQueryKeyFactory("displayTickets");
 export const useDisplayTickets = () => {
   const { tenantId } = useParams();
   const socketRef = useRef(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const token = localStorage.getItem(DISPLAY_TOKEN_KEY);
   const isEnabled = Boolean(token && tenantId);
 
@@ -174,19 +175,40 @@ export const useDisplayTickets = () => {
     window.speechSynthesis.onvoiceschanged = loadVoices;
   }, []);
 
-  // --- REFRESCO PROGRAMADO (07:45 AM) ---
-  // Limpia memoria y caché del navegador antes de iniciar el día.
+  // --- REFRESCO PROGRAMADO (07:30 AM) ---
+  // Hace un soft reload para no perder el estado de activación de audio del navegador.
   useEffect(() => {
+    let hasReloaded = false;
     const checkSchedule = () => {
       const now = new Date();
-      if (now.getHours() === 7 && now.getMinutes() === 45) {
-        console.log("Reinicio preventivo matutino.");
-        window.location.reload();
+      if (now.getHours() === 7 && now.getMinutes() === 40) {
+        if (!hasReloaded) {
+          hasReloaded = true;
+          console.log("Reinicio preventivo matutino (Soft Reload).");
+
+          setIsRefreshing(true);
+
+          if (socketRef.current) {
+            socketRef.current.disconnect();
+            setTimeout(() => {
+              if (socketRef.current) socketRef.current.connect();
+            }, 1000);
+          }
+
+          refetchCurrent();
+          refetchPending();
+
+          setTimeout(() => {
+            setIsRefreshing(false);
+          }, 3000);
+        }
+      } else {
+        hasReloaded = false;
       }
     };
     const scheduleInterval = setInterval(checkSchedule, 60000);
     return () => clearInterval(scheduleInterval);
-  }, []);
+  }, [refetchCurrent, refetchPending]);
 
   // --- WATCHDOG DE RED Y VISIBILIDAD ---
   // Si vuelve el internet o la pantalla se "despierta", sincroniza datos inmediatamente.
@@ -215,15 +237,21 @@ export const useDisplayTickets = () => {
   useEffect(() => {
     const healthCheck = setInterval(() => {
       if (socketRef.current && !socketRef.current.connected) {
-        console.warn("Socket caído. Forzando recarga del sistema...");
-        window.location.reload();
+        console.warn("Socket caído. Forzando reconexión (Soft Reload)...");
+        setIsRefreshing(true);
+        socketRef.current.connect();
+        refetchCurrent();
+        refetchPending();
+        setTimeout(() => {
+          setIsRefreshing(false);
+        }, 3000);
       }
     }, 300000); // 5 minutos
     return () => clearInterval(healthCheck);
-  }, []);
+  }, [refetchCurrent, refetchPending]);
 
-  const isLoading = loadingDisplay || loadingCurrent || loadingPending;
-  const isInitialLoading = loadingDisplay && loadingCurrent && loadingPending;
+  const isLoading = loadingDisplay || loadingCurrent || loadingPending || isRefreshing;
+  const isInitialLoading = (loadingDisplay && loadingCurrent && loadingPending) || isRefreshing;
 
   return {
     // Data
