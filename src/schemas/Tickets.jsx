@@ -20,6 +20,7 @@ export const ticketSchema = z.object({
   dataTreatmentAccepted: z.boolean().refine((val) => val === true, {
     message: "Debe aceptar el tratamiento de datos para continuar",
   }),
+  isPriority: z.boolean().optional().default(false),
 });
 
 export const customerUpdateSchema = z.object({
@@ -37,6 +38,7 @@ export const DEFAULT_FORM_VALUES = {
   moduleId: "",
   serviceTypeId: "",
   dataTreatmentAccepted: false,
+  isPriority: false,
 };
 
 export const DEFAULT_CUSTOMER_UPDATE_VALUES = {
@@ -95,6 +97,12 @@ export const TICKET_FORM_FIELDS = [
     required: true,
     placeholder: "Seleccione un servicio",
     optionsKey: "services",
+  },
+  {
+    name: "isPriority",
+    label: "¿Requiere atención prioritaria? (Adulto mayor, embarazo o discapacidad)",
+    type: "checkbox",
+    full: true,
   },
   {
     name: "dataTreatmentAccepted",

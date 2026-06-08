@@ -15,6 +15,17 @@
     padding: 3rem;
     color: var(--color-text-secondary);
   }
+
+  &__ticket-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  &__priority-dot {
+    font-size: 14px;
+    cursor: help;
+  }
 }
 
 .ticket-number {

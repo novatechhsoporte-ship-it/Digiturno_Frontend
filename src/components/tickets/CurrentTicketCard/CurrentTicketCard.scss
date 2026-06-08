@@ -55,6 +55,26 @@
     }
   }
 
+  &__ticket-info {
+    @include flex-column;
+    gap: $spacing-xs;
+    align-items: flex-start;
+  }
+
+  &__priority-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    background-color: rgba(#d97706, 0.1);
+    color: #d97706;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $border-radius-sm;
+    border: $border-width-thin solid rgba(#d97706, 0.2);
+  }
+
   &__ticket-number {
     font-size: $font-size-4xl;
     font-weight: $font-weight-bold;
@@ -99,25 +119,47 @@
     flex: 1;
   }
 
-  &__customer {
-    @include flex-column;
-    gap: $spacing-xs;
-    padding: $spacing-md;
+  &__customer-title {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    color: $color-primary;
+    letter-spacing: 0.5px;
+    margin-bottom: -$spacing-xs;
+  }
+
+  &__customer-details {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-md;
+    padding: $spacing-lg;
     background: $color-gray-50;
     border-radius: $border-radius-md;
+    border: $border-width-thin solid $color-gray-100;
+
+    @include respond-to(sm) {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
-  &__customer-name {
-    font-size: $font-size-xl;
+  &__detail-item {
+    @include flex-column;
+    gap: $spacing-xs;
+  }
+
+  &__detail-label {
+    font-size: $font-size-xs;
     font-weight: $font-weight-semibold;
-    color: $color-gray-900;
-    line-height: $line-height-snug;
+    color: $color-gray-500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 
-  &__customer-document {
-    font-size: $font-size-sm;
-    color: $color-gray-600;
-    font-weight: $font-weight-medium;
+  &__detail-value {
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    color: $color-gray-800;
+    word-break: break-all;
   }
 
   &__module,

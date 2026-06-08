@@ -8,7 +8,16 @@ export const AttendantTicketsList = ({ pendingTickets, loading, onAbandonTicket,
       {
         key: "ticketNumber",
         label: "Turno",
-        render: (ticket) => <span className="attendant-tickets-list__ticket-number">{ticket.ticketNumber}</span>,
+        render: (ticket) => (
+          <div className="attendant-tickets-list__ticket-col">
+            <span className="attendant-tickets-list__ticket-number">{ticket.ticketNumber}</span>
+            {ticket.isPriority && (
+              <span className="attendant-tickets-list__priority-badge" title="Atención Prioritaria">
+                <CustomIcon name="mdi:human-wheelchair" size="xs" /> Prioritario
+              </span>
+            )}
+          </div>
+        ),
       },
       {
         key: "customer",

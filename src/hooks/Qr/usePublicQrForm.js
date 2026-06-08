@@ -58,6 +58,7 @@ export const usePublicQrForm = (token) => {
         email: "",
         serviceTypeId: "",
         dataTreatmentAccepted: false,
+        isPriority: false,
       },
     },
   });
@@ -100,6 +101,7 @@ export const usePublicQrForm = (token) => {
       email: formValues.email?.trim() || undefined,
       serviceTypeId: selectedService._id,
       dataTreatmentAccepted: formValues.dataTreatmentAccepted,
+      isPriority: formValues.isPriority || false,
       origin: "PUBLIC",
     });
   };
