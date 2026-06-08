@@ -10,4 +10,9 @@ export const DashboardApi = {
    * Get real-time Andon module status (currentTicket, pendingQuantity, attendant, serviceType)
    */
   getModulesStatus: () => axiosClient.get("/dashboard/modules-status"),
+
+  /**
+   * Get historical reports and analytics for the tenant
+   */
+  getReports: (params) => axiosClient.get("/dashboard/reports", { params }),
 };

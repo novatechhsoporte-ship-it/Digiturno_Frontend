@@ -1,0 +1,294 @@
+@use "@/styles" as *;
+
+.dashboard-reports {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+  width: 100%;
+  animation: fadeInReports 0.3s ease-in-out;
+
+  // ── Filters Card ──────────────────────────────────────────────────────────
+  &__filters-card {
+    background-color: $color-white;
+    border-radius: $border-radius-lg;
+    padding: $spacing-xl;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+
+    .filters-title {
+      font-size: $font-size-base;
+      font-weight: $font-weight-semibold;
+      color: $color-gray-800;
+      margin-bottom: $spacing-md;
+    }
+
+    .filters-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: $spacing-md;
+
+      @include respond-to(sm) {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      @include respond-to(lg) {
+        grid-template-columns: repeat(5, 1fr);
+      }
+
+      .filter-item {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+  }
+
+  // ── Loading / Error States ──────────────────────────────────────────────────
+  &__loading,
+  &__error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: $spacing-3xl;
+    background-color: $color-white;
+    border-radius: $border-radius-lg;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    min-height: 200px;
+    gap: $spacing-md;
+    color: $color-gray-500;
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba($color-primary, 0.1);
+      border-top-color: $color-primary;
+      border-radius: 50%;
+      animation: spinReports 1s linear infinite;
+    }
+  }
+
+  &__error {
+    color: $color-error;
+    .custom-icon {
+      font-size: 2rem;
+    }
+  }
+
+  // ── Stats Cards Grid ────────────────────────────────────────────────────────
+  &__stats-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-md;
+
+    @include respond-to(sm) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include respond-to(xl) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .stat-card {
+      background-color: $color-white;
+      border-radius: $border-radius-lg;
+      padding: $spacing-xl;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+      display: flex;
+      align-items: center;
+      gap: $spacing-lg;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+      }
+
+      &__icon-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        border-radius: $border-radius-md;
+
+        &--blue {
+          background-color: rgba($color-primary, 0.08);
+          color: $color-primary;
+        }
+
+        &--green {
+          background-color: rgba($color-success, 0.08);
+          color: $color-success;
+        }
+
+        &--yellow {
+          background-color: rgba($color-warning, 0.08);
+          color: darken($color-warning, 10%);
+        }
+
+        &--purple {
+          background-color: rgba(#8b5cf6, 0.08);
+          color: #8b5cf6;
+        }
+      }
+
+      &__content {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      &__label {
+        font-size: $font-size-xs;
+        color: $color-gray-500;
+        font-weight: $font-weight-medium;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      &__value {
+        font-size: $font-size-xl;
+        font-weight: $font-weight-bold;
+        color: $color-gray-900;
+      }
+    }
+  }
+
+  // ── Details Statistics Grid ─────────────────────────────────────────────────
+  &__details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-md;
+
+    @include respond-to(sm) {
+      grid-template-columns: repeat(5, 1fr);
+    }
+
+    .detail-stat {
+      background-color: $color-white;
+      border-radius: $border-radius-md;
+      padding: $spacing-md;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      text-align: center;
+
+      &__title {
+        font-size: $font-size-xs;
+        color: $color-gray-500;
+        font-weight: $font-weight-semibold;
+      }
+
+      &__number {
+        font-size: $font-size-lg;
+        font-weight: $font-weight-bold;
+
+        &.text-success { color: $color-success; }
+        &.text-danger { color: $color-error; }
+        &.text-warning { color: darken($color-warning, 10%); }
+        &.text-info { color: $color-primary; }
+        &.text-purple { color: #8b5cf6; }
+      }
+    }
+  }
+
+  // ── Table Card ─────────────────────────────────────────────────────────────
+  &__table-card {
+    background-color: $color-white;
+    border-radius: $border-radius-lg;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+
+    .custom-table {
+      border: none;
+      box-shadow: none;
+      margin: 0;
+
+      &__header {
+        padding: $spacing-xl;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+      }
+    }
+
+    .export-excel-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: $spacing-xs;
+      background-color: #107c41; // Excel Green color
+      color: $color-white;
+      border: none;
+
+      &:hover {
+        background-color: darken(#107c41, 5%);
+      }
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: $font-size-xs;
+      font-weight: $font-weight-semibold;
+      background-color: $color-gray-100;
+      color: $color-gray-800;
+
+      &.status-reports--pending {
+        background-color: rgba($color-primary, 0.08);
+        color: $color-primary;
+      }
+
+      &.status-reports--progress {
+        background-color: rgba($color-warning, 0.08);
+        color: darken($color-warning, 12%);
+      }
+
+      &.status-reports--completed {
+        background-color: rgba($color-success, 0.08);
+        color: $color-success;
+      }
+
+      &.status-reports--abandoned {
+        background-color: rgba($color-error, 0.08);
+        color: $color-error;
+      }
+    }
+
+    .table-empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: $spacing-3xl;
+      color: $color-gray-400;
+      gap: $spacing-md;
+
+      p {
+        font-size: $font-size-sm;
+        font-style: italic;
+      }
+    }
+  }
+}
+
+@keyframes spinReports {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeInReports {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
