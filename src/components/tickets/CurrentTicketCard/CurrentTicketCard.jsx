@@ -72,7 +72,14 @@ export const CurrentTicketCard = ({
     <>
       <div className="current-ticket-card">
         <div className="current-ticket-card__header">
-          <div className="current-ticket-card__ticket-number">{convertUpper(currentTicket?.ticketNumber)}</div>
+          <div className="current-ticket-card__ticket-info">
+            <div className="current-ticket-card__ticket-number">{convertUpper(currentTicket?.ticketNumber)}</div>
+            {currentTicket?.isPriority && (
+              <span className="current-ticket-card__priority-badge" title="Atención Prioritaria">
+                ⚠️ Prioritario
+              </span>
+            )}
+          </div>
           <div className="current-ticket-card__timer">
             <span className="current-ticket-card__timer-label">Tiempo de atención </span>
             <span className="current-ticket-card__timer-value">{serviceTimer}</span>
@@ -80,12 +87,31 @@ export const CurrentTicketCard = ({
         </div>
 
         <div className="current-ticket-card__body">
-          <div className="current-ticket-card__customer">
-            <div className="current-ticket-card__customer-name">
-              Nombre: {convertUpper(currentTicket?.customerId?.fullName) || "N/A"}
+          <div className="current-ticket-card__customer-title">Datos del Cliente</div>
+          <div className="current-ticket-card__customer-details">
+            <div className="current-ticket-card__detail-item">
+              <span className="current-ticket-card__detail-label">Nombre Completo:</span>
+              <span className="current-ticket-card__detail-value">
+                {convertUpper(currentTicket?.customerId?.fullName) || "N/A"}
+              </span>
             </div>
-            <div className="current-ticket-card__customer-document">
-              Numero de documento: {currentTicket?.customerId?.documentNumber || ""}
+            <div className="current-ticket-card__detail-item">
+              <span className="current-ticket-card__detail-label">Identificación:</span>
+              <span className="current-ticket-card__detail-value">
+                {currentTicket?.customerId?.documentType || "CC"} - {currentTicket?.customerId?.documentNumber || "N/A"}
+              </span>
+            </div>
+            <div className="current-ticket-card__detail-item">
+              <span className="current-ticket-card__detail-label">Correo Electrónico:</span>
+              <span className="current-ticket-card__detail-value">
+                {currentTicket?.customerId?.email || "Sin registrar"}
+              </span>
+            </div>
+            <div className="current-ticket-card__detail-item">
+              <span className="current-ticket-card__detail-label">Teléfono:</span>
+              <span className="current-ticket-card__detail-value">
+                {currentTicket?.customerId?.phone || "Sin registrar"}
+              </span>
             </div>
           </div>
 

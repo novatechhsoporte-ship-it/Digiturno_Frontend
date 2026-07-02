@@ -24,6 +24,31 @@
     min-height: 200px;
   }
 
+  &__ticket-col {
+    @include flex-column;
+    gap: $spacing-xs;
+    align-items: flex-start;
+  }
+
+  &__priority-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    background-color: rgba(#d97706, 0.1);
+    color: #d97706;
+    padding: 2px $spacing-xs;
+    border-radius: $border-radius-sm;
+    border: $border-width-thin solid rgba(#d97706, 0.2);
+    
+    // override icon alignment
+    span {
+      margin-top: -1px;
+    }
+  }
+
   &__ticket-number {
     font-size: $font-size-xl;
     font-weight: $font-weight-bold;

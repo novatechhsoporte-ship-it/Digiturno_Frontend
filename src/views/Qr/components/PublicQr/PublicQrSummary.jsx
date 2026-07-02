@@ -27,6 +27,11 @@ export const PublicQrSummary = ({ formValues, selectedService, onConfirm, onCanc
                 <CustomIcon name="mdi:email-outline" size="sm" /> <strong>Email:</strong> {formValues.email}
               </p>
             )}
+            {formValues.isPriority && (
+              <p className="public-qr__summary-priority">
+                <CustomIcon name="mdi:human-wheelchair" size="sm" /> <strong>Atención Prioritaria:</strong> Sí
+              </p>
+            )}
           </div>
         </div>
 

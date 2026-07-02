@@ -85,3 +85,36 @@
     font-style: italic;
   }
 }
+
+.andon-tabs {
+  display: flex;
+  gap: $spacing-md;
+  border-bottom: 1px solid rgba($color-gray-200, 0.5);
+  padding-bottom: $spacing-sm;
+  width: 100%;
+
+  .tab-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    padding: $spacing-sm $spacing-lg;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: $color-gray-500;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    cursor: pointer;
+    transition: $transition-base;
+
+    &:hover {
+      color: $color-primary;
+    }
+
+    &.active {
+      color: $color-primary;
+      border-bottom-color: $color-primary;
+    }
+  }
+}
+

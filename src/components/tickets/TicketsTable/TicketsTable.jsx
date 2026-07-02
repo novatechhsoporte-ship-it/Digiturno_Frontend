@@ -41,7 +41,16 @@ export const TicketsTable = ({ pendingTickets, loading, ticketColumns, ticketAct
         ...col,
         render: (ticket) => {
           const value = col.accessor(ticket);
-          return <span className="ticket-number">{value}</span>;
+          return (
+            <div className="tickets-table__ticket-cell">
+              <span className="ticket-number">{value}</span>
+              {ticket.isPriority && (
+                <span className="tickets-table__priority-dot" title="Atención Prioritaria">
+                  ⚠️
+                </span>
+              )}
+            </div>
+          );
         },
       };
     }

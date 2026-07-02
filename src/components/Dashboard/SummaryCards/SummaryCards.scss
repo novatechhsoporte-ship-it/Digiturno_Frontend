@@ -1,3 +1,4 @@
+@use "sass:color";
 @use "@/styles" as *;
 
 .andon-summary {
@@ -116,23 +117,23 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 
     .andon-card--primary & {
-      background: linear-gradient(135deg, $color-primary, lighten($color-primary, 10%));
+      background: linear-gradient(135deg, $color-primary, color.adjust($color-primary, $lightness: 10%));
       color: $color-white;
     }
     .andon-card--success & {
-      background: linear-gradient(135deg, $color-success, lighten($color-success, 10%));
+      background: linear-gradient(135deg, $color-success, color.adjust($color-success, $lightness: 10%));
       color: $color-white;
     }
     .andon-card--info & {
-      background: linear-gradient(135deg, $color-info, lighten($color-info, 10%));
+      background: linear-gradient(135deg, $color-info, color.adjust($color-info, $lightness: 10%));
       color: $color-white;
     }
     .andon-card--warning & {
-      background: linear-gradient(135deg, $color-warning, lighten($color-warning, 10%));
+      background: linear-gradient(135deg, $color-warning, color.adjust($color-warning, $lightness: 10%));
       color: $color-white;
     }
     .andon-card--danger & {
-      background: linear-gradient(135deg, $color-error, lighten($color-error, 10%));
+      background: linear-gradient(135deg, $color-error, color.adjust($color-error, $lightness: 10%));
       color: $color-white;
     }
   }
