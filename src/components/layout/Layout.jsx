@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
 import { Navbar } from "@/components/Navbar/Navbar";
+import { Footer } from "../Footer/Footer";
 import "./Layout.scss";
 
 export const Layout = ({ children }) => {
@@ -50,11 +51,12 @@ export const Layout = ({ children }) => {
   };
 
   return (
-    <div className='layout'>
+    <div className="layout">
       <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} isCollapsed={sidebarCollapsed} onToggleCollapse={toggleCollapse} />
       <div className={`layout__main ${sidebarCollapsed ? "layout__main--sidebar-collapsed" : ""}`}>
         <Navbar onMenuClick={toggleSidebar} />
-        <main className='layout__content'>{children}</main>
+        <main className="layout__content">{children}</main>
+        <Footer />
       </div>
     </div>
   );
