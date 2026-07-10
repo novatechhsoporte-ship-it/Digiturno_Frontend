@@ -84,18 +84,19 @@ export const PublicQrCustomerForm = ({ register, errors, onNext, onCancel }) => 
             />
           </div>
 
-          <div className="public-qr__field public-qr__field--full mt-2">
+          {/* <div className="public-qr__field public-qr__field--full mt-2">
             <CustomInput
               type="checkbox"
               error={errors.isPriority?.message}
               {...register("isPriority")}
               label={
                 <span className="public-qr__checkbox-label-text">
+                
                   Requiero atención prioritaria (Adulto mayor, embarazo o discapacidad)
                 </span>
               }
             />
-          </div>
+          </div> */}
 
           <div className="public-qr__field public-qr__field--full mt-2">
             <CustomInput

@@ -246,61 +246,70 @@ export const useAttendantTickets = () => {
     const socket = getSocket();
     if (!socket) return;
 
-    socket.on("ticket:created", refetchPendingTickets);
+    const onTicketCreated = () => {
+      refetchPendingTickets();
+    };
 
-    socket.on("ticket:called", (ticket) => {
+    const onTicketCalled = (ticket) => {
       const ticketData = ticket?.data || ticket;
       const tAttendantId = ticketData?.attendantId?._id || ticketData?.attendantId;
-      if (ticketData && tAttendantId && tAttendantId.toString() === attendantId.toString()) {
+      if (ticketData && tAttendantId && attendantId && tAttendantId.toString() === attendantId.toString()) {
         queryClient.setQueryData(["tickets", "current", attendantId, tenantId], ticketData);
       }
       refetchPendingTickets();
-    });
+    };
 
-    socket.on("ticket:started", (ticket) => {
+    const onTicketStarted = (ticket) => {
       const ticketData = ticket?.data || ticket;
       const tAttendantId = ticketData?.attendantId?._id || ticketData?.attendantId;
-      if (ticketData && tAttendantId && tAttendantId.toString() === attendantId.toString()) {
+      if (ticketData && tAttendantId && attendantId && tAttendantId.toString() === attendantId.toString()) {
         queryClient.setQueryData(["tickets", "current", attendantId, tenantId], ticketData);
       }
       refetchPendingTickets();
-    });
+    };
 
-    socket.on("ticket:recalled", (ticket) => {
+    const onTicketRecalled = (ticket) => {
       const ticketData = ticket?.data || ticket;
       const tAttendantId = ticketData?.attendantId?._id || ticketData?.attendantId;
-      if (ticketData && tAttendantId && tAttendantId.toString() === attendantId.toString()) {
+      if (ticketData && tAttendantId && attendantId && tAttendantId.toString() === attendantId.toString()) {
         queryClient.setQueryData(["tickets", "current", attendantId, tenantId], ticketData);
       }
-    });
+    };
 
-    socket.on("ticket:completed", (ticket) => {
+    const onTicketCompleted = (ticket) => {
       const ticketData = ticket?.data || ticket;
       const tAttendantId = ticketData?.attendantId?._id || ticketData?.attendantId;
-      if (ticketData && tAttendantId && tAttendantId.toString() === attendantId.toString()) {
+      if (ticketData && tAttendantId && attendantId && tAttendantId.toString() === attendantId.toString()) {
         queryClient.setQueryData(["tickets", "current", attendantId, tenantId], null);
       }
       refetchPendingTickets();
-    });
+    };
 
-    socket.on("ticket:abandoned", (ticket) => {
+    const onTicketAbandoned = (ticket) => {
       const ticketData = ticket?.data || ticket;
       const tAttendantId = ticketData?.attendantId?._id || ticketData?.attendantId;
-      if (ticketData && tAttendantId && tAttendantId.toString() === attendantId.toString()) {
+      if (ticketData && tAttendantId && attendantId && tAttendantId.toString() === attendantId.toString()) {
         queryClient.setQueryData(["tickets", "current", attendantId, tenantId], null);
       }
       refetchPendingTickets();
-    });
+    };
+
+    socket.on("ticket:created", onTicketCreated);
+    socket.on("ticket:called", onTicketCalled);
+    socket.on("ticket:started", onTicketStarted);
+    socket.on("ticket:recalled", onTicketRecalled);
+    socket.on("ticket:completed", onTicketCompleted);
+    socket.on("ticket:abandoned", onTicketAbandoned);
 
     return () => {
-      socket.off("ticket:created");
-      socket.off("ticket:called");
-      socket.off("ticket:started");
-      socket.off("ticket:completed");
-      socket.off("ticket:abandoned");
-      socket.off("ticket:recalled");
+      socket.off("ticket:created", onTicketCreated);
+      socket.off("ticket:called", onTicketCalled);
+      socket.off("ticket:started", onTicketStarted);
+      socket.off("ticket:recalled", onTicketRecalled);
+      socket.off("ticket:completed", onTicketCompleted);
+      socket.off("ticket:abandoned", onTicketAbandoned);
     };
-  }, [token, tenantId, attendantId]);
+  }, [token, tenantId, attendantId, queryClient, refetchPendingTickets]);
 
   useEffect(() => {
     if ("speechSynthesis" in window) {
