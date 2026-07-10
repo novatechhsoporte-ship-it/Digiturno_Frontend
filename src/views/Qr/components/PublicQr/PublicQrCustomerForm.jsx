@@ -91,6 +91,7 @@ export const PublicQrCustomerForm = ({ register, errors, onNext, onCancel }) => 
               {...register("isPriority")}
               label={
                 <span className="public-qr__checkbox-label-text">
+                
                   Requiero atención prioritaria (Adulto mayor, embarazo o discapacidad)
                 </span>
               }
