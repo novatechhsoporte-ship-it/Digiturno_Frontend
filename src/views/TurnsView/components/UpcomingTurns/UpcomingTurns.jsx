@@ -13,30 +13,40 @@ export const UpcomingTurns = ({ turns = [], newestId = null }) => {
 
       <div className="upcoming-turns__list">
         {turns.length > 0 ? (
-          turns.map((turn, index) => (
-            <div
-              key={turn._id || turn.id}
-              className={`upcoming-turns__card ${turn._id === newestId ? "upcoming-turns__card--newest" : ""}`}
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              <div className="side-icon-container">
-                <CustomIcon name="mdi:ticket-confirmation-outline" size="lg" className="icon" />
-              </div>
+          turns.map((turn, index) => {
+            const customerName =
+              turn.customerId?.fullName || turn.customerName || turn.fullName || "";
 
-              <div className="card-content">
-                <div className="row">
-                  <div className="ticket-id">
-                    <span>{turn.ticketNumber.toUpperCase()} </span>
+            return (
+              <div
+                key={turn._id || turn.id}
+                className={`upcoming-turns__card ${turn._id === newestId ? "upcoming-turns__card--newest" : ""}`}
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <div className="side-icon-container">
+                  <CustomIcon name="mdi:ticket-confirmation-outline" size="lg" className="icon" />
+                </div>
+
+                <div className="card-content">
+                  <div className="row">
+                    <div className="ticket-id">
+                      <span>{turn.ticketNumber.toUpperCase()} </span>
+                    </div>
+                    <span className="badge">EN ESPERA</span>
                   </div>
-                  <span className="badge">EN ESPERA</span>
-                </div>
 
-                <div className="row-info">
-                  <span className="turn-label">TURNO</span>
+                  <div className="row-info">
+                    <span className="turn-label">TURNO</span>
+                    {customerName && (
+                      <span className="customer-name" title={customerName}>
+                        {customerName}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
+            );
+          })
         ) : (
           <div className="upcoming-turns__empty">No hay turnos pendientes</div>
         )}

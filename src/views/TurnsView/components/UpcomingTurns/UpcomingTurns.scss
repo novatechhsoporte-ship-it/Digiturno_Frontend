@@ -126,6 +126,7 @@
     .row-info {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 10px;
       margin-top: 2px;
 
@@ -147,6 +148,18 @@
         color: var(--slate-blue);
         font-size: 12px;
         font-weight: 600;
+      }
+
+      .customer-name {
+        color: var(--slate-blue);
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: capitalize;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 160px;
+        text-align: right;
       }
     }
   }

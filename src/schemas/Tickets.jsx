@@ -5,11 +5,15 @@ export const ticketSchema = z.object({
   documentNumber: z
     .string()
     .min(1, "El número de documento es requerido")
+    .min(8, "El número de documento debe tener al menos 8 dígitos")
     .regex(/^\d+$/, "El documento debe contener solo números"),
   documentType: z.enum(["CC", "CE", "PA", "TI", "NIT", "PASSPORT"], {
     errorMap: () => ({ message: "Tipo de documento inválido" }),
   }),
-  fullName: z.string().min(1, "El nombre completo es requerido"),
+  fullName: z
+    .string()
+    .min(1, "El nombre completo es requerido")
+    .min(11, "El nombre completo debe tener al menos 11 caracteres"),
   email: z.string().email("Correo inválido").optional().or(z.literal("")),
   phone: z
     .string()
