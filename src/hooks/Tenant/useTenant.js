@@ -128,6 +128,18 @@ export const useTenant = () => {
     setShowForm(!showForm);
   };
 
+  /* ================= TOGGLE STATUS ================= */
+  const handleToggleStatus = async (tenant) => {
+    try {
+      const newStatus = !tenant.status;
+      await TenantsApi.updateTenant(tenant._id, { status: newStatus });
+      toast.success(newStatus ? "Notaría habilitada" : "Notaría deshabilitada");
+      loadTenants();
+    } catch {
+      toast.error("Error al cambiar el estado de la notaría");
+    }
+  };
+
   useEffect(() => {
     loadTenants();
   }, [loadTenants]);
@@ -153,6 +165,7 @@ export const useTenant = () => {
     handleEditTenant,
     handleAskDelete,
     handleConfirmDelete,
+    handleToggleStatus,
     setShowDeleteConfirm,
   };
 };

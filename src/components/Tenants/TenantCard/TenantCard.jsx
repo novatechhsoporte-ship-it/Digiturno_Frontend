@@ -13,7 +13,7 @@ import "./TenantCard.scss";
  * @param {Function} onEdit - Edit callback
  * @param {Function} onDelete - Delete callback
  */
-export const TenantCard = ({ tenant, onEdit, onDelete }) => {
+export const TenantCard = ({ tenant, onEdit, onDelete, onToggleStatus }) => {
   const { name, taxId, status, address, city, phone, email, configuration } = tenant;
 
   const serviceHours = configuration?.serviceHours;
@@ -28,7 +28,7 @@ export const TenantCard = ({ tenant, onEdit, onDelete }) => {
         </div>
 
         <span className={`tenant-card__status ${status ? "tenant-card__status--active" : "tenant-card__status--inactive"}`}>
-          {status ? "Active" : "Inactive"}
+          {status ? "Activa" : "Inactiva"}
         </span>
       </div>
 
@@ -71,6 +71,14 @@ export const TenantCard = ({ tenant, onEdit, onDelete }) => {
       {/* ACTIONS */}
       <div className="tenant-card__actions">
         <Can any={[TENANT_PERMISSIONS.UPDATE, TENANT_PERMISSIONS.MANAGE]}>
+          <CustomButton
+            variant={status ? "outline" : "primary"}
+            size="sm"
+            onClick={() => onToggleStatus?.(tenant)}
+          >
+            <CustomIcon name={status ? "mdi:power" : "mdi:check-circle"} size="sm" />
+            {status ? "Deshabilitar" : "Habilitar"}
+          </CustomButton>
           <CustomButton variant="outline" size="sm" onClick={() => onEdit?.(tenant)}>
             <CustomIcon name="mdi:pencil" size="sm" />
             Editar

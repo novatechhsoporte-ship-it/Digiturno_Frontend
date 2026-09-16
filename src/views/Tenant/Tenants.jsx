@@ -30,6 +30,7 @@ export const Tenants = () => {
     handleEditTenant,
     handleAskDelete,
     handleConfirmDelete,
+    handleToggleStatus,
     setShowDeleteConfirm,
   } = useTenant();
 
@@ -70,7 +71,13 @@ export const Tenants = () => {
     return (
       <div className="tenants__list">
         {tenants.map((tenant) => (
-          <TenantCard key={tenant._id} tenant={tenant} onEdit={handleEditTenant} onDelete={handleAskDelete} />
+          <TenantCard
+            key={tenant._id}
+            tenant={tenant}
+            onEdit={handleEditTenant}
+            onDelete={handleAskDelete}
+            onToggleStatus={handleToggleStatus}
+          />
         ))}
       </div>
     );
