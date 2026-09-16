@@ -3,6 +3,7 @@ import React from "react";
 import { Can } from "@components/Permissions/Can";
 import { TENANT_PERMISSIONS } from "@core/permissions";
 import { CustomIcon, CustomButton } from "@components/common";
+import { useAbility } from "@hooks";
 
 import "./TenantCard.scss";
 
@@ -15,6 +16,7 @@ import "./TenantCard.scss";
  */
 export const TenantCard = ({ tenant, onEdit, onDelete, onToggleStatus }) => {
   const { name, taxId, status, address, city, phone, email, configuration } = tenant;
+  const { isSuperAdmin } = useAbility();
 
   const serviceHours = configuration?.serviceHours;
 
@@ -71,14 +73,16 @@ export const TenantCard = ({ tenant, onEdit, onDelete, onToggleStatus }) => {
       {/* ACTIONS */}
       <div className="tenant-card__actions">
         <Can any={[TENANT_PERMISSIONS.UPDATE, TENANT_PERMISSIONS.MANAGE]}>
-          <CustomButton
-            variant={status ? "outline" : "primary"}
-            size="sm"
-            onClick={() => onToggleStatus?.(tenant)}
-          >
-            <CustomIcon name={status ? "mdi:power" : "mdi:check-circle"} size="sm" />
-            {status ? "Deshabilitar" : "Habilitar"}
-          </CustomButton>
+          {isSuperAdmin && (
+            <CustomButton
+              variant={status ? "outline" : "primary"}
+              size="sm"
+              onClick={() => onToggleStatus?.(tenant)}
+            >
+              <CustomIcon name={status ? "mdi:power" : "mdi:check-circle"} size="sm" />
+              {status ? "Deshabilitar" : "Habilitar"}
+            </CustomButton>
+          )}
           <CustomButton variant="outline" size="sm" onClick={() => onEdit?.(tenant)}>
             <CustomIcon name="mdi:pencil" size="sm" />
             Editar

@@ -30,7 +30,7 @@ export const PublicQrDisplay = () => {
         const message =
           error?.response?.data?.error ||
           error?.response?.data?.message ||
-          "No se pudo cargar el código QR o la notaría no está disponible.";
+          "La notaría está temporalmente fuera de servicio, por favor contacta al administrador";
         setErrorMsg(message);
       } finally {
         setLoading(false);
