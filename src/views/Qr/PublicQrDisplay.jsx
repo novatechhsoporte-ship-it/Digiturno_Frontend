@@ -8,7 +8,7 @@ export const PublicQrDisplay = () => {
   const { token } = useParams();
   const [qr, setQr] = useState(null);
   const [tenant, setTenant] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState("");
 
   const formatTenantName = (name) => {
     if (!name) return "";
@@ -27,6 +27,11 @@ export const PublicQrDisplay = () => {
         setTenant(data.tenant);
       } catch (error) {
         console.error(error);
+        const message =
+          error?.response?.data?.error ||
+          error?.response?.data?.message ||
+          "No se pudo cargar el código QR o la notaría no está disponible.";
+        setErrorMsg(message);
       } finally {
         setLoading(false);
       }
@@ -43,10 +48,10 @@ export const PublicQrDisplay = () => {
     );
   }
 
-  if (!qr || !tenant) {
+  if (errorMsg || !qr || !tenant) {
     return (
       <div className="qr-display">
-        <p>No se pudo cargar el código QR</p>
+        <p>{errorMsg || "No se pudo cargar el código QR"}</p>
       </div>
     );
   }
