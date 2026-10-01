@@ -4,11 +4,13 @@ import { DashboardApi } from "@core/api/dashboard";
 import { ModulesApi } from "@core/api/modules";
 import { ServicesApi } from "@core/api/services";
 import { UsersApi } from "@core/api/users";
+import { TenantsApi } from "@core/api/tenants";
 import { useAuth } from "@/store/authStore";
 
 export const useDashboardReports = () => {
   const { user } = useAuth();
   const tenantId = user?.tenantId;
+  const isSuperAdmin = user?.roles?.includes("SUPERADMIN") || false;
 
   const todayStr = useMemo(() => new Date().toISOString().split("T")[0], []);
 
@@ -39,9 +41,21 @@ export const useDashboardReports = () => {
     isError: errorReports,
     refetch: refetchReports,
   } = useQueryAdapter([...reportsKeys.all, filters], () => DashboardApi.getReports(filters), {
-    enabled: !!tenantId,
+    enabled: !!tenantId || isSuperAdmin,
     showErrorToast: true,
   });
+
+  // Fetch Tenants for Dropdown
+  const { data: tenantsData = [] } = useQueryAdapter(
+    ["dropdown-tenants"],
+    () => TenantsApi.listTenants(),
+    {
+      enabled: isSuperAdmin,
+      staleTime: 300000,
+    }
+  );
+
+  const tenants = Array.isArray(tenantsData) ? tenantsData : tenantsData?.data || [];
 
   // Fetch Modules for Dropdown
   const { data: modulesData = [] } = useQueryAdapter(
@@ -117,6 +131,11 @@ export const useDashboardReports = () => {
     serviceOptions,
     attendantOptions,
     summary: reports.summary || {},
+    hourlyDistribution: reports.hourlyDistribution || [],
+    byService: reports.byService || [],
+    byAttendant: reports.byAttendant || [],
+    tenants,
+    services,
     tickets: reports.tickets || [],
     isLoading: loadingReports,
     isError: errorReports,
