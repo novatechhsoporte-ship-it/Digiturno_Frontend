@@ -1,69 +1,9 @@
-// PublicQrDisplay.tsx
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { QrApi } from "@core/api/qr";
-import "./PublicQrDisplay.scss";
+import { useParams, Navigate } from "react-router-dom";
 
 export const PublicQrDisplay = () => {
   const { token } = useParams();
-  const [qr, setQr] = useState(null);
-  const [tenant, setTenant] = useState(null);
-  const [errorMsg, setErrorMsg] = useState("");
 
-  const formatTenantName = (name) => {
-    if (!name) return "";
-    return name.replace(/notaria/gi, "Notaría");
-  };
-
-  const formattedName = formatTenantName(tenant?.name);
-
-  useEffect(() => {
-    const fetchQr = async () => {
-      try {
-        const response = await QrApi.getQrByToken(token);
-        const data = response.data?.data || response.data;
-
-        setQr(data.qrBase64);
-        setTenant(data.tenant);
-      } catch (error) {
-        console.error(error);
-        const message =
-          error?.response?.data?.error ||
-          error?.response?.data?.message ||
-          "La notaría está temporalmente fuera de servicio, por favor contacta al administrador";
-        setErrorMsg(message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchQr();
-  }, [token]);
-
-  if (loading) {
-    return (
-      <div className="qr-display">
-        <p>Cargando QR...</p>
-      </div>
-    );
-  }
-
-  if (errorMsg || !qr || !tenant) {
-    return (
-      <div className="qr-display">
-        <p>{errorMsg || "No se pudo cargar el código QR"}</p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="qr-display">
-      {tenant?.logo && <img src={tenant.logo} alt={`Logo de ${tenant.name}`} className="qr-display__logo" />}
-      {tenant?.name && <h1 className="qr-display__name">Bienvenido a la {formattedName}</h1>}
-
-      <img src={qr} alt="Escanea para tomar turno" className="qr-display__image" />
-
-      <p>Escanea este código para tomar tu turno</p>
-    </div>
-  );
+  // Automatically redirect any legacy /q/:token requests to /q/:token/form
+  return <Navigate to={`/q/${token}/form`} replace />;
 };
+
