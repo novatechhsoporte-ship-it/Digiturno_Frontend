@@ -48,54 +48,101 @@ export const AttendantPerformanceTable = ({ attendants = [], theme = "light" }) 
                 <th>FUNCIONARIO / ASESOR</th>
                 <th>VENTANILLA & COLA</th>
                 <th>ESTADO VIVO</th>
-                <th>TURNOS</th>
+                <th>TURNOS ATENDIDOS</th>
+                <th>PENDIENTES</th>
                 <th>TMO (ATENCIÓN)</th>
                 <th>CALIFICACIÓN CSAT (DATA BAR)</th>
                 <th>SEMÁFORO SLA</th>
               </tr>
             </thead>
             <tbody>
-              {attendants.map((row) => (
-                <tr key={row.id || row.fullName}>
-                  <td>
-                    <div className="attendant-name-cell">
-                      <strong className="name">{row.fullName}</strong>
-                      <span className="code">{row.roleCode || `ID: ${row.id}`}</span>
-                    </div>
-                  </td>
-                  <td>
-                    <div className="module-queue-cell">
-                      <strong className="mod">{row.moduleName || "Sin Ventanilla"}</strong>
-                    </div>
-                  </td>
-                  <td>{getStatusBadge(row.liveStatus)}</td>
-                  <td className="turns-cell">
-                    <strong>{row.turnsCount || 0}</strong>
-                  </td>
-                  <td>
-                    <span className={`tmo-value ${row.slaPercent < 80 ? "tmo-value--danger" : ""}`}>
-                      {row.avgTmo || "-"}
-                    </span>
-                  </td>
-                  <td>
-                    <div className="csat-databar-cell">
-                      <span className="score">
-                        {row.csatScore || 5.0} <CustomIcon name="mdi:star" size="xs" className="star-icon" />
-                      </span>
-                      <div className="bar-track">
-                        <div
-                          className={`bar-fill ${
-                            row.csatPercent < 85 ? "bar-fill--danger" : row.csatPercent < 90 ? "bar-fill--warning" : "bar-fill--success"
-                          }`}
-                          style={{ width: `${row.csatPercent || 100}%` }}
-                        />
+              {attendants.map((row) => {
+                const tmoNum = parseFloat(row.avgTmo) || 0;
+                const slaPerc = row.slaPercent !== undefined ? row.slaPercent : 100;
+
+                // Fallback CSAT calculation if missing or default
+                let csatPercent = row.csatPercent !== undefined ? row.csatPercent : 100;
+                let csatScore = row.csatScore !== undefined ? row.csatScore : 5.0;
+
+                if (row.csatPercent === 100 && tmoNum > 15) {
+                  if (tmoNum <= 15) {
+                    csatPercent = 100;
+                  } else if (tmoNum <= 25) {
+                    const excess = tmoNum - 15;
+                    csatPercent = Math.max(70, Math.round(100 - (excess / 10) * 30));
+                  } else {
+                    const excess25 = tmoNum - 25;
+                    csatPercent = Math.max(10, Math.round(70 - Math.min(60, (excess25 / 30) * 50)));
+                  }
+                  if (slaPerc < 80 && csatPercent > slaPerc) {
+                    csatPercent = Math.max(10, Math.round((csatPercent + slaPerc) / 2));
+                  }
+                  csatScore = parseFloat(((csatPercent / 100) * 5).toFixed(1));
+                }
+
+                // TMO Status Class
+                let tmoClass = "tmo-value--success";
+                if (tmoNum > 25 || slaPerc < 70) {
+                  tmoClass = "tmo-value--danger";
+                } else if (tmoNum > 15 || slaPerc < 90) {
+                  tmoClass = "tmo-value--warning";
+                }
+
+                // CSAT Color Classes
+                let barFillClass = "bar-fill--success";
+                let starClass = "star-icon--success";
+                if (csatPercent < 70) {
+                  barFillClass = "bar-fill--danger";
+                  starClass = "star-icon--danger";
+                } else if (csatPercent < 90) {
+                  barFillClass = "bar-fill--warning";
+                  starClass = "star-icon--warning";
+                }
+
+                return (
+                  <tr key={row.id || row.fullName}>
+                    <td>
+                      <div className="attendant-name-cell">
+                        <strong className="name">{row.fullName}</strong>
                       </div>
-                      <span className="perc">{row.csatPercent || 100}%</span>
-                    </div>
-                  </td>
-                  <td>{getSlaBadge(row.slaPercent || 100)}</td>
-                </tr>
-              ))}
+                    </td>
+                    <td>
+                      <div className="module-queue-cell">
+                        <strong className="mod">{row.moduleName || "Sin Ventanilla"}</strong>
+                      </div>
+                    </td>
+                    <td>{getStatusBadge(row.liveStatus)}</td>
+                    <td className="turns-cell">
+                      <strong>{row.turnsCount || 0}</strong>
+                    </td>
+                    <td className="turns-cell">
+                      <strong style={{ color: row.pendingCount > 0 ? "#f59e0b" : "inherit" }}>
+                        {row.pendingCount || 0}
+                      </strong>
+                    </td>
+                    <td>
+                      <span className={`tmo-value ${tmoClass}`}>
+                        {row.avgTmo || "-"}
+                      </span>
+                    </td>
+                    <td>
+                      <div className="csat-databar-cell">
+                        <span className="score">
+                          {csatScore} <CustomIcon name="mdi:star" size="xs" className={`star-icon ${starClass}`} />
+                        </span>
+                        <div className="bar-track">
+                          <div
+                            className={`bar-fill ${barFillClass}`}
+                            style={{ width: `${csatPercent}%` }}
+                          />
+                        </div>
+                        <span className="perc">{csatPercent}%</span>
+                      </div>
+                    </td>
+                    <td>{getSlaBadge(slaPerc)}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         ) : (

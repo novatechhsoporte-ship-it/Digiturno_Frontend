@@ -7,6 +7,7 @@ const DOCUMENT_TYPES = [
   { value: "TI", label: "Tarjeta de Identidad" },
   { value: "NIT", label: "NIT" },
   { value: "PASSPORT", label: "Pasaporte Int." },
+  { value: "PPT", label: "PPT (Permiso por Protección Temporal)" },
 ];
 
 export const PublicQrCustomerForm = ({ register, errors, onNext, onCancel }) => {

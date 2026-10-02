@@ -42,6 +42,7 @@ export const useDashboardReports = () => {
     refetch: refetchReports,
   } = useQueryAdapter([...reportsKeys.all, filters], () => DashboardApi.getReports(filters), {
     enabled: !!tenantId || isSuperAdmin,
+    refetchInterval: 30000,
     showErrorToast: true,
   });
 
