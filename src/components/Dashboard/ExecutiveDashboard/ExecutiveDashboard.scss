@@ -557,6 +557,8 @@
 
 .tmo-value {
   font-weight: 700;
+  &--success { color: #10b981; }
+  &--warning { color: #f59e0b; }
   &--danger { color: #ef4444; }
 }
 
@@ -570,7 +572,12 @@
     display: flex;
     align-items: center;
     gap: 2px;
-    .star-icon { color: #f59e0b; }
+    .star-icon {
+      color: #f59e0b;
+      &--success { color: #10b981; }
+      &--warning { color: #f59e0b; }
+      &--danger { color: #ef4444; }
+    }
   }
 
   .bar-track {

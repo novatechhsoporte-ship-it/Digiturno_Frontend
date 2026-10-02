@@ -7,7 +7,7 @@ export const userSchema = z
     password: z.string().optional().or(z.literal("")),
     roleName: z.enum(["SUPERADMIN", "ADMIN", "ATTENDANT", "RECEPTION"]).optional(),
     tenantId: z.string().optional().or(z.literal("")),
-    documentType: z.enum(["CC", "CE", "PA", "TI", "NIT", "PASSPORT"]).optional().or(z.literal("")),
+    documentType: z.enum(["CC", "CE", "PA", "TI", "NIT", "PASSPORT", "PPT"]).optional().or(z.literal("")),
     documentNumber: z.string().optional().or(z.literal("")),
     status: z.boolean().default(true),
   })

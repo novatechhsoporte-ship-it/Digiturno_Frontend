@@ -208,6 +208,8 @@ export const useUsers = () => {
         { value: "CE", label: "Cédula de Extranjería" },
         { value: "NIT", label: "NIT" },
         { value: "PA", label: "Pasaporte" },
+        { value: "PASSPORT", label: "Pasaporte Internacional" },
+        { value: "PPT", label: "PPT (Permiso por Protección Temporal)" },
       ],
       tenantsOptions: [
         { value: "", label: "Todas las notarías" },

@@ -5,9 +5,9 @@ export const ticketSchema = z.object({
   documentNumber: z
     .string()
     .min(1, "El número de documento es requerido")
-    .min(8, "El número de documento debe tener al menos 8 dígitos")
+    .min(6, "El número de documento debe tener al menos 6 dígitos")
     .regex(/^\d+$/, "El documento debe contener solo números"),
-  documentType: z.enum(["CC", "CE", "PA", "TI", "NIT", "PASSPORT"], {
+  documentType: z.enum(["CC", "CE", "PA", "TI", "NIT", "PASSPORT", "PPT"], {
     errorMap: () => ({ message: "Tipo de documento inválido" }),
   }),
   fullName: z
@@ -58,6 +58,7 @@ export const DOCUMENT_TYPE_OPTIONS = [
   { label: "Pasaporte", value: "PA" },
   { label: "NIT", value: "NIT" },
   { label: "Pasaporte Internacional", value: "PASSPORT" },
+  { label: "PPT (Permiso por Protección Temporal)", value: "PPT" },
 ];
 
 export const TICKET_FORM_FIELDS = [
