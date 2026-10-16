@@ -17,7 +17,7 @@
     width: 100%;
     padding: 40px 48px;
     position: relative;
-    max-width: 470px;
+    max-width: 540px;
     background: radial-gradient(
       ellipse at 30% 40%,
       rgba(45, 90, 160, 0.08) 0%,
@@ -70,7 +70,7 @@
     .current-turn__header {
       .header-label {
         color: var(--bronze);
-        font-size: 12px;
+        font-size: 13px;
         letter-spacing: 0.3em;
         font-weight: 700;
         margin-bottom: 4px;
@@ -98,11 +98,11 @@
 
     .number {
       color: var(--cobalt-deep);
-      font-size: clamp(72px, 10vw, 96px);
-      font-weight: 700;
+      font-size: clamp(88px, 12vw, 124px);
+      font-weight: 800;
       letter-spacing: -0.02em;
       line-height: 1;
-      margin: 10px 0;
+      margin: 12px 0;
 
       &--animating {
         animation: turnReveal 0.8s ease-out forwards;
@@ -123,43 +123,63 @@
     .detail-row {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 16px;
       width: 100%;
       margin-bottom: 12px;
       text-align: left;
       background: rgba(26, 47, 94, 0.06);
-      border-radius: 12px;
-      padding: 10px 16px;
+      border-radius: 14px;
+      padding: 12px 20px;
       border: 1px solid rgba(26, 47, 94, 0.08);
 
       .icon {
         color: var(--cobalt-light);
+        font-size: 26px;
+        flex-shrink: 0;
       }
 
       .info {
         display: flex;
         flex-direction: column;
+        flex: 1;
+        min-width: 0;
+
         .label {
           color: var(--bronze);
-          font-size: 9px;
+          font-size: 11px;
           letter-spacing: 0.2em;
-          font-weight: 600;
+          font-weight: 700;
+          margin-bottom: 2px;
         }
         .value {
           color: var(--cobalt-deep);
-          font-size: 18px;
+          font-size: clamp(20px, 2vw, 24px);
           font-weight: 600;
           text-transform: capitalize;
+          word-break: break-word;
+        }
+      }
+
+      &--customer {
+        background: rgba(45, 90, 160, 0.08);
+        border-color: rgba(45, 90, 160, 0.18);
+        padding: 14px 22px;
+
+        .info .value {
+          font-size: clamp(28px, 3vw, 38px);
+          font-weight: 800;
+          color: var(--cobalt-deep);
+          line-height: 1.15;
         }
       }
     }
 
     .module-badge {
-      margin-top: 12px;
+      margin-top: 14px;
       background: linear-gradient(135deg, var(--cobalt-deep), var(--cobalt-light));
       border: 1px solid rgba(160, 120, 80, 0.3);
-      border-radius: 8px;
-      padding: 10px 32px;
+      border-radius: 10px;
+      padding: 12px 36px;
       display: flex;
       align-items: center;
       gap: 12px;
@@ -172,15 +192,16 @@
         display: flex;
         flex-direction: column;
         .label {
-          color: rgba(255, 255, 255, 0.6);
-          font-size: 9px;
+          color: rgba(255, 255, 255, 0.7);
+          font-size: 10px;
           letter-spacing: 0.2em;
+          font-weight: 700;
         }
         .value {
           color: #fff;
-          font-size: 24px;
+          font-size: clamp(24px, 2.4vw, 30px);
           font-weight: 700;
-          line-height: 1;
+          line-height: 1.1;
           text-transform: capitalize;
         }
       }
