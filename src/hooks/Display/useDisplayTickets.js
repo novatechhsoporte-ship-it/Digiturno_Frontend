@@ -16,6 +16,7 @@ export const useDisplayTickets = () => {
   const { tenantId } = useParams();
   const socketRef = useRef(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [calledTicketInfo, setCalledTicketInfo] = useState(null);
   const token = localStorage.getItem(DISPLAY_TOKEN_KEY);
   const isEnabled = Boolean(token && tenantId);
 
@@ -129,6 +130,14 @@ export const useDisplayTickets = () => {
         customerName: payload.customerName,
         moduleName: payload.moduleName,
         attempt: payload.attempts,
+      });
+      setCalledTicketInfo({
+        ticketNumber: payload.ticketNumber,
+        customerName: payload.customerName,
+        moduleName: payload.moduleName,
+        description: payload.description,
+        attempts: payload.attempts,
+        timestamp: Date.now(),
       });
       refetchCurrent();
       refetchPending();
@@ -257,6 +266,10 @@ export const useDisplayTickets = () => {
     // Data
     currentTicket,
     nextPendingTickets,
+    calledTicketInfo,
+
+    // Actions
+    clearCalledTicketInfo: () => setCalledTicketInfo(null),
 
     // State
     loading: isLoading,

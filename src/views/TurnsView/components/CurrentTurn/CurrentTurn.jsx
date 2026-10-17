@@ -49,26 +49,27 @@ export const CurrentTurn = ({ turn, isAnimating }) => {
 
         <div className="separator" />
 
-        <div className="detail-row">
-          <CustomIcon name="ic:round-folder-special" size="lg" className="icon" />
+        <div className="detail-row detail-row--service">
+          <CustomIcon name="ic:round-folder-special" size="xl" className="icon" />
 
           <div className="info">
             <span className="label">SERVICIO</span>
-            <span className="value">{turn.moduleId?.name}</span>
+            <span className="value">{turn.moduleId?.name || turn.moduleName || "General"}</span>
           </div>
         </div>
 
-        <div className="detail-row">
-          <CustomIcon name="ic:round-spatial-audio" size="lg" className="icon" />
+        <div className="detail-row detail-row--attendant">
+          <CustomIcon name="ic:round-support-agent" size="xl" className="icon" />
+          <div className="info">
+            <span className="label">ASESOR</span>
+            <span className="value">{turn.moduleId?.description || turn.description || "Asesor"}</span>
+          </div>
+        </div>
+
+        <div className="module-badge module-badge--user">
           <div className="info">
             <span className="label">USUARIO</span>
-            <span className="value">{turn.customerId?.fullName}</span>
-          </div>
-        </div>
-
-        <div className="module-badge">
-          <div className="info">
-            <span className="value">{turn.moduleId?.description}</span>
+            <span className="value">{turn.customerId?.fullName || turn.customerName || turn.fullName || "Cliente"}</span>
           </div>
         </div>
       </div>
