@@ -11,6 +11,7 @@ export const useDashboardReports = () => {
   const { user } = useAuth();
   const tenantId = user?.tenantId;
   const isSuperAdmin = user?.roles?.includes("SUPERADMIN") || false;
+  const currentTenantName = user?.tenantName || user?.tenant?.name || "";
 
   const todayStr = useMemo(() => new Date().toISOString().split("T")[0], []);
 
@@ -20,6 +21,11 @@ export const useDashboardReports = () => {
   const [attendantId, setAttendantId] = useState("");
   const [moduleId, setModuleId] = useState("");
   const [serviceTypeId, setServiceTypeId] = useState("");
+  const [selectedTenantId, setSelectedTenantId] = useState("");
+
+  // For SuperAdmin, effective tenant is whatever was selected (or undefined for consolidated).
+  // For normal Admin, effective tenant is strictly locked to their own tenantId.
+  const effectiveTenantId = isSuperAdmin ? selectedTenantId || undefined : tenantId;
 
   const filters = useMemo(
     () => ({
@@ -28,11 +34,12 @@ export const useDashboardReports = () => {
       attendantId: attendantId || undefined,
       moduleId: moduleId || undefined,
       serviceTypeId: serviceTypeId || undefined,
+      ...(isSuperAdmin && selectedTenantId ? { tenantId: selectedTenantId } : {}),
     }),
-    [startDate, endDate, attendantId, moduleId, serviceTypeId]
+    [startDate, endDate, attendantId, moduleId, serviceTypeId, isSuperAdmin, selectedTenantId]
   );
 
-  const reportsKeys = createQueryKeyFactory(`dashboard-reports:${tenantId || "global"}`);
+  const reportsKeys = createQueryKeyFactory(`dashboard-reports:${effectiveTenantId || "global"}`);
 
   // Fetch Reports Data
   const {
@@ -46,7 +53,7 @@ export const useDashboardReports = () => {
     showErrorToast: true,
   });
 
-  // Fetch Tenants for Dropdown
+  // Fetch Tenants for Dropdown ONLY if SuperAdmin
   const { data: tenantsData = [] } = useQueryAdapter(
     ["dropdown-tenants"],
     () => TenantsApi.listTenants(),
@@ -56,14 +63,19 @@ export const useDashboardReports = () => {
     }
   );
 
-  const tenants = Array.isArray(tenantsData) ? tenantsData : tenantsData?.data || [];
+  // Non-superadmins MUST NOT receive other tenants
+  const tenants = isSuperAdmin
+    ? Array.isArray(tenantsData)
+      ? tenantsData
+      : tenantsData?.data || []
+    : [];
 
   // Fetch Modules for Dropdown
   const { data: modulesData = [] } = useQueryAdapter(
-    ["dropdown-modules", tenantId],
-    () => ModulesApi.listModules({ tenantId, active: true }),
+    ["dropdown-modules", effectiveTenantId],
+    () => ModulesApi.listModules({ tenantId: effectiveTenantId, active: true }),
     {
-      enabled: !!tenantId,
+      enabled: !!effectiveTenantId,
       staleTime: 300000, // 5 minutes cache
     }
   );
@@ -72,10 +84,10 @@ export const useDashboardReports = () => {
 
   // Fetch Services for Dropdown
   const { data: servicesData = [] } = useQueryAdapter(
-    ["dropdown-services", tenantId],
-    () => ServicesApi.listServices({ tenantId, active: true }),
+    ["dropdown-services", effectiveTenantId],
+    () => ServicesApi.listServices({ tenantId: effectiveTenantId, active: true }),
     {
-      enabled: !!tenantId,
+      enabled: !!effectiveTenantId,
       staleTime: 300000,
     }
   );
@@ -84,10 +96,10 @@ export const useDashboardReports = () => {
 
   // Fetch Users (Attendants) for Dropdown
   const { data: usersData = [] } = useQueryAdapter(
-    ["dropdown-attendants", tenantId],
-    () => UsersApi.listUsers({ tenantId, status: true }),
+    ["dropdown-attendants", effectiveTenantId],
+    () => UsersApi.listUsers({ tenantId: effectiveTenantId, status: true }),
     {
-      enabled: !!tenantId,
+      enabled: !!effectiveTenantId,
       staleTime: 300000,
     }
   );
@@ -128,6 +140,10 @@ export const useDashboardReports = () => {
     setModuleId,
     serviceTypeId,
     setServiceTypeId,
+    selectedTenantId,
+    setSelectedTenantId,
+    isSuperAdmin,
+    currentTenantName,
     moduleOptions,
     serviceOptions,
     attendantOptions,

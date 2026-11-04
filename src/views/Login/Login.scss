@@ -88,6 +88,29 @@
   &__field {
     @include flex-column;
   }
+
+  button {
+    width: 100%;
+    padding: $spacing-sm $spacing-md;
+    border-radius: $border-radius-full;
+    background: $color-primary;
+    color: $color-white;
+    font-size: $font-size-base;
+    font-weight: $font-weight-bold;
+    border: $border-width-thin solid $color-primary-dark;
+    cursor: pointer;
+    box-shadow: $shadow-lg;
+    transition: $transition-base;
+
+    &:hover {
+      background: $color-primary-hover;
+    }
+
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+  }
 }
 
 .login__field {
@@ -114,28 +137,5 @@
     margin-top: $spacing-xs;
     font-size: $font-size-xs;
     color: $color-error-dark;
-  }
-}
-
-button {
-  width: 100%;
-  padding: $spacing-sm $spacing-md;
-  border-radius: $border-radius-full;
-  background: $color-primary;
-  color: $color-white;
-  font-size: $font-size-base;
-  font-weight: $font-weight-bold;
-  border: $border-width-thin solid $color-primary-dark;
-  cursor: pointer;
-  box-shadow: $shadow-lg;
-  transition: $transition-base;
-
-  &:hover {
-    background: $color-primary-hover;
-  }
-
-  &:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
   }
 }
