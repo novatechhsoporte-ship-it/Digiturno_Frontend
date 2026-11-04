@@ -85,18 +85,26 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 8px;
+
+    > * {
+      flex: 0 0 auto !important;
+      width: auto !important;
+    }
   }
 }
 
 .segmenter-item {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 6px;
   background-color: var(--input-bg);
   border: 1px solid var(--border-card);
-  padding: 5px 12px;
-  border-radius: 8px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  height: 32px;
+  flex: 0 0 auto;
+  width: auto;
 
   .segmenter-label {
     font-size: 0.75rem;
@@ -127,37 +135,83 @@
   }
 }
 
+.segmenter-item--static {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-card);
+
+  .segmenter-value-static {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #2563eb;
+  }
+}
+
 .executive-btn--reset {
   background: transparent;
   border: 1px solid var(--border-card);
   color: var(--text-secondary);
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 0.8rem;
-  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  height: 32px;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
+  white-space: nowrap;
+  flex: 0 0 auto;
+  width: auto;
+  box-shadow: none;
   transition: all 0.2s ease;
 
   &:hover {
     border-color: #2563eb;
     color: #2563eb;
+    background: rgba(37, 99, 235, 0.05);
+  }
+}
+
+.executive-btn--export {
+  background: #107c41;
+  border: 1px solid #0f6f3a;
+  color: #ffffff;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  height: 32px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  flex: 0 0 auto;
+  width: auto;
+  box-shadow: none;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #0d6334;
+    box-shadow: 0 2px 8px rgba(16, 124, 65, 0.35);
   }
 }
 
 .global-efficiency-badge {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 14px;
+  padding: 4px 12px;
+  height: 32px;
   border-radius: 20px;
   background-color: rgba(16, 185, 129, 0.12);
   border: 1px solid rgba(16, 185, 129, 0.3);
   color: #10b981;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 700;
+  flex: 0 0 auto;
+  width: auto;
+  white-space: nowrap;
 
   .pulse-dot {
     width: 8px;
@@ -170,14 +224,19 @@
 
 /* ── THEME TOGGLE BUTTON ── */
 .theme-toggle-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 14px;
-  border-radius: 8px;
-  font-size: 0.82rem;
-  font-weight: 700;
+  padding: 4px 12px;
+  height: 32px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
   cursor: pointer;
+  flex: 0 0 auto;
+  width: auto;
+  box-shadow: none;
+  white-space: nowrap;
   transition: all 0.2s ease;
 
   &--light {

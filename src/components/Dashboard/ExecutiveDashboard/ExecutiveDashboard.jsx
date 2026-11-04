@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { toast } from "sonner";
 import { CustomIcon } from "@/components/common";
 import { GaugeChart } from "./GaugeChart";
 import { HourlyTrendChart } from "./HourlyTrendChart";
@@ -14,6 +15,7 @@ export const ExecutiveDashboard = ({
   byAttendant = [],
   tenants = [],
   services = [],
+  tickets = [],
   startDate = "",
   setStartDate = () => {},
   endDate = "",
@@ -22,10 +24,13 @@ export const ExecutiveDashboard = ({
   setServiceTypeId = () => {},
   attendantId = "",
   setAttendantId = () => {},
+  selectedTenantId = "",
+  setSelectedTenantId = () => {},
+  isSuperAdmin = false,
+  currentTenantName = "",
 }) => {
   // DEFAULT TO LIGHT MODE AS REQUESTED BY USER
   const [theme, setTheme] = useState("light");
-  const [selectedSede, setSelectedSede] = useState("");
   const [timeWindow, setTimeWindow] = useState("custom");
 
   const isDark = theme === "dark";
@@ -53,19 +58,205 @@ export const ExecutiveDashboard = ({
       setStartDate(past.toISOString().split("T")[0]);
       setEndDate(todayStr);
     } else if (val === "historical") {
-      setStartDate("2024-01-01");
+      setStartDate("2020-01-01");
       setEndDate(todayStr);
     }
   };
 
   const resetFilters = () => {
     const todayStr = new Date().toISOString().split("T")[0];
-    setSelectedSede("");
+    if (setSelectedTenantId) setSelectedTenantId("");
     if (setServiceTypeId) setServiceTypeId("");
     if (setAttendantId) setAttendantId("");
     if (setStartDate) setStartDate(todayStr);
     if (setEndDate) setEndDate(todayStr);
     setTimeWindow("today");
+  };
+
+  // Export tickets report to Excel (CSV with UTF-8 BOM & semicolon delimiter)
+  const handleExportExcel = () => {
+    const hasTickets = tickets && tickets.length > 0;
+    const hasAttendants = byAttendant && byAttendant.length > 0;
+
+    const STATUS_TEXT = {
+      completed: "Atendido",
+      in_progress: "En Atención",
+      pending: "Pendiente",
+      abandoned: "Abandonado",
+    };
+
+    const formatDate = (dateStr) => {
+      if (!dateStr) return "-";
+      const date = new Date(dateStr);
+      if (isNaN(date.getTime())) return "-";
+      const pad = (n) => String(n).padStart(2, "0");
+      return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+    };
+
+    const formatHoursMinutes = (totalMinutes) => {
+      if (!totalMinutes || isNaN(totalMinutes) || totalMinutes <= 0) return "0 min";
+      const hrs = Math.floor(totalMinutes / 60);
+      const mins = Math.round(totalMinutes % 60);
+      if (hrs > 0) return `${hrs}h ${mins}m (${Math.round(totalMinutes)} min)`;
+      return `${Math.round(totalMinutes)} min`;
+    };
+
+    const csvLines = [];
+    const pushRow = (cells) => {
+      csvLines.push(
+        cells
+          .map((val) => {
+            const str = val === null || val === undefined ? "" : String(val);
+            return `"${str.replace(/"/g, '""')}"`;
+          })
+          .join(";")
+      );
+    };
+
+    // ── 1. ENCABEZADO INSTITUCIONAL ──
+    pushRow(["REPORTE DE GESTIÓN OPERATIVA Y PRODUCTIVIDAD LABORAL - DIGITURNO"]);
+    pushRow([
+      `Período: ${startDate || "Hoy"} al ${endDate || "Hoy"}`,
+      `Sede: ${currentTenantName || "Sede Principal"}`,
+      `Generado: ${formatDate(new Date())}`,
+    ]);
+    pushRow([
+      `Total Emitidos: ${summary.total || 0}`,
+      `Total Atendidos: ${summary.completed || 0}`,
+      `Total Abandonados: ${summary.abandoned || 0}`,
+      `Tiempo Medio Espera (TME): ${summary.avgWaiting || 0} min`,
+      `Tiempo Medio Atención (TMO): ${summary.avgService || 0} min`,
+      `Cumplimiento SLA: ${summary.slaRate || 0}%`,
+    ]);
+    pushRow([]); // Fila en blanco
+
+    // ── 2. SECCIÓN: RESUMEN DE PRODUCTIVIDAD POR FUNCIONARIO (CONTROL DE TRABAJO EN SALA) ──
+    pushRow(["--- TABLA 1: PRODUCTIVIDAD POR FUNCIONARIO (CONTROL DE TRABAJO EN SALA) ---"]);
+    pushRow([
+      "Funcionario / Asesor",
+      "Ventanilla / Módulo",
+      "Turnos Atendidos",
+      "Tiempo Total en Atención (Laborado)",
+      "Tiempo Medio por Turno (TMO)",
+      "% Cumplimiento SLA (≤15 min)",
+      "Índice CSAT Satisfacción",
+      "Estado Operativo",
+    ]);
+
+    if (hasAttendants) {
+      byAttendant.forEach((a) => {
+        const totalMin = a.serviceSum || 0;
+        pushRow([
+          a.fullName || "Sin Asignar",
+          a.moduleName || "Sin Módulo",
+          a.turnsCount || 0,
+          formatHoursMinutes(totalMin),
+          a.avgTmo || "-",
+          `${a.slaPercent || 0}%`,
+          a.csatScore ? `${a.csatScore}★ (${a.csatPercent || 0}%)` : "-",
+          a.liveStatus || "Libre",
+        ]);
+      });
+    } else {
+      pushRow(["Sin datos de funcionarios registrados en este período", "-", "0", "0 min", "-", "-", "-", "-"]);
+    }
+
+    pushRow([]); // Fila en blanco
+    pushRow([]); // Fila en blanco
+
+    // ── 3. SECCIÓN: AUDITORÍA DETALLADA TURNO A TURNO ──
+    pushRow(["--- TABLA 2: AUDITORÍA CRONOLÓGICA DETALLADA (TURNO POR TURNO) ---"]);
+    pushRow([
+      "Número de Turno",
+      "Funcionario / Asesor",
+      "Ventanilla / Módulo",
+      "Trámite / Servicio",
+      "Estado del Turno",
+      "Hora Creación (Emisión)",
+      "Hora Llamado (Inicio Atención)",
+      "Hora Finalización (Cierre)",
+      "Tiempo de Atención (min)",
+      "Tiempo de Espera (min)",
+      "Tiempo Total (min)",
+      "Cumplió SLA (≤15m)",
+      "Cliente / Ciudadano",
+      "Tipo Documento",
+      "Número Documento",
+      "Es Transferencia",
+    ]);
+
+    if (hasTickets) {
+      tickets.forEach((t) => {
+        const waitTime = t.waitingTimeMinutes !== null && t.waitingTimeMinutes !== undefined ? t.waitingTimeMinutes : "-";
+        const servTime = t.serviceTimeMinutes !== null && t.serviceTimeMinutes !== undefined ? t.serviceTimeMinutes : "-";
+        const totTime = t.totalTimeMinutes !== null && t.totalTimeMinutes !== undefined ? t.totalTimeMinutes : "-";
+        const slaCompliant =
+          t.waitingTimeMinutes !== null && t.waitingTimeMinutes !== undefined
+            ? t.waitingTimeMinutes <= 15
+              ? "Cumple (≤15 min)"
+              : "Supera límite (>15 min)"
+            : "-";
+
+        pushRow([
+          t.ticketNumber || "-",
+          t.attendantId?.fullName || "Sin Asignar",
+          t.moduleId?.name || "Sin Asignar",
+          t.serviceTypeId?.name || "General",
+          STATUS_TEXT[t.status] || t.status || "-",
+          formatDate(t.createdAt),
+          formatDate(t.startedAt),
+          formatDate(t.completedAt),
+          servTime,
+          waitTime,
+          totTime,
+          slaCompliant,
+          t.customerId?.fullName || "-",
+          t.customerId?.documentType || "-",
+          t.customerId?.documentNumber || "-",
+          t.isTransfer ? "Sí" : "No",
+        ]);
+      });
+    } else {
+      pushRow([
+        "Sin turnos registrados",
+        "-",
+        "-",
+        "No se encontraron turnos con los filtros seleccionados",
+        "-",
+        startDate || "-",
+        "-",
+        endDate || "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+      ]);
+    }
+
+    // Formato CSV compatible con Excel en español (BOM UTF-8 + delimitador punto y coma)
+    const csvContent = "\uFEFF" + csvLines.join("\r\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    const filename = `Reporte_Productividad_Turnos_${startDate || "inicio"}_al_${endDate || "fin"}.csv`;
+
+    link.setAttribute("href", url);
+    link.setAttribute("download", filename);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    if (hasTickets) {
+      toast.success(`Reporte exportado exitosamente (${tickets.length} turnos)`);
+    } else {
+      toast.info(`Reporte exportado con 0 turnos para el rango ${startDate} a ${endDate}`);
+    }
   };
 
   // Strictly real data from summary prop
@@ -89,12 +280,13 @@ export const ExecutiveDashboard = ({
         </div>
 
         <div className="executive-toolbar__controls">
-          {tenants.length > 0 && (
+          {/* SEDE: Solo seleccionable para SuperAdmin. Para Admin regular muestra solo su sede o nada */}
+          {isSuperAdmin && tenants.length > 0 ? (
             <div className="segmenter-item">
               <span className="segmenter-label">SEDE:</span>
               <select
-                value={selectedSede}
-                onChange={(e) => setSelectedSede(e.target.value)}
+                value={selectedTenantId}
+                onChange={(e) => setSelectedTenantId(e.target.value)}
                 className="segmenter-select"
               >
                 <option value="">Todas las Sedes (Consolidado)</option>
@@ -105,7 +297,12 @@ export const ExecutiveDashboard = ({
                 ))}
               </select>
             </div>
-          )}
+          ) : currentTenantName ? (
+            <div className="segmenter-item segmenter-item--static" title="Sede asignada">
+              <span className="segmenter-label">SEDE:</span>
+              <span className="segmenter-value-static">{currentTenantName}</span>
+            </div>
+          ) : null}
 
           <div className="segmenter-item">
             <span className="segmenter-label">TRÁMITE:</span>
@@ -161,8 +358,19 @@ export const ExecutiveDashboard = ({
             />
           </div>
 
+          {/* Botón Restablecer más pequeño */}
           <button onClick={resetFilters} className="executive-btn executive-btn--reset" title="Restablecer Filtros">
             <CustomIcon name="mdi:refresh" size="xs" /> Restablecer
+          </button>
+
+          {/* Botón Descargar Reporte Excel con Filtros */}
+          <button
+            onClick={handleExportExcel}
+            className="executive-btn executive-btn--export"
+            title="Descargar Reporte en Excel según los filtros aplicados"
+          >
+            <CustomIcon name="mdi:file-excel" size="sm" />
+            <span>Exportar Excel</span>
           </button>
 
           <div className="global-efficiency-badge">
