@@ -26,6 +26,8 @@ export const useTenant = () => {
         status: true,
         serviceHoursStart: "08:00",
         serviceHoursEnd: "17:00",
+        lunchBreakStart: "",
+        lunchBreakEnd: "",
         maxWaitingTimeMinutes: "30",
       },
     },
@@ -56,8 +58,12 @@ export const useTenant = () => {
         ...(values.city && { city: values.city.trim() }),
         configuration: {
           serviceHours: {
-            start: values.serviceHoursStart,
-            end: values.serviceHoursEnd,
+            start: values.serviceHoursStart?.trim() || "08:00",
+            end: values.serviceHoursEnd?.trim() || "17:00",
+          },
+          lunchBreak: {
+            start: values.lunchBreakStart?.trim() || null,
+            end: values.lunchBreakEnd?.trim() || null,
           },
           ...(values.maxWaitingTimeMinutes && {
             maxWaitingTimeMinutes: Number(values.maxWaitingTimeMinutes),
@@ -67,10 +73,10 @@ export const useTenant = () => {
 
       if (mode === "edit") {
         await TenantsApi.updateTenant(selectedTenant._id, payload);
-        toast.success("Tenant updated successfully");
+        toast.success("Notaría actualizada exitosamente");
       } else {
         await TenantsApi.createTenant(payload);
-        toast.success("Tenant created successfully");
+        toast.success("Notaría creada exitosamente");
       }
 
       reset();
@@ -78,7 +84,7 @@ export const useTenant = () => {
       setSelectedTenant(null);
       loadTenants();
     } catch (err) {
-      toast.error(err?.message || "Operation failed");
+      toast.error(err?.message || "Error al guardar la notaría");
     }
   };
 
@@ -92,12 +98,14 @@ export const useTenant = () => {
       taxId: tenant.taxId || "",
       address: tenant.address || "",
       city: tenant.city || "",
-      phone: tenant.phone.toString() || "",
+      phone: tenant.phone?.toString() || "",
       email: tenant.email || "",
       status: tenant.status ?? true,
       serviceHoursStart: tenant.configuration?.serviceHours?.start || "08:00",
       serviceHoursEnd: tenant.configuration?.serviceHours?.end || "17:00",
-      maxWaitingTimeMinutes: tenant.configuration?.maxWaitingTimeMinutes.toString() || "30",
+      lunchBreakStart: tenant.configuration?.lunchBreak?.start || "",
+      lunchBreakEnd: tenant.configuration?.lunchBreak?.end || "",
+      maxWaitingTimeMinutes: tenant.configuration?.maxWaitingTimeMinutes?.toString() || "30",
     });
 
     setShowForm(true);
@@ -112,12 +120,12 @@ export const useTenant = () => {
   const handleConfirmDelete = async () => {
     try {
       await TenantsApi.deleteTenant(selectedTenant._id);
-      toast.success("Tenant deleted");
+      toast.success("Notaría eliminada");
       setShowDeleteConfirm(false);
       setSelectedTenant(null);
       loadTenants();
     } catch {
-      toast.error("Error deleting tenant");
+      toast.error("Error al eliminar la notaría");
     }
   };
 

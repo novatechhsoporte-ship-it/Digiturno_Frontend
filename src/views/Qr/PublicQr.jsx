@@ -14,6 +14,7 @@ export const PublicQr = () => {
 
   const {
     tenant,
+    schedule,
     services,
     loading,
     error,
@@ -48,6 +49,45 @@ export const PublicQr = () => {
       <div className="public-qr public-qr--error">
         <h2 className="public-qr__error-title">QR inválido</h2>
         <p className="public-qr__error-message">{error || "El código QR no es válido o ha sido desactivado."}</p>
+      </div>
+    );
+  }
+
+  // Check if public access is currently closed (off-hours, weekends, holidays)
+  if (schedule && schedule.isOpen === false) {
+    return (
+      <div className="public-qr">
+        <header className="public-qr__header">
+          <img className="public-qr__header-logo" src={headerLogoSrc} alt="Novatech" />
+        </header>
+
+        <div className="public-qr__content">
+          <div className="public-qr__closed fade-in">
+            <div className="public-qr__closed-icon">🕒</div>
+            <h2 className="public-qr__closed-title">Notaría Cerrada</h2>
+            <p className="public-qr__closed-message">
+              {schedule.message || "En este momento no nos encontramos en horario de atención al público."}
+            </p>
+
+            {schedule.scheduleInfo && (
+              <div className="public-qr__closed-card">
+                <h4 className="public-qr__closed-subtitle">Horarios de Atención:</h4>
+                <ul className="public-qr__closed-list">
+                  <li>📅 <strong>Lunes a Viernes:</strong> {schedule.scheduleInfo.weekday?.replace("Lunes a Viernes de ", "") || "08:00 a 17:00"}</li>
+                  <li>📅 <strong>Sábados:</strong> {schedule.scheduleInfo.saturday?.replace("Sábados de ", "") || "08:00 a 15:00 (3:00 p.m.)"}</li>
+                  {schedule.scheduleInfo.lunch && (
+                    <li>🍽️ <strong>Almuerzo:</strong> {schedule.scheduleInfo.lunch?.replace("Almuerzo general de ", "")}</li>
+                  )}
+                  <li>⛔ <strong>Domingos y Festivos:</strong> Sin atención al público</li>
+                </ul>
+              </div>
+            )}
+
+            <p className="public-qr__closed-footer">
+              Por favor escanea nuevamente el código QR dentro del horario de atención laboral.
+            </p>
+          </div>
+        </div>
       </div>
     );
   }
