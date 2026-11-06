@@ -12,8 +12,10 @@ export const tenantSchema = z.object({
   email: z.string().email("Correo inválido").optional().or(z.literal("")),
   city: z.string().optional().or(z.literal("")),
   status: z.boolean().default(true),
-  serviceHoursStart: z.string().min(1, "Hora de inicio requerida"),
-  serviceHoursEnd: z.string().min(1, "Hora de fin requerida"),
+  serviceHoursStart: z.string().optional().or(z.literal("")),
+  serviceHoursEnd: z.string().optional().or(z.literal("")),
+  lunchBreakStart: z.string().optional().or(z.literal("")),
+  lunchBreakEnd: z.string().optional().or(z.literal("")),
   maxWaitingTimeMinutes: z
     .string()
     .regex(/^[0-9]+$/, "Debe ser un número")
@@ -31,6 +33,9 @@ export const FORM_FIELDS = [
 
   { name: "serviceHoursStart", label: "Hora de Inicio", type: "time" },
   { name: "serviceHoursEnd", label: "Hora de Fin", type: "time" },
+
+  { name: "lunchBreakStart", label: "Inicio Almuerzo (Opcional)", type: "time" },
+  { name: "lunchBreakEnd", label: "Fin Almuerzo (Opcional)", type: "time" },
 
   { name: "status", label: "Notaría activa", type: "checkbox", full: true },
 ];

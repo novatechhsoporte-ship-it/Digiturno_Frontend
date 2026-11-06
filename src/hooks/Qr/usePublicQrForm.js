@@ -26,6 +26,7 @@ export const usePublicQrForm = (token) => {
   });
 
   const tenant = tenantResponse?.tenant || tenantResponse?.data?.tenant || tenantResponse;
+  const schedule = tenantResponse?.schedule || tenantResponse?.data?.schedule;
 
   // Fetch Services once token is available
   const { data: servicesResponse, isLoading: loadingServices } = useQueryAdapter(
@@ -115,6 +116,7 @@ export const usePublicQrForm = (token) => {
 
   return {
     tenant,
+    schedule,
     services,
     loading: loadingTenant,
     error: tenantError ? "QR inválido o desactivado" : null,
