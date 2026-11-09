@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import { TicketsApi } from "@core/api/tickets";
+import { ServicesApi } from "@core/api/services";
 import { useAuth } from "@/store/authStore";
 import { getSocket } from "@config/socket/socket";
 import { useQueryAdapter, useMutationAdapter, createQueryKeyFactory } from "@config/adapters/queryAdapter";
@@ -15,6 +16,7 @@ export const useAttendantTickets = () => {
   const [showCompleteConfirm, setShowCompleteConfirm] = useState(false);
   const [showAbandonConfirm, setShowAbandonConfirm] = useState(false);
   const [showTransferConfirm, setShowTransferConfirm] = useState(false);
+  const [showTransferModal, setShowTransferModal] = useState(false);
   const [pendingTicketId, setPendingTicketId] = useState(null);
 
   const tenantId = authUser?.tenantId;
@@ -55,6 +57,24 @@ export const useAttendantTickets = () => {
       refetchOnWindowFocus: false,
     }
   );
+
+  const { data: servicesData = [] } = useQueryAdapter(
+    ["services", "active", tenantId],
+    () => ServicesApi.listServices({ tenantId, active: true }),
+    {
+      enabled: !!tenantId,
+      staleTime: 60000,
+    }
+  );
+
+  const services = useMemo(() => {
+    const list = Array.isArray(servicesData?.data)
+      ? servicesData.data
+      : Array.isArray(servicesData)
+      ? servicesData
+      : [];
+    return list.filter((s) => s.active !== false);
+  }, [servicesData]);
 
   const serviceTimer = useMemo(() => {
     if (!currentTicket?.startedAt) return "00:00";
@@ -134,6 +154,26 @@ export const useAttendantTickets = () => {
       refetchPendingTickets();
     },
   });
+
+  const transferTicketMutation = useMutationAdapter(
+    ({ ticketId, targetServiceId, notes }) =>
+      TicketsApi.transferTicket(ticketId, {
+        tenantId,
+        targetServiceId,
+        notes,
+      }),
+    {
+      successMessage: "Turno redireccionado exitosamente",
+      invalidateQueries: [
+        ticketKeys.list({ tenantId, status: "pending", limit: 20 }),
+        ["tickets", "current", attendantId, tenantId],
+      ],
+      onSuccess: () => {
+        queryClient.setQueryData(["tickets", "current", attendantId, tenantId], null);
+        refetchPendingTickets();
+      },
+    }
+  );
 
   const callTicketMutation = useMutationAdapter(({ ticketId, payload }) => TicketsApi.callTicket(ticketId, payload), {
     successMessage: "Turno llamado exitosamente",
@@ -221,6 +261,27 @@ export const useAttendantTickets = () => {
       setPendingTicketId(null);
     }
   }, [pendingTicketId, transferToCashierMutation]);
+
+  const handleOpenTransferModal = useCallback((ticketId) => {
+    if (!ticketId) return;
+    setPendingTicketId(ticketId);
+    setShowTransferModal(true);
+  }, []);
+
+  const confirmTransferTicket = useCallback(
+    (targetServiceId, notes = "") => {
+      if (pendingTicketId && targetServiceId) {
+        transferTicketMutation.mutate({
+          ticketId: pendingTicketId,
+          targetServiceId,
+          notes,
+        });
+        setShowTransferModal(false);
+        setPendingTicketId(null);
+      }
+    },
+    [pendingTicketId, transferTicketMutation]
+  );
 
   const handleCallTicket = useCallback(
     (ticketId) => {
@@ -346,14 +407,19 @@ export const useAttendantTickets = () => {
     showCompleteConfirm,
     showAbandonConfirm,
     showTransferConfirm,
+    showTransferModal,
     setShowCompleteConfirm,
     setShowAbandonConfirm,
     setShowTransferConfirm,
+    setShowTransferModal,
     confirmCompleteTicket,
     confirmAbandonTicket,
     confirmTransferToCashier,
     handleTransferToCashier,
-    isTransferring: transferToCashierMutation.isPending,
+    handleOpenTransferModal,
+    confirmTransferTicket,
+    services,
+    isTransferring: transferToCashierMutation.isPending || transferTicketMutation.isPending,
     isSupportCaller,
   };
 };

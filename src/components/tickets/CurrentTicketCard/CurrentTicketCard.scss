@@ -194,6 +194,8 @@
     @include respond-to(sm) {
       @include flex-between;
       flex-direction: row;
+      flex-wrap: wrap;
+      gap: $spacing-sm;
     }
   }
 
@@ -238,6 +240,32 @@
       cursor: not-allowed;
       opacity: 0.7;
     }
+  }
+
+  &__btn-transfer {
+    border-color: $color-primary !important;
+    color: $color-primary !important;
+    font-weight: $font-weight-semibold !important;
+
+    &:hover:not(:disabled) {
+      background-color: rgba($color-primary, 0.08) !important;
+      transform: translateY(-1px);
+    }
+  }
+
+  &__transfer-info {
+    padding: $spacing-sm $spacing-md;
+    background: rgba($color-primary, 0.08);
+    border: $border-width-thin solid rgba($color-primary, 0.2);
+    border-radius: $border-radius-sm;
+    font-size: $font-size-sm;
+    color: $color-gray-800;
+    line-height: $line-height-relaxed;
+  }
+
+  &__transfer-form {
+    @include flex-column;
+    gap: $spacing-md;
   }
 
   &__modal {

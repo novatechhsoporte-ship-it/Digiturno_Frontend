@@ -113,4 +113,11 @@ export const TicketsApi = {
    * @param {object} payload - { tenantId }
    */
   transferToCashier: (ticketId, payload) => axiosClient.post(`/tickets/${ticketId}/transfer-to-cashier`, payload),
+
+  /**
+   * Transfer ticket to any service
+   * @param {string} ticketId
+   * @param {object} payload - { tenantId, targetServiceId, notes? }
+   */
+  transferTicket: (ticketId, payload) => axiosClient.post(`/tickets/${ticketId}/transfer`, payload),
 };
