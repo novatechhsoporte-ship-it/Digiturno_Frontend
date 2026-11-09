@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { CustomButton, CustomModal } from "@components/common";
+import { useEffect, useState, useMemo } from "react";
+import { CustomButton, CustomModal, CustomSelect, CustomInput } from "@components/common";
 import { useAbility } from "@hooks";
 import "./CurrentTicketCard.scss";
 
@@ -23,13 +23,50 @@ export const CurrentTicketCard = ({
   showTransferConfirm,
   setShowTransferConfirm,
   confirmTransferToCashier,
+  onOpenTransferModal,
+  confirmTransferTicket,
+  showTransferModal,
+  setShowTransferModal,
+  services = [],
 }) => {
   const { can } = useAbility();
 
   // Real-time timer state
   const [serviceTimer, setServiceTimer] = useState(initialServiceTimer || "00:00");
+  const [selectedServiceId, setSelectedServiceId] = useState("");
+  const [transferNotes, setTransferNotes] = useState("");
+  const [transferError, setTransferError] = useState("");
 
   const convertUpper = (value) => value?.toUpperCase();
+
+  const serviceOptions = useMemo(() => {
+    const currentServiceId = currentTicket?.serviceTypeId?._id || currentTicket?.serviceTypeId;
+    return services
+      .filter((s) => s._id !== currentServiceId)
+      .map((s) => ({
+        value: s._id,
+        label: `${s.name}${s.prefix ? ` (${s.prefix})` : ""}`,
+      }));
+  }, [services, currentTicket]);
+
+  const handleStartTransferModal = () => {
+    setSelectedServiceId("");
+    setTransferNotes("");
+    setTransferError("");
+    if (onOpenTransferModal) {
+      onOpenTransferModal(currentTicket?._id);
+    }
+  };
+
+  const handleExecuteTransfer = () => {
+    if (!selectedServiceId) {
+      setTransferError("Por favor selecciona un servicio de destino");
+      return;
+    }
+    if (confirmTransferTicket) {
+      confirmTransferTicket(selectedServiceId, transferNotes);
+    }
+  };
 
   // Update timer every second
   useEffect(() => {
@@ -150,16 +187,23 @@ export const CurrentTicketCard = ({
           >
             {isRecalling ? "Llamando..." : "Volver a Llamar"}
           </CustomButton>
-          
-          {can("public.transfer") && (
-            <CustomButton
-              className="current-ticket-card__btn-cashier"
-              onClick={() => onTransferToCashier(currentTicket?._id)}
-              disabled={isCompleting || isAbandoning || isRecalling || isTransferring}
-            >
-              {isTransferring ? "Transfiriendo..." : "Dirigir a Caja"}
-            </CustomButton>
-          )}
+
+              <CustomButton
+                className="current-ticket-card__btn-cashier"
+                onClick={() => onTransferToCashier(currentTicket?._id)}
+                disabled={isCompleting || isAbandoning || isRecalling || isTransferring}
+              >
+                {isTransferring ? "Transfiriendo..." : "Dirigir a Caja"}
+              </CustomButton>
+
+          <CustomButton
+            variant="outline"
+            className="current-ticket-card__btn-transfer"
+            onClick={handleStartTransferModal}
+            disabled={isCompleting || isAbandoning || isRecalling || isTransferring}
+          >
+            Redireccionar
+          </CustomButton>
 
           <CustomButton
             variant="primary"
@@ -218,6 +262,59 @@ export const CurrentTicketCard = ({
             </CustomButton>
             <CustomButton className="current-ticket-card__btn-cashier" onClick={() => confirmTransferToCashier()} disabled={isTransferring}>
               {isTransferring ? "Transfiriendo..." : "Confirmar Transferencia"}
+            </CustomButton>
+          </div>
+        </div>
+      </CustomModal>
+
+      {/* Transfer to Any Service Modal */}
+      <CustomModal
+        isOpen={showTransferModal}
+        onClose={() => setShowTransferModal(false)}
+        title="Redireccionar Turno"
+        size="md"
+      >
+        <div className="current-ticket-card__modal">
+          <p className="current-ticket-card__modal-message">
+            Transfiere el turno <strong>{currentTicket?.ticketNumber}</strong> a otro servicio o módulo.
+          </p>
+
+          <div className="current-ticket-card__transfer-info">
+            ⏱️ <strong>Orden justo:</strong> El cliente conservará su hora original de llegada para no perder su puesto en la fila y se le asignará la letra <strong>'T'</strong> (transferido).
+          </div>
+
+          <div className="current-ticket-card__transfer-form">
+            <CustomSelect
+              label="Servicio de Destino"
+              required
+              options={serviceOptions}
+              value={selectedServiceId}
+              onChange={(e) => {
+                setSelectedServiceId(e.target.value);
+                setTransferError("");
+              }}
+              error={transferError}
+              placeholder="Selecciona el servicio"
+            />
+
+            <CustomInput
+              label="Motivo / Notas de la transferencia (Opcional)"
+              placeholder="Ej: Trámite corresponde a escrituración..."
+              value={transferNotes}
+              onChange={(e) => setTransferNotes(e.target.value)}
+            />
+          </div>
+
+          <div className="current-ticket-card__modal-actions">
+            <CustomButton variant="outline" onClick={() => setShowTransferModal(false)}>
+              Cancelar
+            </CustomButton>
+            <CustomButton
+              variant="primary"
+              onClick={handleExecuteTransfer}
+              disabled={isTransferring}
+            >
+              {isTransferring ? "Redireccionando..." : "Confirmar"}
             </CustomButton>
           </div>
         </div>

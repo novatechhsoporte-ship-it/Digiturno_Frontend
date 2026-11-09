@@ -33,12 +33,17 @@ export const AttendantTickets = () => {
     showCompleteConfirm,
     showAbandonConfirm,
     showTransferConfirm,
+    showTransferModal,
     setShowCompleteConfirm,
     setShowAbandonConfirm,
     setShowTransferConfirm,
+    setShowTransferModal,
     confirmCompleteTicket,
     confirmAbandonTicket,
     confirmTransferToCashier,
+    handleOpenTransferModal,
+    confirmTransferTicket,
+    services,
   } = useAttendantTickets();
   useTicketSocket();
 
@@ -71,6 +76,11 @@ export const AttendantTickets = () => {
           confirmTransferToCashier={confirmTransferToCashier}
           showTransferConfirm={showTransferConfirm}
           setShowTransferConfirm={setShowTransferConfirm}
+          onOpenTransferModal={handleOpenTransferModal}
+          confirmTransferTicket={confirmTransferTicket}
+          showTransferModal={showTransferModal}
+          setShowTransferModal={setShowTransferModal}
+          services={services}
           isTransferring={isTransferring}
         />
       </div>
