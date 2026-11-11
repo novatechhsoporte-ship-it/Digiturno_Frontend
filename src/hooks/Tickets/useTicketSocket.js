@@ -13,17 +13,21 @@ export const useTicketSocket = () => {
     const socket = getSocket();
     if (!socket) return;
 
-    const onTicketCreated = () => {
+    const onTicketRefresh = () => {
       // Refresca cualquier lista de tickets
       queryClient.invalidateQueries({
         queryKey: ticketKeys.lists(),
       });
     };
 
-    socket.on("ticket:created", onTicketCreated);
+    socket.on("ticket:created", onTicketRefresh);
+    socket.on("ticket:updated", onTicketRefresh);
+    socket.on("customer:updated", onTicketRefresh);
 
     return () => {
-      socket.off("ticket:created", onTicketCreated);
+      socket.off("ticket:created", onTicketRefresh);
+      socket.off("ticket:updated", onTicketRefresh);
+      socket.off("customer:updated", onTicketRefresh);
     };
   }, [queryClient]);
 };

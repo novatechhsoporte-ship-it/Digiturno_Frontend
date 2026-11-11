@@ -33,10 +33,13 @@ export const useEditCustomer = (loadPendingTickets) => {
     (ticket) => {
       if (!ticket.customerId) return;
 
-      setEditingCustomer(ticket.customerId);
-      setValueCustomer("fullName", ticket.customerId.fullName || "");
-      setValueCustomer("email", ticket.customerId.email || "");
-      setValueCustomer("phone", ticket.customerId.phone?.toString() || "");
+      const customer = ticket.customerId;
+      setEditingCustomer(customer);
+      setValueCustomer("documentType", customer.documentType || "CC");
+      setValueCustomer("documentNumber", customer.documentNumber ? customer.documentNumber.toString() : "");
+      setValueCustomer("fullName", customer.fullName || "");
+      setValueCustomer("email", customer.email || "");
+      setValueCustomer("phone", customer.phone ? customer.phone.toString() : "");
       setShowEditModal(true);
     },
     [setValueCustomer]
@@ -50,9 +53,11 @@ export const useEditCustomer = (loadPendingTickets) => {
       try {
         setLoading(true);
         const payload = {
+          ...(values.documentType && { documentType: values.documentType }),
+          ...(values.documentNumber && { documentNumber: Number(values.documentNumber) }),
           ...(values.fullName && { fullName: values.fullName.trim() }),
-          ...(values.email && values.email.trim() && { email: values.email.trim() }),
-          ...(values.phone && values.phone.trim() && { phone: values.phone.trim() }),
+          ...(values.email !== undefined && { email: values.email.trim() }),
+          ...(values.phone !== undefined && { phone: values.phone.trim() ? Number(values.phone.trim()) : null }),
         };
 
         await CustomersApi.updateCustomer(editingCustomer._id, payload);

@@ -1,4 +1,5 @@
-import { CustomButton, CustomInput, CustomModal } from "@components/common";
+import { CustomButton, CustomInput, CustomModal, CustomSelect } from "@components/common";
+import { DOCUMENT_TYPE_OPTIONS } from "@schemas/Tickets";
 import "./EditCustomerModal.scss";
 
 export const EditCustomerModal = ({
@@ -17,10 +18,26 @@ export const EditCustomerModal = ({
       <form className="edit-customer-modal" onSubmit={handleSubmitCustomer(onUpdateCustomer)}>
         <div className="edit-customer-modal__grid">
           <div className="edit-customer-modal__group">
-            <CustomInput label="Número de Documento" value={editingCustomer?.documentNumber || ""} disabled />
+            <CustomSelect
+              label="Tipo de Documento *"
+              options={DOCUMENT_TYPE_OPTIONS}
+              required
+              error={errorsCustomer.documentType?.message}
+              {...registerCustomer("documentType")}
+            />
           </div>
 
           <div className="edit-customer-modal__group">
+            <CustomInput
+              label="Número de Documento *"
+              placeholder="Ingrese el número de documento"
+              required
+              error={errorsCustomer.documentNumber?.message}
+              {...registerCustomer("documentNumber")}
+            />
+          </div>
+
+          <div className="edit-customer-modal__group edit-customer-modal__group--full">
             <CustomInput
               label="Nombre Completo *"
               placeholder="Ingrese el nombre completo"
