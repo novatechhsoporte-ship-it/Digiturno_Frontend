@@ -9,6 +9,10 @@
   &__group {
     display: flex;
     flex-direction: column;
+
+    &--full {
+      grid-column: 1 / -1;
+    }
   }
 
   &__actions {

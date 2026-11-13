@@ -28,9 +28,24 @@ export const ticketSchema = z.object({
 });
 
 export const customerUpdateSchema = z.object({
-  fullName: z.string().min(1, "El nombre completo es requerido").optional().or(z.literal("")),
+  documentType: z.enum(["CC", "CE", "PA", "TI", "NIT", "PASSPORT", "PPT"], {
+    errorMap: () => ({ message: "Tipo de documento inválido" }),
+  }),
+  documentNumber: z
+    .string()
+    .min(1, "El número de documento es requerido")
+    .min(6, "El número de documento debe tener al menos 6 dígitos")
+    .regex(/^\d+$/, "El documento debe contener solo números"),
+  fullName: z
+    .string()
+    .min(1, "El nombre completo es requerido")
+    .min(3, "El nombre completo debe tener al menos 3 caracteres"),
   email: z.string().email("Correo inválido").optional().or(z.literal("")),
-  phone: z.string().optional().or(z.literal("")),
+  phone: z
+    .string()
+    .regex(/^\d{10}$/, "El teléfono debe tener 10 dígitos numéricos")
+    .optional()
+    .or(z.literal("")),
 });
 
 export const DEFAULT_FORM_VALUES = {
@@ -46,6 +61,8 @@ export const DEFAULT_FORM_VALUES = {
 };
 
 export const DEFAULT_CUSTOMER_UPDATE_VALUES = {
+  documentType: "CC",
+  documentNumber: "",
   fullName: "",
   email: "",
   phone: "",

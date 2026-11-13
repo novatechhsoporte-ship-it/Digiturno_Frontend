@@ -8,7 +8,7 @@ export const useTicketTable = (handleEditCustomer) => {
   const { canAny } = useAbility();
 
   const canCall = canAny(["tickets.update_status", "tickets.manage"]);
-  const canEdit = canAny(["tickets.edit", "tickets.manage"]);
+  const canEdit = canAny(["tickets.edit", "tickets.manage", "customers.update", "customers.manage"]);
 
   // Table columns
   const ticketColumns = useMemo(
