@@ -19,7 +19,7 @@ export const EditCustomerModal = ({
         <div className="edit-customer-modal__grid">
           <div className="edit-customer-modal__group">
             <CustomSelect
-              label="Tipo de Documento *"
+              label="Tipo de Documento"
               options={DOCUMENT_TYPE_OPTIONS}
               required
               error={errorsCustomer.documentType?.message}
@@ -29,7 +29,7 @@ export const EditCustomerModal = ({
 
           <div className="edit-customer-modal__group">
             <CustomInput
-              label="Número de Documento *"
+              label="Número de Documento"
               placeholder="Ingrese el número de documento"
               required
               error={errorsCustomer.documentNumber?.message}
@@ -39,7 +39,7 @@ export const EditCustomerModal = ({
 
           <div className="edit-customer-modal__group edit-customer-modal__group--full">
             <CustomInput
-              label="Nombre Completo *"
+              label="Nombre Completo"
               placeholder="Ingrese el nombre completo"
               required
               error={errorsCustomer.fullName?.message}

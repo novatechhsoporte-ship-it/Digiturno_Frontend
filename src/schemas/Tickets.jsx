@@ -7,23 +7,25 @@ export const ticketSchema = z.object({
     .min(1, "El número de documento es requerido")
     .min(6, "El número de documento debe tener al menos 6 dígitos")
     .regex(/^\d+$/, "El documento debe contener solo números"),
-  documentType: z.enum(["CC", "CE", "PA", "TI", "NIT", "PASSPORT", "PPT"], {
-    errorMap: () => ({ message: "Tipo de documento inválido" }),
-  }),
+  documentType: z
+    .enum(["CC", "CE", "PA", "TI", "NIT", "PASSPORT", "PPT"], {
+      errorMap: () => ({ message: "Tipo de documento inválido" }),
+    })
+    .optional()
+    .default("CC"),
   fullName: z
     .string()
     .min(1, "El nombre completo es requerido")
-    .min(11, "El nombre completo debe tener al menos 11 caracteres"),
+    .min(3, "El nombre completo debe tener al menos 3 caracteres"),
   email: z.string().email("Correo inválido").optional().or(z.literal("")),
   phone: z
     .string()
-    .min(1, "El teléfono es requerido")
-    .regex(/^\d{10}$/, "El teléfono debe tener exactamente 10 dígitos numéricos"),
+    .regex(/^\d{7,15}$/, "El teléfono debe contener entre 7 y 15 dígitos numéricos")
+    .optional()
+    .or(z.literal("")),
   moduleId: z.string().optional(),
   serviceTypeId: z.string().min(1, "El tipo de servicio es requerido"),
-  dataTreatmentAccepted: z.boolean().refine((val) => val === true, {
-    message: "Debe aceptar el tratamiento de datos para continuar",
-  }),
+  dataTreatmentAccepted: z.boolean().optional().default(true),
   isPriority: z.boolean().optional().default(false),
 });
 
@@ -56,7 +58,7 @@ export const DEFAULT_FORM_VALUES = {
   phone: "",
   moduleId: "",
   serviceTypeId: "",
-  dataTreatmentAccepted: false,
+  dataTreatmentAccepted: true,
   isPriority: false,
 };
 
@@ -80,45 +82,43 @@ export const DOCUMENT_TYPE_OPTIONS = [
 
 export const TICKET_FORM_FIELDS = [
   {
+    name: "documentNumber",
+    label: "Número de Documento *",
+    required: true,
+    placeholder: "Ingrese el número de documento",
+  },
+  {
     name: "fullName",
-    label: "Nombre Completo",
+    label: "Nombre Completo *",
     required: true,
     placeholder: "Ingrese el nombre completo",
     full: true,
   },
   {
-    name: "documentNumber",
-    label: "Número de Documento",
+    name: "serviceTypeId",
+    label: "Tipo de servicio *",
+    type: "select",
     required: true,
-    placeholder: "Ingrese el número de documento",
+    placeholder: "Seleccione un servicio",
+    optionsKey: "services",
   },
   {
     name: "documentType",
     label: "Tipo de Documento",
-    required: true,
     type: "select",
-    placeholder: "Seleccione tipo documento",
+    placeholder: "Seleccione tipo documento (opcional)",
     optionsKey: "documentTypes",
+  },
+  {
+    name: "phone",
+    label: "Teléfono",
+    placeholder: "Ingrese el teléfono (opcional)",
   },
   {
     name: "email",
     label: "Correo Electrónico",
     type: "email",
-    placeholder: "correo@ejemplo.com",
-  },
-  {
-    name: "phone",
-    label: "Teléfono",
-    placeholder: "Ingrese el teléfono",
-    required: true,
-  },
-  {
-    name: "serviceTypeId",
-    label: "Tipo de servicio",
-    type: "select",
-    required: true,
-    placeholder: "Seleccione un servicio",
-    optionsKey: "services",
+    placeholder: "correo@ejemplo.com (opcional)",
   },
   {
     name: "isPriority",
@@ -137,7 +137,6 @@ export const TICKET_FORM_FIELDS = [
       </span>
     ),
     type: "checkbox",
-    required: true,
     full: true,
   },
 ];
