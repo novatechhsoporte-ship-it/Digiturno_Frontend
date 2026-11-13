@@ -35,14 +35,16 @@ export const useEditCustomer = (loadPendingTickets) => {
 
       const customer = ticket.customerId;
       setEditingCustomer(customer);
-      setValueCustomer("documentType", customer.documentType || "CC");
-      setValueCustomer("documentNumber", customer.documentNumber ? customer.documentNumber.toString() : "");
-      setValueCustomer("fullName", customer.fullName || "");
-      setValueCustomer("email", customer.email || "");
-      setValueCustomer("phone", customer.phone ? customer.phone.toString() : "");
+      resetCustomer({
+        documentType: customer.documentType || "CC",
+        documentNumber: customer.documentNumber ? customer.documentNumber.toString() : "",
+        fullName: customer.fullName || "",
+        email: customer.email || "",
+        phone: customer.phone ? customer.phone.toString() : "",
+      });
       setShowEditModal(true);
     },
-    [setValueCustomer]
+    [resetCustomer]
   );
 
   // Update customer
@@ -52,12 +54,29 @@ export const useEditCustomer = (loadPendingTickets) => {
 
       try {
         setLoading(true);
+
+        const docType = values.documentType || editingCustomer.documentType || "CC";
+        const docNumber = (values.documentNumber && String(values.documentNumber).trim())
+          ? Number(String(values.documentNumber).trim())
+          : (editingCustomer.documentNumber ? Number(editingCustomer.documentNumber) : undefined);
+        const fullName = (values.fullName && values.fullName.trim())
+          ? values.fullName.trim()
+          : editingCustomer.fullName;
+
+        const email = values.email !== undefined && values.email.trim() !== ""
+          ? values.email.trim()
+          : (editingCustomer.email || "");
+
+        const phone = values.phone && String(values.phone).trim()
+          ? Number(String(values.phone).trim())
+          : (editingCustomer.phone ? Number(editingCustomer.phone) : null);
+
         const payload = {
-          ...(values.documentType && { documentType: values.documentType }),
-          ...(values.documentNumber && { documentNumber: Number(values.documentNumber) }),
-          ...(values.fullName && { fullName: values.fullName.trim() }),
-          ...(values.email !== undefined && { email: values.email.trim() }),
-          ...(values.phone !== undefined && { phone: values.phone.trim() ? Number(values.phone.trim()) : null }),
+          documentType: docType,
+          ...(docNumber && { documentNumber: docNumber }),
+          ...(fullName && { fullName }),
+          ...(email && { email }),
+          ...(phone && { phone }),
         };
 
         await CustomersApi.updateCustomer(editingCustomer._id, payload);
