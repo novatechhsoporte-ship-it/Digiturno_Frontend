@@ -63,10 +63,9 @@ export const PublicQrCustomerForm = ({ register, errors, onNext, onCancel }) => 
 
           <div className="public-qr__field">
             <CustomInput
-              label="Celular"
+              label="Celular (Opcional)"
               type="tel"
               inputMode="numeric"
-              required
               placeholder="Ej: 3001234567"
               error={errors.phone?.message}
               {...register("phone")}
