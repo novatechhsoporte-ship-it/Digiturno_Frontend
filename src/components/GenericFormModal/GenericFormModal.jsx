@@ -5,6 +5,7 @@ export const GenericFormModal = ({
   isOpen,
   onClose,
   title,
+  banner,
   submitLabel,
   register,
   handleSubmit,
@@ -68,6 +69,7 @@ export const GenericFormModal = ({
   return (
     <CustomModal isOpen={isOpen} onClose={onClose} title={title} size="lg">
       <form className="generic-form-modal__form" onSubmit={handleSubmit(onSubmit)}>
+        {banner && <div className="generic-form-modal__banner-wrapper">{banner}</div>}
         <div className="generic-form-modal__grid">{fields.map(renderField)}</div>
 
         <div className="generic-form-modal__actions">

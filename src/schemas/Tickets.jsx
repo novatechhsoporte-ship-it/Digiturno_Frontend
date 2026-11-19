@@ -45,7 +45,7 @@ export const customerUpdateSchema = z.object({
   email: z.string().email("Correo inválido").optional().or(z.literal("")),
   phone: z
     .string()
-    .regex(/^\d{10}$/, "El teléfono debe tener 10 dígitos numéricos")
+    .regex(/^\d{7,15}$/, "El teléfono debe contener entre 7 y 15 dígitos numéricos")
     .optional()
     .or(z.literal("")),
 });
@@ -80,23 +80,23 @@ export const DOCUMENT_TYPE_OPTIONS = [
   { label: "PPT (Permiso por Protección Temporal)", value: "PPT" },
 ];
 
-export const TICKET_FORM_FIELDS = [
+export const getTicketFormFields = (requireContact = true) => [
   {
     name: "documentNumber",
-    label: "Número de Documento *",
+    label: "Número de Documento",
     required: true,
     placeholder: "Ingrese el número de documento",
   },
   {
     name: "fullName",
-    label: "Nombre Completo *",
+    label: "Nombre Completo",
     required: true,
     placeholder: "Ingrese el nombre completo",
     full: true,
   },
   {
     name: "serviceTypeId",
-    label: "Tipo de servicio *",
+    label: "Tipo de servicio",
     type: "select",
     required: true,
     placeholder: "Seleccione un servicio",
@@ -111,8 +111,9 @@ export const TICKET_FORM_FIELDS = [
   },
   {
     name: "phone",
-    label: "Teléfono",
-    placeholder: "Ingrese el teléfono (opcional)",
+    label: requireContact ? "Teléfono" : "Teléfono (opcional)",
+    required: requireContact,
+    placeholder: requireContact ? "Ingrese el teléfono celular" : "Ingrese el teléfono (opcional)",
   },
   {
     name: "email",
@@ -140,3 +141,5 @@ export const TICKET_FORM_FIELDS = [
     full: true,
   },
 ];
+
+export const TICKET_FORM_FIELDS = getTicketFormFields(true);

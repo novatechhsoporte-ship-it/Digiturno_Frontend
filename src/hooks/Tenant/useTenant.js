@@ -24,6 +24,7 @@ export const useTenant = () => {
         phone: "",
         email: "",
         status: true,
+        requireCustomerContactInfo: true,
         serviceHoursStart: "08:00",
         serviceHoursEnd: "17:00",
         lunchBreakStart: "",
@@ -68,6 +69,7 @@ export const useTenant = () => {
           ...(values.maxWaitingTimeMinutes && {
             maxWaitingTimeMinutes: Number(values.maxWaitingTimeMinutes),
           }),
+          requireCustomerContactInfo: values.requireCustomerContactInfo ?? true,
         },
       };
 
@@ -101,6 +103,7 @@ export const useTenant = () => {
       phone: tenant.phone?.toString() || "",
       email: tenant.email || "",
       status: tenant.status ?? true,
+      requireCustomerContactInfo: tenant.configuration?.requireCustomerContactInfo !== false,
       serviceHoursStart: tenant.configuration?.serviceHours?.start || "08:00",
       serviceHoursEnd: tenant.configuration?.serviceHours?.end || "17:00",
       lunchBreakStart: tenant.configuration?.lunchBreak?.start || "",
