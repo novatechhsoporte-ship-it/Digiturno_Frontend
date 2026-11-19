@@ -51,6 +51,7 @@ export const useTickets = () => {
     isSubmitting: createTicket.isSubmitting,
     isDisabled: createTicket.isDisabled,
     servicesMap: createTicket.servicesMap,
+    requireContact: createTicket.requireContact,
     registerCustomer: editCustomer.registerCustomer,
     handleSubmitCustomer: editCustomer.handleSubmitCustomer,
     errorsCustomer: editCustomer.errorsCustomer,

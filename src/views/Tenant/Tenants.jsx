@@ -35,6 +35,25 @@ export const Tenants = () => {
   } = useTenant();
 
   const renderField = (field) => {
+    if (field.type === "switch") {
+      return (
+        <div key={field.name} className="tenants__field tenants__field--full">
+          <label className="tenants__switch-card">
+            <div className="tenants__switch-info">
+              <span className="tenants__switch-title">{field.label}</span>
+              {field.description && (
+                <span className="tenants__switch-desc">{field.description}</span>
+              )}
+            </div>
+            <div className="tenants__switch-control">
+              <input type="checkbox" className="tenants__switch-input" {...register(field.name)} />
+              <span className="tenants__switch-track"></span>
+            </div>
+          </label>
+        </div>
+      );
+    }
+
     if (field.type === "checkbox") {
       return (
         <div key={field.name} className="tenants__field tenants__field--full">
@@ -47,7 +66,7 @@ export const Tenants = () => {
     }
 
     return (
-      <div key={field.name} className="tenants__field">
+      <div key={field.name} className={`tenants__field ${field.full ? "tenants__field--full" : ""}`}>
         <CustomInput
           label={field.label}
           type={field.type || "text"}

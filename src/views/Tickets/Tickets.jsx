@@ -19,6 +19,7 @@ export const Tickets = () => {
     showCreateButton,
     isSuperAdmin,
     servicesMap,
+    requireContact,
 
     // Forms
     register,
@@ -85,6 +86,7 @@ export const Tickets = () => {
         isDisabled={isDisabled}
         onCreateTicket={onCreateTicket}
         servicesMap={servicesMap}
+        requireContact={requireContact}
       />
 
       <EditCustomerModal

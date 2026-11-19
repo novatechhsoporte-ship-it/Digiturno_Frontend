@@ -73,12 +73,18 @@ export const usePublicQrForm = (token) => {
     setStep(1);
   };
 
+  const requireContact = tenant?.configuration?.requireCustomerContactInfo !== false;
+
   const handleCustomerDataNext = async () => {
+    if (requireContact && (!formValues.phone || !formValues.phone.trim())) {
+      toast.error("Debes completar toda la información");
+      return;
+    }
     const isStep1Valid = await trigger(["documentType", "documentNumber", "fullName", "phone", "email", "dataTreatmentAccepted"]);
     if (isStep1Valid) {
       nextStep();
     } else {
-      toast.error("Por favor, revisa los datos ingresados.");
+      toast.error("Debes completar toda la información");
     }
   };
 
@@ -98,7 +104,7 @@ export const usePublicQrForm = (token) => {
       documentNumber: formValues.documentNumber.trim(),
       documentType: formValues.documentType,
       fullName: formValues.fullName.trim(),
-      phone: formValues.phone.trim(),
+      phone: formValues.phone?.trim() ? formValues.phone.trim() : undefined,
       email: formValues.email?.trim() || undefined,
       serviceTypeId: selectedService._id,
       dataTreatmentAccepted: formValues.dataTreatmentAccepted,

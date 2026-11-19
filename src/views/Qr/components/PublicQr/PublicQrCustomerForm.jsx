@@ -63,7 +63,7 @@ export const PublicQrCustomerForm = ({ register, errors, onNext, onCancel }) => 
 
           <div className="public-qr__field">
             <CustomInput
-              label="Celular (Opcional)"
+              label="Celular"
               type="tel"
               inputMode="numeric"
               placeholder="Ej: 3001234567"
@@ -76,7 +76,7 @@ export const PublicQrCustomerForm = ({ register, errors, onNext, onCancel }) => 
 
           <div className="public-qr__field">
             <CustomInput
-              label="Correo Electrónico (Opcional)"
+              label="Correo Electrónico"
               type="email"
               placeholder="correo@ejemplo.com"
               error={errors.email?.message}

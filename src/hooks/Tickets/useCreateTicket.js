@@ -1,4 +1,5 @@
 import { useState, useCallback, useMemo } from "react";
+import { toast } from "sonner";
 
 import { ServicesApi } from "@core/api/services";
 import { TicketsApi } from "@core/api/tickets";
@@ -47,12 +48,18 @@ export const useCreateTicket = (selectedTenant, canCreate) => {
     }
   );
 
+  const requireContact = authUser?.tenant?.configuration?.requireCustomerContactInfo !== false;
+
   // Create ticket from customer data
   const onCreateTicket = useCallback(
     async (values) => {
+      if (requireContact && (!values.phone || !String(values.phone).trim())) {
+        toast.error("El número de teléfono es requerido para esta notaría");
+        return;
+      }
       await createTicket(values);
     },
-    [createTicket]
+    [createTicket, requireContact]
   );
 
   // Handle show create modal
@@ -105,5 +112,6 @@ export const useCreateTicket = (selectedTenant, canCreate) => {
     handleCloseCreateModal,
     showCreateButton,
     servicesMap,
+    requireContact,
   };
 };

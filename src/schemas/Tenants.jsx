@@ -12,6 +12,7 @@ export const tenantSchema = z.object({
   email: z.string().email("Correo inválido").optional().or(z.literal("")),
   city: z.string().optional().or(z.literal("")),
   status: z.boolean().default(true),
+  requireCustomerContactInfo: z.boolean().default(true),
   serviceHoursStart: z.string().optional().or(z.literal("")),
   serviceHoursEnd: z.string().optional().or(z.literal("")),
   lunchBreakStart: z.string().optional().or(z.literal("")),
@@ -37,5 +38,18 @@ export const FORM_FIELDS = [
   { name: "lunchBreakStart", label: "Inicio Almuerzo (Opcional)", type: "time" },
   { name: "lunchBreakEnd", label: "Fin Almuerzo (Opcional)", type: "time" },
 
-  { name: "status", label: "Notaría activa", type: "checkbox", full: true },
+  {
+    name: "status",
+    label: "Notaría activa",
+    description: "Habilita o deshabilita la operación y toma de turnos en el sistema.",
+    type: "switch",
+    full: true,
+  },
+  {
+    name: "requireCustomerContactInfo",
+    label: "Exigir todos los datos para el turno",
+    description: "Al activar, se solicita la información completa del ciudadano (teléfono y correo). Si se desactiva, solo se requiere Cédula y Nombre.",
+    type: "switch",
+    full: true,
+  },
 ];
