@@ -82,17 +82,17 @@ export const DOCUMENT_TYPE_OPTIONS = [
 
 export const getTicketFormFields = (requireContact = true) => [
   {
-    name: "documentNumber",
-    label: "Número de Documento",
-    required: true,
-    placeholder: "Ingrese el número de documento",
-  },
-  {
     name: "fullName",
     label: "Nombre Completo",
     required: true,
     placeholder: "Ingrese el nombre completo",
     full: true,
+  },
+  {
+    name: "documentNumber",
+    label: "Número de Documento",
+    required: true,
+    placeholder: "Ingrese el número de documento",
   },
   {
     name: "serviceTypeId",
